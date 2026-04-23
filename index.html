@@ -172,6 +172,9 @@ body{font-family:'Nunito',sans-serif;background:#0a0a1a;color:#fff;overflow:hidd
 .pong-name{font-family:'Bangers',cursive;font-size:20px;letter-spacing:1px}
 .pong-pts{font-family:'Bangers',cursive;font-size:34px;color:#fff;min-width:28px;text-align:center}
 .pong-result{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:10px;padding:24px;text-align:center}
+/* LANDSCAPE WARNING */
+#landscape-warn{display:none;position:fixed;inset:0;background:rgba(10,10,26,.97);z-index:200;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px;gap:12px}
+#landscape-warn.show{display:flex}
 /* touch optimization */
 button{touch-action:manipulation}
 .bstar{position:absolute;font-size:20px;pointer-events:none;z-index:10;animation:starPop .5s forwards}
@@ -403,7 +406,7 @@ button{touch-action:manipulation}
 <!-- GAMES HUB -->
 <div id="s-games" class="screen">
   <div class="back-row"><button class="back-btn" onclick="goQuests()">← Back</button><div class="gtitle">🎮 Hero Training</div></div>
-  <div class="ebanner"><div class="eicon">💰</div><div class="etext">Earn R$ on your <strong>first play</strong> each day — then play free forever! 🎮</div></div>
+  <div class="ebanner"><div class="eicon">💰</div><div class="etext">Earn ⭐ Coins on your <strong>first play</strong> each day — then play free forever! 🎮</div></div>
   <div class="gcards">
     <div class="gc whack" id="gc-whack" onclick="startWhack()">
       <div class="gcnew">🔥 HOT</div>
@@ -416,8 +419,8 @@ button{touch-action:manipulation}
       <div class="gcin"><div class="gcicon">🧠</div><div class="gcbody"><div class="gcname">Memory Quest</div><div class="gcdesc">Flip magical cards and find all the matching pairs!</div><div class="gcbadge" id="hs-memory">💰 +5 R$</div></div><div class="gcarrow">▶</div></div>
     </div>
     <div class="gc" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a);border:2px solid rgba(34,197,94,.5);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-pong" onclick="startPong()">
-      <div class="gcnew" style="background:#16a34a">👥 2P</div>
-      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Lorena vs Savio — same tablet, first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">💰 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
+      <div class="gcnew" style="background:#16a34a">👤👥 Solo+2P</div>
+      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Solo vs AI or Lorena vs Savio — first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">⭐ Winner +8 Coins</div></div><div class="gcarrow">▶</div></div>
     </div>
     <div class="gc boss" id="gc-boss" onclick="startBoss()">
       <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
@@ -623,29 +626,36 @@ button{touch-action:manipulation}
 <div id="s-pong" class="screen">
   <div id="pong-ready" class="pong-ready">
     <div style="font-family:'Bangers',cursive;font-size:52px;color:#f59e0b;letter-spacing:4px;text-shadow:0 0 30px rgba(245,158,11,.5)">🏓 PONG!</div>
-    <div class="pong-player-card sav">
-      <div style="font-size:40px">🥷</div>
-      <div style="font-family:'Bangers',cursive;font-size:30px;color:#93c5fd;letter-spacing:2px">SAVIO</div>
-      <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▲ PLAYS TOP — touch upper half</div>
+    <div style="font-size:12px;color:#475569;font-weight:700;text-align:center;margin-bottom:4px">Choose Mode:</div>
+    <div style="display:flex;gap:12px;width:100%;max-width:300px">
+      <button onclick="launchPong('solo')" style="flex:1;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:14px;padding:14px 8px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;cursor:pointer">👤 Solo<br><span style="font-size:11px;font-weight:700;opacity:.8">vs AI</span></button>
+      <button onclick="launchPong('duo')" style="flex:1;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:14px;padding:14px 8px;color:#000;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;cursor:pointer">👥 2 Players<br><span style="font-size:11px;font-weight:700;opacity:.7">vs Sibling</span></button>
     </div>
-    <div class="pong-vs">VS</div>
-    <div class="pong-player-card lor">
-      <div style="font-size:40px">👩‍🎤</div>
-      <div style="font-family:'Bangers',cursive;font-size:30px;color:#f9a8d4;letter-spacing:2px">LORENA</div>
-      <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▼ PLAYS BOTTOM — touch lower half</div>
+    <div id="pong-mode-cards" style="width:100%;max-width:300px">
+      <div class="pong-player-card sav">
+        <div style="font-size:40px">🥷</div>
+        <div style="font-family:'Bangers',cursive;font-size:30px;color:#93c5fd;letter-spacing:2px">SAVIO</div>
+        <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▲ PLAYS TOP — touch upper half</div>
+      </div>
+      <div class="pong-vs">VS</div>
+      <div class="pong-player-card lor">
+        <div style="font-size:40px">👩‍🎤</div>
+        <div style="font-family:'Bangers',cursive;font-size:30px;color:#f9a8d4;letter-spacing:2px">LORENA</div>
+        <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▼ PLAYS BOTTOM — touch lower half</div>
+      </div>
     </div>
     <div style="font-size:12px;color:#475569;font-weight:700;text-align:center">First to <strong style="color:#f59e0b">7 points</strong> wins! 🏆</div>
-    <button class="pong-start-btn" onclick="launchPong()">LET'S PLAY! 🏓</button>
     <button onclick="goGames()" style="background:none;border:none;color:#475569;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;padding:4px">← Back to Games</button>
   </div>
   <div id="pong-wrap" class="pong-wrap" style="display:none">
+    <button onclick="pongQuit()" style="position:absolute;top:8px;left:8px;z-index:20;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.2);border-radius:50%;width:36px;height:36px;color:#fff;font-size:18px;cursor:pointer;line-height:1;padding:0">✕</button>
     <div class="pong-hud top">
-      <div class="pong-name" style="color:#93c5fd">🥷 SAVIO</div>
+      <div class="pong-name" id="pong-top-name" style="color:#93c5fd">🥷 SAVIO</div>
       <div class="pong-pts" id="pong-s-savio">0</div>
     </div>
     <div class="pong-hud bot">
       <div class="pong-pts" id="pong-s-lorena">0</div>
-      <div class="pong-name" style="color:#f9a8d4">LORENA 👩‍🎤</div>
+      <div class="pong-name" id="pong-bot-name" style="color:#f9a8d4">LORENA 👩‍🎤</div>
     </div>
     <canvas id="pong-canvas" style="display:block;width:100%;height:100%;touch-action:none"></canvas>
   </div>
@@ -668,6 +678,13 @@ button{touch-action:manipulation}
   </div>
 </div>
 
+<!-- LANDSCAPE WARNING -->
+<div id="landscape-warn">
+  <div style="font-size:64px">📱</div>
+  <div style="font-family:'Bangers',cursive;font-size:28px;color:#f59e0b;letter-spacing:2px">Please hold the tablet upright!</div>
+  <div style="font-size:14px;color:#94a3b8;font-weight:700">Pong needs portrait mode 🏓</div>
+</div>
+
 <!-- CELEBRATE -->
 <div id="celebrate">
   <div class="celbox">
@@ -679,6 +696,38 @@ button{touch-action:manipulation}
 </div>
 
 <script>
+// ===== SOUND EFFECTS (Web Audio API — no files needed) =====
+const sfx={
+  ctx:null,
+  init(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();},
+  play(freq,dur,type='square',vol=0.3){
+    try{
+      this.init();
+      const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+      o.connect(g);g.connect(this.ctx.destination);
+      o.type=type;o.frequency.value=freq;
+      g.gain.setValueAtTime(vol,this.ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+dur);
+      o.start();o.stop(this.ctx.currentTime+dur);
+    }catch(e){}
+  },
+  bounce(){this.play(440,0.05,'square',0.2)},
+  score(){this.play(880,0.15,'sine',0.3);setTimeout(()=>this.play(1100,0.1,'sine',0.3),100)},
+  taskDone(){this.play(660,0.1,'sine',0.2);setTimeout(()=>this.play(880,0.15,'sine',0.3),120)},
+  coin(){this.play(1200,0.05,'sine',0.25);setTimeout(()=>this.play(1600,0.1,'sine',0.2),60)},
+  wrong(){this.play(150,0.3,'sawtooth',0.2)},
+  celebrate(){[0,100,200].forEach((d,i)=>setTimeout(()=>this.play(660+i*220,0.15,'sine',0.3),d))}
+};
+
+// FUTURE GAMES IDEAS:
+// 🎯 Tap Target — bewegende Targets tippen, Reflex-Test
+// 🐍 Snake — klassisches Snake, Essen sammeln
+// 🔢 Number Sequence — was kommt als nächstes? 2,4,8,__
+// 🎨 Color Mix — Farben mischen (schon geplant)
+// 🔤 Word Scramble — englische Wörter sortieren
+// ⬆️ Flappy Hero — durch Lücken tippen (Lorena/Savio als Charakter)
+// 🧩 Jigsaw — 9-Teile Puzzle mit Emojis
+
 // ===== DATA =====
 const SK='sk_v5';
 const MOODS=['😄','😊','😐','😕','😢'];
@@ -825,6 +874,7 @@ function updateCoinDisp(){
 
 // ===== ECONOMY =====
 function addRobux(amount){
+  sfx.coin();
   const p=getP();
   const prev=Math.floor(p.robux/400);
   p.robux+=amount;p.totalEarned=(p.totalEarned||0)+amount;
@@ -849,6 +899,7 @@ function completeTask(tid){
   const task=tasks.find(x=>x.id===tid);
   if(!task)return;
   p.dailyTasks[t][tid]=true;save();
+  sfx.taskDone();
   addRobux(task.reward);
   checkPerfect();renderQuests();
 }
@@ -896,7 +947,7 @@ function updateDash(){
   const pct=milestone>prev?Math.round((r-prev)/(milestone-prev)*100):100;
   document.getElementById('cpfill').style.width=pct+'%';
   document.getElementById('cpval').textContent=r+' / '+milestone+' R$';
-  document.getElementById('cpbot').textContent=(milestone-r)+' R$ to go → '+Math.floor(milestone/5)+' real Robux 🎮';
+  document.getElementById('cpbot').textContent=(milestone-r)+' ⭐ to go → 🎮 '+Math.floor(milestone/5)+' Robux milestone!';
   const str=p.streak||0;
   document.getElementById('streak-txt').textContent='🔥 '+str+' Day Streak';
   document.getElementById('streak-sub').textContent=str>=7?'🏆 Weekly bonus reached!':(7-str)+' days to weekly bonus!';
@@ -966,8 +1017,8 @@ function renderPiggy(){
 }
 function renderRedeem(){
   const p=getP();
-  document.getElementById('red-amt').textContent=p.robux+' R$';
-  document.getElementById('red-br').innerHTML='= '+Math.floor(p.robux/5)+' real Robux<br>≈ '+toFiat(p.robux);
+  document.getElementById('red-amt').textContent='⭐ '+p.robux+' Coins';
+  document.getElementById('red-br').innerHTML='🎮 '+Math.floor(p.robux/5)+' Robux redeemable<br>≈ '+toFiat(p.robux)+'  (ask Papa!)';
   const tiers=[{cost:400,real:80},{cost:800,real:160},{cost:2000,real:400}];
   document.getElementById('mcards').innerHTML=tiers.map(t=>{
     const can=p.robux>=t.cost;
@@ -1291,6 +1342,7 @@ function forcePiggyInterest(){
 
 // ===== CELEBRATE =====
 function showCelebrate(emoji,title,msg){
+  sfx.celebrate();
   document.getElementById('cel-emoji').textContent=emoji;
   document.getElementById('cel-title').textContent=title;
   document.getElementById('cel-msg').innerHTML=msg;
@@ -1366,6 +1418,7 @@ function whack(idx){
     setTimeout(()=>{hole.style.borderColor='';},500);
   }else{
     wScore++;
+    sfx.bounce();
     const star=document.createElement('div');star.className='bstar';star.textContent='💥';
     hole.appendChild(star);setTimeout(()=>star.remove(),500);
   }
@@ -1472,7 +1525,7 @@ function popBub(el,correct,arena){
   const pop=document.createElement('div');pop.className='popfx';
   pop.style.cssText='left:'+(el.offsetLeft+12)+'px;top:'+el.offsetTop+'px';
   pop.textContent=correct?'✨':'💔';arena.appendChild(pop);setTimeout(()=>pop.remove(),500);
-  if(correct)bCorrect++;
+  if(correct){bCorrect++;sfx.coin();}else{sfx.wrong();}
   document.getElementById('bscore').textContent=bCorrect;
   el.style.transform='scale(2)';el.style.opacity='0';el.style.transition='all .3s';
   bQ++;setTimeout(nextBubQ,600);
@@ -1587,6 +1640,33 @@ updateHeroSelect();
 let pongRAF=null,pongRunning=false,pongScore={lorena:0,savio:0};
 let pongBall={x:0,y:0,vx:0,vy:0},pongPaddles={lorena:0,savio:0};
 const PW=88,PH=13,BS=14;
+let pongMode='duo'; // 'solo' or 'duo'
+let pongAiEmoji='🤖';
+const PONG_AI_EMOJIS=['🤖','👾','🐉','🦊','🦁','👹'];
+
+function pongQuit(){
+  pongRunning=false;
+  if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
+  document.getElementById('pong-wrap').style.display='none';
+  document.getElementById('pong-result').style.display='none';
+  goGames();
+}
+
+function checkPongOrientation(){
+  const pongActive=document.getElementById('s-pong').classList.contains('active');
+  const warn=document.getElementById('landscape-warn');
+  if(!pongActive){warn.classList.remove('show');return;}
+  const isLandscape=window.innerWidth>window.innerHeight;
+  if(isLandscape){
+    warn.classList.add('show');
+    // Pause game
+    if(pongRunning){pongRunning=false;if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}}
+  }else{
+    warn.classList.remove('show');
+  }
+}
+window.addEventListener('resize',checkPongOrientation);
+window.addEventListener('orientationchange',()=>setTimeout(checkPongOrientation,200));
 
 function startPong(){
   showScreen('s-pong');
@@ -1595,13 +1675,29 @@ function startPong(){
   document.getElementById('pong-result').style.display='none';
 }
 
-function launchPong(){
+function launchPong(mode){
+  if(mode)pongMode=mode;
+  pongAiEmoji=PONG_AI_EMOJIS[Math.floor(Math.random()*PONG_AI_EMOJIS.length)];
   if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
   pongRunning=false;
   document.getElementById('pong-ready').style.display='none';
   document.getElementById('pong-result').style.display='none';
   const wrap=document.getElementById('pong-wrap');wrap.style.display='block';
   const canvas=document.getElementById('pong-canvas');
+  // Update HUD labels for mode
+  if(pongMode==='solo'){
+    const heroEmoji=S.currentHero==='lorena'?'👩‍🎤':'🥷';
+    const heroName=(S.currentHero==='lorena'?'LORENA':'SAVIO').toUpperCase();
+    document.getElementById('pong-top-name').textContent=pongAiEmoji+' AI';
+    document.getElementById('pong-top-name').style.color='#f97316';
+    document.getElementById('pong-bot-name').textContent=heroName+' '+heroEmoji;
+    document.getElementById('pong-bot-name').style.color=S.currentHero==='lorena'?'#f9a8d4':'#93c5fd';
+  }else{
+    document.getElementById('pong-top-name').textContent='🥷 SAVIO';
+    document.getElementById('pong-top-name').style.color='#93c5fd';
+    document.getElementById('pong-bot-name').textContent='LORENA 👩‍🎤';
+    document.getElementById('pong-bot-name').style.color='#f9a8d4';
+  }
   // Set canvas resolution to match display size
   setTimeout(()=>{
     const W=canvas.offsetWidth,H=canvas.offsetHeight;
@@ -1612,7 +1708,7 @@ function launchPong(){
     pongPaddles={lorena:W/2-PW/2,savio:W/2-PW/2};
     pongResetBall(W,H,1);
     pongRunning=true;
-    // Touch controls — track by Y position
+    // Touch controls
     function onTouch(e){
       e.preventDefault();
       const rect=canvas.getBoundingClientRect();
@@ -1621,8 +1717,13 @@ function launchPong(){
         const tx=(t.clientX-rect.left)*scaleX;
         const ty=(t.clientY-rect.top)*scaleY;
         const px=Math.max(0,Math.min(W-PW,tx-PW/2));
-        if(ty<H/2)pongPaddles.savio=px;
-        else pongPaddles.lorena=px;
+        if(pongMode==='solo'){
+          // Solo: player always controls bottom paddle
+          if(ty>H/2)pongPaddles.lorena=px;
+        }else{
+          if(ty<H/2)pongPaddles.savio=px;
+          else pongPaddles.lorena=px;
+        }
       }
     }
     canvas.ontouchstart=onTouch;canvas.ontouchmove=onTouch;
@@ -1647,14 +1748,16 @@ function pongLoop(canvas,W,H){
   const lpy=H-36;
   if(pongBall.vy>0&&pongBall.y+BS/2>=lpy&&pongBall.y+BS/2<=lpy+PH+4&&
      pongBall.x>=pongPaddles.lorena&&pongBall.x<=pongPaddles.lorena+PW){
+    sfx.bounce();
     pongBall.vy=-Math.abs(pongBall.vy)*1.06;
     pongBall.vx+=((pongBall.x-(pongPaddles.lorena+PW/2))/(PW/2))*3;
     pongBall.y=lpy-BS/2-1;
   }
-  // Savio paddle (top)
+  // Savio paddle (top) or AI paddle
   const spy=36;
   if(pongBall.vy<0&&pongBall.y-BS/2<=spy+PH&&pongBall.y-BS/2>=spy-4&&
      pongBall.x>=pongPaddles.savio&&pongBall.x<=pongPaddles.savio+PW){
+    sfx.bounce();
     pongBall.vy=Math.abs(pongBall.vy)*1.06;
     pongBall.vx+=((pongBall.x-(pongPaddles.savio+PW/2))/(PW/2))*3;
     pongBall.y=spy+PH+BS/2+1;
@@ -1662,6 +1765,14 @@ function pongLoop(canvas,W,H){
   // Speed cap
   const spd=Math.sqrt(pongBall.vx**2+pongBall.vy**2);
   if(spd>13){pongBall.vx=pongBall.vx/spd*13;pongBall.vy=pongBall.vy/spd*13;}
+  // AI paddle (solo mode) — top paddle follows ball with increasing speed
+  if(pongMode==='solo'){
+    const aiCenter=pongPaddles.savio+PW/2;
+    const diff=pongBall.x-aiCenter;
+    const aiSpeed=3+Math.max(pongScore.lorena,pongScore.savio)*0.15;
+    pongPaddles.savio+=Math.sign(diff)*Math.min(Math.abs(diff),aiSpeed);
+    pongPaddles.savio=Math.max(0,Math.min(W-PW,pongPaddles.savio));
+  }
   // Score
   if(pongBall.y<0){pongScore.lorena++;pongUpdateScore();if(pongScore.lorena>=7){pongEnd('lorena');return;}pongResetBall(W,H,1);}
   if(pongBall.y>H){pongScore.savio++;pongUpdateScore();if(pongScore.savio>=7){pongEnd('savio');return;}pongResetBall(W,H,-1);}
@@ -1670,8 +1781,8 @@ function pongLoop(canvas,W,H){
   // Center line
   ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=2;
   ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();ctx.setLineDash([]);
-  // Savio paddle (blue, top)
-  ctx.fillStyle='#3b82f6';
+  // Top paddle — AI (orange) in solo mode, Savio (blue) in duo mode
+  ctx.fillStyle=pongMode==='solo'?'#f97316':'#3b82f6';
   ctx.beginPath();if(ctx.roundRect)ctx.roundRect(pongPaddles.savio,spy,PW,PH,6);else ctx.rect(pongPaddles.savio,spy,PW,PH);ctx.fill();
   // Lorena paddle (pink, bottom)
   ctx.fillStyle='#ec4899';
@@ -1689,38 +1800,81 @@ function pongUpdateScore(){
 }
 
 function pongEnd(winner){
+  sfx.celebrate();
   pongRunning=false;if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
   document.getElementById('pong-wrap').style.display='none';
-  const loser=winner==='lorena'?'savio':'lorena';
   const t=today();
-  const alreadyPlayed=S.profiles.lorena.gamesPlayed[t]?.pong||S.profiles.savio.gamesPlayed[t]?.pong;
-  if(!alreadyPlayed){
-    [winner,loser].forEach((h,i)=>{
-      const pr=S.profiles[h];
-      const earn=i===0?8:3;
-      pr.robux+=earn;pr.totalEarned=(pr.totalEarned||0)+earn;
+
+  if(pongMode==='solo'){
+    // Solo mode: 'lorena' score = player, 'savio' score = AI
+    // winner is 'lorena' (player wins) or 'savio' (AI wins)
+    const playerWon=winner==='lorena'; // player always controls bottom (lorena slot)
+    const ph=S.currentHero;
+    const pr=S.profiles[ph];
+    const alreadyPlayed=pr.gamesPlayed[t]?.pong;
+    if(!alreadyPlayed){
       if(!pr.gamesPlayed[t])pr.gamesPlayed[t]={};
       pr.gamesPlayed[t].pong=true;
       if(!pr.highScores)pr.highScores={whack:0,bubble:0,memory:0,pong:0};
-      if(i===0)pr.highScores.pong=(pr.highScores.pong||0)+1;
-    });
-    save();
+      if(playerWon){
+        pr.robux+=5;pr.totalEarned=(pr.totalEarned||0)+5;
+        pr.highScores.pong=(pr.highScores.pong||0)+1;
+      }
+      save();
+    }
+    if(S.currentHero)updateDash();
+    const heroEmoji=ph==='lorena'?'👩‍🎤':'🥷';
+    const heroName=ph==='lorena'?'LORENA':'SAVIO';
+    const heroColor=ph==='lorena'?'#f9a8d4':'#93c5fd';
+    const scoreStr=pongScore.lorena+' — '+pongScore.savio;
+    const res=document.getElementById('pong-result');
+    res.style.display='flex';
+    res.innerHTML=
+      '<div style="font-size:80px">'+(playerWon?heroEmoji:pongAiEmoji)+'</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:44px;color:'+(playerWon?heroColor:'#f97316')+';letter-spacing:3px">'+(playerWon?heroName+' '+heroEmoji:pongAiEmoji+' AI')+'</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:30px;color:#f59e0b;letter-spacing:2px">WINS! 🏆</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:28px;color:#fff;margin:4px 0">'+scoreStr+'</div>'+
+      (alreadyPlayed
+        ?'<div style="color:#64748b;font-size:13px;font-weight:700">Free play — ⭐ already earned today</div>'
+        :playerWon
+          ?'<div style="color:#f59e0b;font-weight:800;font-size:15px">You beat the AI! +5 ⭐ earned! 🎉</div>'
+          :'<div style="color:#94a3b8;font-weight:800;font-size:14px">AI wins this round — try again! 💪</div>')+
+      '<button onclick="launchPong(pongMode)" style="margin-top:16px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:16px;padding:14px 32px;color:#fff;font-family:\'Nunito\',sans-serif;font-size:16px;font-weight:900;cursor:pointer;width:100%;max-width:280px">Rematch! 🏓</button>'+
+      '<button onclick="goGames()" style="margin-top:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;color:#94a3b8;font-family:\'Nunito\',sans-serif;font-size:13px;font-weight:800;cursor:pointer;width:100%;max-width:280px">← Back to Games</button>';
+  } else {
+    // Duo mode (original logic)
+    const loser=winner==='lorena'?'savio':'lorena';
+    const alreadyPlayed=S.profiles.lorena.gamesPlayed[t]?.pong||S.profiles.savio.gamesPlayed[t]?.pong;
+    if(!alreadyPlayed){
+      [winner,loser].forEach((h,i)=>{
+        const pr=S.profiles[h];
+        const earn=i===0?8:3;
+        pr.robux+=earn;pr.totalEarned=(pr.totalEarned||0)+earn;
+        if(!pr.gamesPlayed[t])pr.gamesPlayed[t]={};
+        pr.gamesPlayed[t].pong=true;
+        if(!pr.highScores)pr.highScores={whack:0,bubble:0,memory:0,pong:0};
+        if(i===0)pr.highScores.pong=(pr.highScores.pong||0)+1;
+      });
+      save();
+    }
+    // Bug1 fix: always refresh dashboard so Robux display is current
+    if(S.currentHero)updateDash();
+    const wName=winner==='lorena'?'👩‍🎤 LORENA':'🥷 SAVIO';
+    const wColor=winner==='lorena'?'#f9a8d4':'#93c5fd';
+    const scoreStr=winner==='savio'?pongScore.savio+' — '+pongScore.lorena:pongScore.lorena+' — '+pongScore.savio;
+    const res=document.getElementById('pong-result');
+    res.style.display='flex';
+    res.innerHTML=
+      '<div style="font-size:80px">'+(winner==='lorena'?'👩‍🎤':'🥷')+'</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:44px;color:'+wColor+';letter-spacing:3px">'+wName+'</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:30px;color:#f59e0b;letter-spacing:2px">WINS! 🏆</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:28px;color:#fff;margin:4px 0">'+scoreStr+'</div>'+
+      (alreadyPlayed
+        ?'<div style="color:#64748b;font-size:13px;font-weight:700">Free play — ⭐ already earned today</div>'
+        :'<div style="color:#f59e0b;font-weight:800;font-size:15px">Winner +8 ⭐ &nbsp;·&nbsp; Loser +3 ⭐ 💰</div>')+
+      '<button onclick="launchPong(pongMode)" style="margin-top:16px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:16px;padding:14px 32px;color:#fff;font-family:\'Nunito\',sans-serif;font-size:16px;font-weight:900;cursor:pointer;width:100%;max-width:280px">Rematch! 🏓</button>'+
+      '<button onclick="goGames()" style="margin-top:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;color:#94a3b8;font-family:\'Nunito\',sans-serif;font-size:13px;font-weight:800;cursor:pointer;width:100%;max-width:280px">← Back to Games</button>';
   }
-  const wName=winner==='lorena'?'👩‍🎤 LORENA':'🥷 SAVIO';
-  const wColor=winner==='lorena'?'#f9a8d4':'#93c5fd';
-  const scoreStr=winner==='savio'?pongScore.savio+' — '+pongScore.lorena:pongScore.lorena+' — '+pongScore.savio;
-  const res=document.getElementById('pong-result');
-  res.style.display='flex';
-  res.innerHTML=
-    '<div style="font-size:80px">'+(winner==='lorena'?'👩‍🎤':'🥷')+'</div>'+
-    '<div style="font-family:\'Bangers\',cursive;font-size:44px;color:'+wColor+';letter-spacing:3px">'+wName+'</div>'+
-    '<div style="font-family:\'Bangers\',cursive;font-size:30px;color:#f59e0b;letter-spacing:2px">WINS! 🏆</div>'+
-    '<div style="font-family:\'Bangers\',cursive;font-size:28px;color:#fff;margin:4px 0">'+scoreStr+'</div>'+
-    (alreadyPlayed
-      ?'<div style="color:#64748b;font-size:13px;font-weight:700">Free play — R$ already earned today</div>'
-      :'<div style="color:#f59e0b;font-weight:800;font-size:15px">Winner +8 R$ &nbsp;·&nbsp; Loser +3 R$ 💰</div>')+
-    '<button onclick="launchPong()" style="margin-top:16px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:16px;padding:14px 32px;color:#fff;font-family:\'Nunito\',sans-serif;font-size:16px;font-weight:900;cursor:pointer;width:100%;max-width:280px">Rematch! 🏓</button>'+
-    '<button onclick="goGames()" style="margin-top:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;color:#94a3b8;font-family:\'Nunito\',sans-serif;font-size:13px;font-weight:800;cursor:pointer;width:100%;max-width:280px">← Back to Games</button>';
 }
 </script>
 </body>
