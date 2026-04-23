@@ -256,6 +256,11 @@ button{touch-action:manipulation}
 #s-boss{background:radial-gradient(ellipse at 50% 0%,#2a0066,#0a0a1a 70%);padding:18px 14px 80px}
 /* PAINT */
 #s-paint.active{display:flex;flex-direction:column}
+#s-hideseek.active{display:flex;flex-direction:column}
+.hs-bush{font-size:58px;cursor:pointer;transition:transform .15s;user-select:none;display:flex;align-items:center;justify-content:center;width:80px;height:80px;border-radius:18px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.08)}
+.hs-bush:active{transform:scale(.88)}
+.hs-bush.revealed{animation:hsPop .35s ease;pointer-events:none}
+@keyframes hsPop{0%{transform:scale(1)}40%{transform:scale(1.5)}100%{transform:scale(1)}}
 /* CHESS */
 #s-chess.active{display:flex;flex-direction:column}
 .bossface{font-size:64px;animation:bossPulse 1s infinite;display:block;text-align:center}
@@ -525,6 +530,9 @@ button{touch-action:manipulation}
     <div class="gc" style="background:linear-gradient(135deg,#001a0a,#000f05);border:2px solid rgba(34,197,94,.6);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-summergames" onclick="startSummerGames()">
       <div class="gcin"><div class="gcicon">🏅</div><div class="gcbody"><div class="gcname" style="color:#86efac">Summer Games!</div><div class="gcdesc">Sprint, lift, throw & swim — win the Gold Medal! 🥇</div><div class="gcbadge" style="color:#86efac" id="hs-summergames">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
     </div>
+    <div class="gc" style="background:linear-gradient(135deg,#1a0a2e,#2d1047);border:2px solid rgba(168,85,247,.5);box-shadow:0 4px 18px rgba(168,85,247,.2)" id="gc-hideseek" onclick="startHideSeek()">
+      <div class="gcin"><div class="gcicon">🙈</div><div class="gcbody"><div class="gcname" style="color:#d8b4fe">Hide & Seek!</div><div class="gcdesc">Find ZORDAK hiding behind the bushes! 🌳</div><div class="gcbadge" style="color:#d8b4fe" id="hs-hideseek">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
     <div class="gc boss" id="gc-boss" onclick="startBoss()">
       <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
     </div>
@@ -628,6 +636,26 @@ button{touch-action:manipulation}
       <button onclick="toggleChessLearn()" id="chess-learn-btn" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:8px 14px;color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer">Learn 📖</button>
     </div>
     <div id="chess-learn-panel" style="display:none;margin-top:8px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);border-radius:12px;padding:10px;font-size:12px;color:#93c5fd;font-weight:700;text-align:left;line-height:1.6"></div>
+  </div>
+</div>
+
+<!-- HIDE & SEEK -->
+<div id="s-hideseek" class="screen" style="background:radial-gradient(ellipse at 50% 0%,#1a0a3e,#0a0a1a);height:100vh;overflow:hidden;display:flex;flex-direction:column">
+  <div class="game-hdr">
+    <button class="back-btn" onclick="hsStop();goGames()">← Back</button>
+    <div class="game-title" style="color:#d8b4fe">🙈 HIDE & SEEK</div>
+    <div class="game-score-box"><div class="gsv" id="hs-found">0</div><div class="gsl">FOUND</div></div>
+    <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="hs-round-num">1</div><div class="gsl">ROUND</div></div>
+  </div>
+  <div id="hs-msg" style="text-align:center;font-family:'Bangers',cursive;font-size:26px;color:#fcd34d;padding:8px 0;flex-shrink:0">Find ZORDAK! 👹</div>
+  <div id="hs-timer-bar-wrap" style="height:8px;background:rgba(255,255,255,.08);flex-shrink:0"><div id="hs-timer-bar" style="height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);transition:width .1s;width:100%"></div></div>
+  <div id="hs-grid" style="flex:1;display:grid;align-items:center;justify-items:center;padding:16px;gap:12px"></div>
+  <div id="hs-overlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.85);flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:10">
+    <div id="hs-over-emoji" style="font-size:80px"></div>
+    <div id="hs-over-title" style="font-family:'Bangers',cursive;font-size:36px;color:#fcd34d;text-align:center"></div>
+    <div id="hs-over-sub" style="font-size:16px;color:#94a3b8;font-weight:700;text-align:center"></div>
+    <button onclick="startHideSeek()" style="background:linear-gradient(135deg,#a855f7,#7c3aed);border:none;border-radius:18px;padding:18px 40px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;cursor:pointer">Play Again! 🙈</button>
+    <button onclick="hsStop();goGames()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px 28px;color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer">← Back</button>
   </div>
 </div>
 
@@ -1281,7 +1309,7 @@ function pickChar(emoji){
   sfx.celebrate();closeCharPicker();
 }
 function closeCharPicker(){document.getElementById('char-modal').style.display='none';charPickerHero=null;}
-function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0,snake:0,breakout:0,invaders:0,frogger:0,firetruck:0,paperboy:0,flappy:0,pacman:0,tetris:0,motocross:0,fighter:0,summergames:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:'',heroEmoji:''};}
+function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0,snake:0,breakout:0,invaders:0,frogger:0,firetruck:0,paperboy:0,flappy:0,pacman:0,tetris:0,motocross:0,fighter:0,summergames:0,hideseek:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:'',heroEmoji:''};}
 function defS(){return{profiles:{lorena:defP('lorena'),savio:defP('savio')},parentPin:'1234',currency:'usd',currentHero:null,papaCode:null,skipCost:60};}
 function load(){
   try{S=JSON.parse(localStorage.getItem(SK))||defS();}catch(e){S=defS();}
@@ -1544,7 +1572,7 @@ function renderQuests(){
 function renderGamesHub(){
   const p=getP(),gp=p.gamesPlayed[today()]||{};
   const hs=p.highScores||{};
-  ['whack','bubble','memory','boss','pong','snake','breakout','invaders','frogger','firetruck','paperboy','flappy','pacman','tetris','motocross','fighter','summergames'].forEach(g=>{
+  ['whack','bubble','memory','boss','pong','snake','breakout','invaders','frogger','firetruck','paperboy','flappy','pacman','tetris','motocross','fighter','summergames','hideseek'].forEach(g=>{
     const el=document.getElementById('gc-'+g);
     if(el)el.classList.toggle('done-today',!!gp[g]);
   });
@@ -1563,6 +1591,7 @@ function renderGamesHub(){
   if(hs.motocross>0){const e=document.getElementById('hs-motocross');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.motocross+'m';}
   if(hs.fighter>0){const e=document.getElementById('hs-fighter');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Wins: '+hs.fighter;}
   if(hs.summergames>0){const e=document.getElementById('hs-summergames');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.summergames;}
+  if(hs.hideseek>0){const e=document.getElementById('hs-hideseek');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.hideseek+' finds';}
   const isSun=getDay()===0;
   document.getElementById('boss-desc').textContent=isSun?'⚔️ ZORDAK is here! Answer 3 questions to defeat him and win 50 R$!':'Every Sunday, ZORDAK appears for the ultimate battle!';
   document.getElementById('boss-arrow').textContent=isSun?'▶':'🔒';
@@ -2254,6 +2283,123 @@ function endBoss(){
     '<div style="font-size:13px;color:#94a3b8;margin:8px 0">'+bossCorrect+'/3 correct'+(won?' — +50 R$ earned! 🎮':' — Practice and come back next Sunday!')+'</div>'+
     '<button class="back-btn" style="margin-top:12px;display:inline-block" onclick="goGames()">← Back to Games</button>';
   if(won)showCelebrate('🏆','ZORDAK DEFEATED!','You beat the Boss! +50 R$ earned! 🎉<br>You\'re a true Champion! ⚔️');
+}
+
+// ===== HIDE & SEEK =====
+const HS_HIDERS=['🌳','🌲','🌿','🪨','📦','🏠','🌸','🎋','🛖','🧺','🎃','🌵'];
+const HS_DECOYS=['🐰','🐱','🐸','🦊','🐭','🐼','🐨','🦁','🐯','🦔'];
+let hsRunning=false,hsRound=0,hsFound=0,hsTimer=null,hsTimerBar=null,hsZordakIdx=-1,hsTimeLeft=0;
+
+function hsStop(){hsRunning=false;clearInterval(hsTimer);clearInterval(hsTimerBar);}
+
+function startHideSeek(){
+  showScreen('s-hideseek');
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].hideseek;
+  if(first){p.gamesPlayed[t].hideseek=true;save();}
+  hsRound=0;hsFound=0;hsRunning=true;
+  document.getElementById('hs-found').textContent='0';
+  document.getElementById('hs-overlay').style.display='none';
+  if(first)addRobux(3);
+  hsNextRound();
+}
+
+function hsNextRound(){
+  if(!hsRunning)return;
+  hsRound++;
+  document.getElementById('hs-round-num').textContent=hsRound;
+  // More bushes each round, up to 12
+  const count=Math.min(4+hsRound,12);
+  const secs=Math.max(2,6-Math.floor(hsRound/2));
+  hsZordakIdx=Math.floor(Math.random()*count);
+  // Build grid: cols based on count
+  const cols=count<=6?3:4;
+  const grid=document.getElementById('hs-grid');
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  // Pick decoys
+  const decoys=[...HS_DECOYS].sort(()=>Math.random()-.5);
+  let di=0;
+  grid.innerHTML='';
+  for(let i=0;i<count;i++){
+    const bush=HS_HIDERS[Math.floor(Math.random()*HS_HIDERS.length)];
+    const btn=document.createElement('button');
+    btn.className='hs-bush';
+    btn.textContent=bush;
+    btn.dataset.idx=i;
+    btn.ontouchstart=(e)=>{e.preventDefault();hsTap(i,btn,secs);};
+    btn.onclick=()=>hsTap(i,btn,secs);
+    grid.appendChild(btn);
+  }
+  document.getElementById('hs-msg').textContent='Find ZORDAK! 👹 ('+secs+'s)';
+  // Timer bar
+  clearInterval(hsTimer);clearInterval(hsTimerBar);
+  hsTimeLeft=secs;
+  const bar=document.getElementById('hs-timer-bar');
+  bar.style.width='100%';
+  bar.style.background='linear-gradient(90deg,#a855f7,#ec4899)';
+  hsTimerBar=setInterval(()=>{
+    hsTimeLeft-=0.1;
+    const pct=Math.max(0,hsTimeLeft/secs*100);
+    bar.style.width=pct+'%';
+    if(pct<30)bar.style.background='linear-gradient(90deg,#ef4444,#f97316)';
+    if(hsTimeLeft<=0){clearInterval(hsTimerBar);hsTimeOut();}
+  },100);
+}
+
+function hsTap(idx,btn,secs){
+  if(!hsRunning)return;
+  clearInterval(hsTimerBar);clearInterval(hsTimer);
+  btn.classList.add('revealed');
+  if(idx===hsZordakIdx){
+    btn.textContent='👹';
+    sfx.celebrate();
+    hsFound++;
+    document.getElementById('hs-found').textContent=hsFound;
+    document.getElementById('hs-msg').textContent='Found him! 🎉 +1';
+    // Save high score
+    const p=getP();
+    if(!p.highScores)p.highScores={};
+    if(hsFound>(p.highScores.hideseek||0)){p.highScores.hideseek=hsFound;save();}
+    setTimeout(()=>{if(hsRunning)hsNextRound();},900);
+  }else{
+    // Wrong bush — show what was hiding
+    const decoy=HS_DECOYS[Math.floor(Math.random()*HS_DECOYS.length)];
+    btn.textContent=decoy;
+    sfx.wrong();
+    document.getElementById('hs-msg').textContent='Nope! 😅 Keep looking!';
+    // Reveal ZORDAK after 600ms
+    setTimeout(()=>{
+      if(!hsRunning)return;
+      const allBtns=document.querySelectorAll('.hs-bush');
+      if(allBtns[hsZordakIdx])allBtns[hsZordakIdx].textContent='👹';
+      document.getElementById('hs-msg').textContent='There he was! 👹 Game over!';
+      setTimeout(()=>hsGameOver(),1200);
+    },600);
+  }
+}
+
+function hsTimeOut(){
+  if(!hsRunning)return;
+  sfx.wrong();
+  // Reveal ZORDAK
+  const allBtns=document.querySelectorAll('.hs-bush');
+  if(allBtns[hsZordakIdx])allBtns[hsZordakIdx].textContent='👹';
+  document.getElementById('hs-msg').textContent='Too slow! 👹 Found you!';
+  setTimeout(()=>hsGameOver(),1200);
+}
+
+function hsGameOver(){
+  hsRunning=false;
+  clearInterval(hsTimer);clearInterval(hsTimerBar);
+  const p=getP();
+  const best=p.highScores?.hideseek||0;
+  const over=document.getElementById('hs-overlay');
+  over.style.display='flex';
+  document.getElementById('hs-over-emoji').textContent=hsFound>=5?'🏆':hsFound>=3?'🌟':'😅';
+  document.getElementById('hs-over-title').textContent='You found ZORDAK '+hsFound+' times!';
+  document.getElementById('hs-over-sub').textContent='Best: '+best+' finds'+(hsFound>best?' — NEW RECORD! 🎉':'');
+  if(hsFound>=5)sfx.levelUp();
 }
 
 // ===== ART STUDIO (Paint) =====
