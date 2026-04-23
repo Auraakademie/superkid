@@ -177,6 +177,40 @@ body{font-family:'Nunito',sans-serif;background:#0a0a1a;color:#fff;overflow:hidd
 #landscape-warn.show{display:flex}
 /* touch optimization */
 button{touch-action:manipulation}
+/* NEW ARCADE GAMES 2 */
+#s-pacman.active,#s-tetris.active,#s-motocross.active,#s-fighter.active,#s-summergames.active{display:flex;flex-direction:column}
+/* FIGHTER specific */
+.fighter-hpbar-wrap{padding:10px 14px 0;flex-shrink:0}
+.fighter-hprow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.fighter-hplabel{font-family:'Bangers',cursive;font-size:16px;letter-spacing:1px;min-width:70px}
+.fighter-hpbar{flex:1;height:16px;background:rgba(255,255,255,.1);border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+.fighter-hpfill{height:100%;border-radius:8px;transition:width .3s}
+.fighter-arena{flex:1;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;position:relative;min-height:140px}
+.fighter-char{font-size:72px;transition:transform .15s;user-select:none;display:flex;align-items:center;justify-content:center;width:90px}
+.fighter-char.hit{animation:fighterHit .2s}
+@keyframes fighterHit{0%,100%{transform:scale(1) translateX(0)}50%{transform:scale(1.3) translateX(8px)}}
+.fighter-vs{font-family:'Bangers',cursive;font-size:28px;color:rgba(255,255,255,.3);letter-spacing:2px}
+.fighter-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;flex-shrink:0}
+.fighter-btn{border:none;border-radius:14px;padding:14px 0;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;transition:transform .1s}
+.fighter-btn:active{transform:scale(.92)}
+.fighter-round-row{text-align:center;padding:4px 0;font-family:'Bangers',cursive;font-size:18px;color:#fcd34d;flex-shrink:0;letter-spacing:2px}
+.fighter-msg{text-align:center;font-size:13px;font-weight:800;color:#94a3b8;padding:4px 14px;flex-shrink:0;min-height:22px}
+/* SUMMER GAMES specific */
+.sg-header{padding:10px 14px;flex-shrink:0;background:rgba(0,0,0,.4)}
+.sg-event-title{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;text-align:center;margin-bottom:4px}
+.sg-event-sub{font-size:12px;color:#94a3b8;font-weight:700;text-align:center}
+.sg-arena{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;gap:10px}
+.sg-big-btn{border:none;border-radius:18px;padding:18px 0;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;cursor:pointer;width:100%;max-width:300px;transition:transform .1s}
+.sg-big-btn:active{transform:scale(.93)}
+.sg-progress-bar-wrap{width:100%;max-width:300px;background:rgba(255,255,255,.08);border-radius:10px;height:22px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+.sg-progress-bar{height:100%;border-radius:10px;transition:width .1s}
+.sg-score-row{font-family:'Bangers',cursive;font-size:36px;color:#fff;letter-spacing:2px}
+.sg-timer{font-family:'Bangers',cursive;font-size:48px;color:#f59e0b}
+.sg-hint{font-size:13px;color:#94a3b8;font-weight:700;text-align:center}
+.sg-result-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:13px;font-weight:700}
+.sg-medal-icon{font-size:36px}
+/* TETRIS specific */
+#tetris-canvas{display:block;touch-action:none}
 /* NEW ARCADE GAMES */
 #s-snake.active,#s-breakout.active,#s-invaders.active,#s-frogger.active,#s-firetruck.active,#s-paperboy.active,#s-flappy.active{display:flex;flex-direction:column}
 .game-hdr{display:flex;align-items:center;padding:10px 14px;gap:10px;flex-shrink:0;background:rgba(0,0,0,.45)}
@@ -479,6 +513,21 @@ button{touch-action:manipulation}
     <div class="gc" style="background:linear-gradient(135deg,#05101a,#020a10);border:2px solid rgba(14,165,233,.5);box-shadow:0 4px 18px rgba(14,165,233,.2)" id="gc-flappy" onclick="startFlappy()">
       <div class="gcin"><div class="gcicon">🐦</div><div class="gcbody"><div class="gcname" style="color:#bae6fd">Flappy Bird!</div><div class="gcdesc">Tap to fly through the pipes — how far can you go?</div><div class="gcbadge" style="color:#bae6fd" id="hs-flappy">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
     </div>
+    <div class="gc" style="background:linear-gradient(135deg,#1a1000,#0f0800);border:2px solid rgba(250,204,21,.6);box-shadow:0 4px 18px rgba(250,204,21,.2)" id="gc-pacman" onclick="startPacman()">
+      <div class="gcin"><div class="gcicon">👻</div><div class="gcbody"><div class="gcname" style="color:#fef08a">Pac-Man!</div><div class="gcdesc">Eat all dots, dodge ghosts — energizer = ghost buster! 👻</div><div class="gcbadge" style="color:#fef08a" id="hs-pacman">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc" style="background:linear-gradient(135deg,#050a1a,#020510);border:2px solid rgba(96,165,250,.6);box-shadow:0 4px 18px rgba(96,165,250,.2)" id="gc-tetris" onclick="startTetris()">
+      <div class="gcin"><div class="gcicon">🧱</div><div class="gcbody"><div class="gcname" style="color:#93c5fd">Tetris!</div><div class="gcdesc">Stack blocks, clear lines, survive as long as you can!</div><div class="gcbadge" style="color:#93c5fd" id="hs-tetris">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc" style="background:linear-gradient(135deg,#1a0800,#0f0500);border:2px solid rgba(249,115,22,.6);box-shadow:0 4px 18px rgba(249,115,22,.2)" id="gc-motocross" onclick="startMotocross()">
+      <div class="gcin"><div class="gcicon">🏍️</div><div class="gcbody"><div class="gcname" style="color:#fdba74">Motocross!</div><div class="gcdesc">Hit the gas over hills — grab stars, avoid pits! 🌟</div><div class="gcbadge" style="color:#fdba74" id="hs-motocross">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc" style="background:linear-gradient(135deg,#1a0005,#0f0002);border:2px solid rgba(244,63,94,.6);box-shadow:0 4px 18px rgba(244,63,94,.2)" id="gc-fighter" onclick="startFighter()">
+      <div class="gcin"><div class="gcicon">🥊</div><div class="gcbody"><div class="gcname" style="color:#fda4af">Fighter!</div><div class="gcdesc">Punch, kick and block ZORDAK! Beat him in 3 rounds! 💥</div><div class="gcbadge" style="color:#fda4af" id="hs-fighter">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc" style="background:linear-gradient(135deg,#001a0a,#000f05);border:2px solid rgba(34,197,94,.6);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-summergames" onclick="startSummerGames()">
+      <div class="gcin"><div class="gcicon">🏅</div><div class="gcbody"><div class="gcname" style="color:#86efac">Summer Games!</div><div class="gcdesc">Sprint, lift, throw & swim — win the Gold Medal! 🥇</div><div class="gcbadge" style="color:#86efac" id="hs-summergames">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
   </div>
   <div class="bnav">
     <button class="nb" onclick="goQuests()"><span class="ni">⚔️</span>Quests</button>
@@ -673,6 +722,110 @@ button{touch-action:manipulation}
     <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="flappy-hs">0</div><div class="gsl">BEST</div></div>
   </div>
   <canvas id="flappy-canvas" style="flex:1;display:block;width:100%;touch-action:none"></canvas>
+</div>
+
+<!-- PAC-MAN -->
+<div id="s-pacman" class="screen" style="background:#000;height:100vh;overflow:hidden">
+  <div class="game-hdr" style="background:rgba(0,0,0,.6)">
+    <button class="back-btn" onclick="pacmanStop();goGames()">← Back</button>
+    <div class="game-title" style="color:#fef08a">👻 PAC-MAN</div>
+    <div class="game-score-box"><div class="gsv" id="pacman-score">0</div><div class="gsl">SCORE</div></div>
+    <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="pacman-lives">❤️❤️❤️</div><div class="gsl">LIVES</div></div>
+  </div>
+  <canvas id="pacman-canvas" style="flex:1;display:block;width:100%;touch-action:none"></canvas>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;flex-shrink:0;background:rgba(0,0,0,.4)">
+    <div class="dpad-row"><div class="dpad-btn" ontouchstart="pacmanDirBtn(0,-1);event.preventDefault()">▲</div></div>
+    <div class="dpad-row">
+      <div class="dpad-btn" ontouchstart="pacmanDirBtn(-1,0);event.preventDefault()">◀</div>
+      <div class="dpad-btn" ontouchstart="pacmanDirBtn(0,1);event.preventDefault()">▼</div>
+      <div class="dpad-btn" ontouchstart="pacmanDirBtn(1,0);event.preventDefault()">▶</div>
+    </div>
+  </div>
+</div>
+
+<!-- TETRIS -->
+<div id="s-tetris" class="screen" style="background:#050510;height:100vh;overflow:hidden">
+  <div class="game-hdr">
+    <button class="back-btn" onclick="tetrisStop();goGames()">← Back</button>
+    <div class="game-title" style="color:#93c5fd">🧱 TETRIS</div>
+    <div class="game-score-box"><div class="gsv" id="tetris-score">0</div><div class="gsl">SCORE</div></div>
+    <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="tetris-level">1</div><div class="gsl">LEVEL</div></div>
+    <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="tetris-hs">0</div><div class="gsl">BEST</div></div>
+  </div>
+  <div style="flex:1;display:flex;justify-content:center;align-items:flex-start;overflow:hidden">
+    <canvas id="tetris-canvas" style="display:block;touch-action:none;max-height:calc(100vh - 130px)"></canvas>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:8px 8px 0;flex-shrink:0">
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 8px;text-align:center">
+        <div style="font-size:9px;color:#64748b;font-weight:700;margin-bottom:4px">NEXT</div>
+        <canvas id="tetris-next" width="60" height="60" style="display:block"></canvas>
+      </div>
+      <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 8px;text-align:center;font-size:10px;color:#64748b;font-weight:700;line-height:1.5">
+        👆 Tap<br>rotate<br>◀▶ swipe<br>▼ drop
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOTOCROSS -->
+<div id="s-motocross" class="screen" style="background:#0a0600;height:100vh;overflow:hidden">
+  <div class="game-hdr">
+    <button class="back-btn" onclick="motoStop();goGames()">← Back</button>
+    <div class="game-title" style="color:#fdba74">🏍️ MOTOCROSS</div>
+    <div class="game-score-box"><div class="gsv" id="moto-score">0</div><div class="gsl">DIST</div></div>
+    <div class="game-score-box" style="margin-left:4px"><div class="gsv" id="moto-hs">0</div><div class="gsl">BEST</div></div>
+  </div>
+  <canvas id="moto-canvas" style="flex:1;display:block;width:100%;touch-action:none"></canvas>
+  <div style="text-align:center;padding:8px;font-size:12px;color:#94a3b8;font-weight:700;flex-shrink:0;background:rgba(0,0,0,.4)">Hold screen = GAS 🔥 &nbsp;|&nbsp; Release = brake</div>
+</div>
+
+<!-- FIGHTER -->
+<div id="s-fighter" class="screen" style="background:radial-gradient(ellipse at 50% 30%,#1a0010,#0a0005);height:100vh;overflow:hidden">
+  <div class="game-hdr" style="background:rgba(0,0,0,.5)">
+    <button class="back-btn" onclick="fighterStop();goGames()">← Back</button>
+    <div class="game-title" style="color:#fda4af">🥊 FIGHTER</div>
+    <div class="game-score-box"><div class="gsv" id="fighter-round">1/3</div><div class="gsl">ROUND</div></div>
+  </div>
+  <div class="fighter-hpbar-wrap">
+    <div class="fighter-hprow">
+      <div class="fighter-hplabel" id="fighter-player-name" style="color:#f9a8d4">YOU</div>
+      <div class="fighter-hpbar"><div class="fighter-hpfill" id="fighter-player-hp" style="width:100%;background:linear-gradient(90deg,#22c55e,#86efac)"></div></div>
+      <div style="font-size:12px;font-weight:800;color:#86efac;min-width:32px;text-align:right" id="fighter-player-hp-num">100</div>
+    </div>
+    <div class="fighter-hprow">
+      <div class="fighter-hplabel" style="color:#fca5a5">👹 ZORDAK</div>
+      <div class="fighter-hpbar"><div class="fighter-hpfill" id="fighter-enemy-hp" style="width:100%;background:linear-gradient(90deg,#ef4444,#f97316)"></div></div>
+      <div style="font-size:12px;font-weight:800;color:#fca5a5;min-width:32px;text-align:right" id="fighter-enemy-hp-num">100</div>
+    </div>
+  </div>
+  <div class="fighter-arena">
+    <div class="fighter-char" id="fighter-player-char">👩‍🎤</div>
+    <div class="fighter-vs">VS</div>
+    <div class="fighter-char" id="fighter-enemy-char" style="transform:scaleX(-1)">👹</div>
+    <div id="fighter-hit-fx" style="position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;font-size:40px;opacity:0;transition:opacity .15s"></div>
+  </div>
+  <div class="fighter-round-row" id="fighter-round-label">Round 1 — Fight!</div>
+  <div class="fighter-msg" id="fighter-msg">Tap an attack!</div>
+  <div class="fighter-btns">
+    <button class="fighter-btn" style="background:linear-gradient(135deg,#dc2626,#991b1b)" ontouchstart="fighterAttack('punch');event.preventDefault()" onclick="fighterAttack('punch')">👊 Punch<br><span style="font-size:11px;opacity:.7">15-25 dmg</span></button>
+    <button class="fighter-btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" ontouchstart="fighterAttack('kick');event.preventDefault()" onclick="fighterAttack('kick')">🦵 Kick<br><span style="font-size:11px;opacity:.7">20-35 dmg</span></button>
+    <button class="fighter-btn" style="background:linear-gradient(135deg,#d97706,#92400e)" ontouchstart="fighterAttack('special');event.preventDefault()" onclick="fighterAttack('special')">⚡ Special<br><span style="font-size:11px;opacity:.7">30-50 dmg</span></button>
+    <button class="fighter-btn" style="background:linear-gradient(135deg,#374151,#1f2937);border:2px solid rgba(255,255,255,.2)" ontouchstart="fighterAttack('block');event.preventDefault()" onclick="fighterAttack('block')">🛡️ Block<br><span style="font-size:11px;opacity:.7">-80% dmg</span></button>
+  </div>
+</div>
+
+<!-- SUMMER GAMES -->
+<div id="s-summergames" class="screen" style="background:radial-gradient(ellipse at 50% 0%,#001a3e,#0a0a1a);height:100vh;overflow:hidden">
+  <div class="sg-header">
+    <button class="back-btn" onclick="sgStop();goGames()">← Back</button>
+    <div class="sg-event-title" id="sg-event-title" style="color:#fcd34d">🏅 Summer Games</div>
+    <div class="sg-event-sub" id="sg-event-sub">4 events — win the Gold Medal!</div>
+  </div>
+  <div class="sg-arena" id="sg-arena">
+    <div style="font-size:64px" id="sg-main-emoji">🏅</div>
+    <div style="font-family:'Bangers',cursive;font-size:28px;color:#fcd34d;letter-spacing:2px;text-align:center" id="sg-main-title">Summer Games</div>
+    <div style="font-size:13px;color:#94a3b8;font-weight:700;text-align:center" id="sg-main-sub">4 events to complete — go for Gold!</div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000" id="sg-start-btn" onclick="sgStartEvent()">🏃 Start!</button>
+  </div>
 </div>
 
 <!-- PIGGY BANK -->
@@ -1096,7 +1249,7 @@ function pickChar(emoji){
   sfx.celebrate();closeCharPicker();
 }
 function closeCharPicker(){document.getElementById('char-modal').style.display='none';charPickerHero=null;}
-function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0,snake:0,breakout:0,invaders:0,frogger:0,firetruck:0,paperboy:0,flappy:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:'',heroEmoji:''};}
+function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0,snake:0,breakout:0,invaders:0,frogger:0,firetruck:0,paperboy:0,flappy:0,pacman:0,tetris:0,motocross:0,fighter:0,summergames:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:'',heroEmoji:''};}
 function defS(){return{profiles:{lorena:defP('lorena'),savio:defP('savio')},parentPin:'1234',currency:'usd',currentHero:null,papaCode:null,skipCost:60};}
 function load(){
   try{S=JSON.parse(localStorage.getItem(SK))||defS();}catch(e){S=defS();}
@@ -1359,7 +1512,7 @@ function renderQuests(){
 function renderGamesHub(){
   const p=getP(),gp=p.gamesPlayed[today()]||{};
   const hs=p.highScores||{};
-  ['whack','bubble','memory','boss','pong','snake','breakout','invaders','frogger','firetruck','paperboy','flappy'].forEach(g=>{
+  ['whack','bubble','memory','boss','pong','snake','breakout','invaders','frogger','firetruck','paperboy','flappy','pacman','tetris','motocross','fighter','summergames'].forEach(g=>{
     const el=document.getElementById('gc-'+g);
     if(el)el.classList.toggle('done-today',!!gp[g]);
   });
@@ -1373,6 +1526,11 @@ function renderGamesHub(){
   if(hs.firetruck>0){const e=document.getElementById('hs-firetruck');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.firetruck;}
   if(hs.paperboy>0){const e=document.getElementById('hs-paperboy');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.paperboy;}
   if(hs.flappy>0){const e=document.getElementById('hs-flappy');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.flappy;}
+  if(hs.pacman>0){const e=document.getElementById('hs-pacman');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.pacman;}
+  if(hs.tetris>0){const e=document.getElementById('hs-tetris');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.tetris;}
+  if(hs.motocross>0){const e=document.getElementById('hs-motocross');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.motocross+'m';}
+  if(hs.fighter>0){const e=document.getElementById('hs-fighter');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Wins: '+hs.fighter;}
+  if(hs.summergames>0){const e=document.getElementById('hs-summergames');if(e)e.innerHTML='💰 +3 R$ first play &nbsp;🏆 Best: '+hs.summergames;}
   const isSun=getDay()===0;
   document.getElementById('boss-desc').textContent=isSun?'⚔️ ZORDAK is here! Answer 3 questions to defeat him and win 50 R$!':'Every Sunday, ZORDAK appears for the ultimate battle!';
   document.getElementById('boss-arrow').textContent=isSun?'▶':'🔒';
@@ -3671,6 +3829,1074 @@ function flappyGameOver(canvas){
   canvas.onclick=()=>startFlappy();
   if(first&&flappyScore>0)showCelebrate('🐦','Flappy Bird!','You scored '+flappyScore+'! +3 R$ earned! 🏆');
   else if(first)showCelebrate('🐦','Flappy Bird!','+3 R$ earned! Try to beat your score! 🏆');
+}
+
+// ===== PAC-MAN =====
+const PM_MAP=[
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+  [1,0,1,1,0,1,1,1,1,1,0,1,1,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
+  [1,0,1,0,1,1,3,1,3,1,1,0,1,0,1],
+  [1,0,0,0,1,3,3,3,3,3,1,0,0,0,1],
+  [1,0,1,0,1,3,3,3,3,3,1,0,1,0,1],
+  [1,0,1,0,0,0,0,0,0,0,0,0,1,0,1],
+  [1,0,1,1,0,1,1,1,1,1,0,1,1,0,1],
+  [1,2,0,0,0,0,0,0,0,0,0,0,0,2,1],
+  [1,0,1,1,0,1,1,1,1,1,0,1,1,0,1],
+  [1,0,0,0,0,0,3,1,3,0,0,0,0,0,1],
+  [1,0,1,1,0,1,3,1,3,1,0,1,1,0,1],
+  [1,0,0,0,0,0,0,3,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+];
+const PM_ROWS=15,PM_COLS=15;
+let pmRunning=false,pmRAF=null,pmLastTime=0;
+let pmMap=[],pmScore=0,pmLives=3,pmLevel=1;
+let pmPac={x:7.5,y:13,dir:{x:0,y:0},nextDir:{x:0,y:0},mouth:0,mouthDir:1};
+let pmGhosts=[],pmEnergized=false,pmEnTimer=0;
+let pmW=0,pmH=0,pmCell=0;
+let pmTouchSX=0,pmTouchSY=0;
+
+function pacmanStop(){pmRunning=false;if(pmRAF){cancelAnimationFrame(pmRAF);pmRAF=null;}}
+
+function startPacman(){
+  showScreen('s-pacman');
+  const p=getP();
+  pacmanStop();
+  pmScore=0;pmLives=3;pmLevel=1;
+  document.getElementById('pacman-score').textContent='0';
+  document.getElementById('pacman-lives').textContent='❤️❤️❤️';
+  setTimeout(()=>{
+    const canvas=document.getElementById('pacman-canvas');
+    if(!canvas)return;
+    pmW=canvas.width=canvas.offsetWidth||window.innerWidth;
+    pmH=canvas.height=canvas.offsetHeight||(window.innerHeight-140);
+    pmCell=Math.floor(Math.min(pmW/PM_COLS,pmH/PM_ROWS));
+    pmInitLevel();
+    canvas.ontouchstart=e=>{e.preventDefault();const t=e.touches[0];pmTouchSX=t.clientX;pmTouchSY=t.clientY;};
+    canvas.ontouchend=e=>{
+      e.preventDefault();
+      const t=e.changedTouches[0];
+      const dx=t.clientX-pmTouchSX,dy=t.clientY-pmTouchSY;
+      if(Math.abs(dx)<12&&Math.abs(dy)<12)return;
+      if(Math.abs(dx)>Math.abs(dy)){pmPac.nextDir=dx>0?{x:1,y:0}:{x:-1,y:0};}
+      else{pmPac.nextDir=dy>0?{x:0,y:1}:{x:0,y:-1};}
+    };
+    pmRunning=true;pmLastTime=0;
+    pmRAF=requestAnimationFrame(pmLoop);
+  },60);
+}
+
+function pacmanDirBtn(dx,dy){pmPac.nextDir={x:dx,y:dy};}
+
+function pmInitLevel(){
+  pmMap=PM_MAP.map(r=>r.slice());
+  pmPac={x:7.5,y:13,dir:{x:0,y:0},nextDir:{x:1,y:0},mouth:0,mouthDir:1};
+  pmEnergized=false;pmEnTimer=0;
+  const spd=0.06+pmLevel*0.012;
+  pmGhosts=[
+    {x:5.5,y:7,dir:{x:1,y:0},color:'#ef4444',emoji:'👻',scared:false},
+    {x:9.5,y:7,dir:{x:-1,y:0},color:'#3b82f6',emoji:'👻',scared:false}
+  ];
+}
+
+function pmCanMove(x,y,dx,dy){
+  const nx=x+dx*0.5,ny=y+dy*0.5;
+  const col=Math.round(nx+dx*0.3),row=Math.round(ny+dy*0.3);
+  if(row<0||row>=PM_ROWS||col<0||col>=PM_COLS)return false;
+  return pmMap[row][col]!==1;
+}
+
+function pmLoop(ts){
+  if(!pmRunning)return;
+  const canvas=document.getElementById('pacman-canvas');
+  if(!canvas){pmRunning=false;return;}
+  if(!pmLastTime)pmLastTime=ts;
+  const dt=Math.min(ts-pmLastTime,50);pmLastTime=ts;
+  const spd=(0.06+pmLevel*0.012)*(dt/16);
+  // Try new dir
+  if(pmPac.nextDir.x!==0||pmPac.nextDir.y!==0){
+    if(pmCanMove(pmPac.x,pmPac.y,pmPac.nextDir.x,pmPac.nextDir.y)){
+      pmPac.dir={...pmPac.nextDir};
+    }
+  }
+  // Move pac
+  if(pmPac.dir.x!==0||pmPac.dir.y!==0){
+    if(pmCanMove(pmPac.x,pmPac.y,pmPac.dir.x,pmPac.dir.y)){
+      pmPac.x+=pmPac.dir.x*spd;
+      pmPac.y+=pmPac.dir.y*spd;
+      // Wrap tunnel
+      if(pmPac.x<0)pmPac.x=PM_COLS-1;
+      if(pmPac.x>=PM_COLS)pmPac.x=0;
+    }
+  }
+  // Eat dots
+  const pr=Math.round(pmPac.y),pc=Math.round(pmPac.x);
+  if(pr>=0&&pr<PM_ROWS&&pc>=0&&pc<PM_COLS){
+    if(pmMap[pr][pc]===0){pmMap[pr][pc]=3;pmScore+=10;sfx.pop();document.getElementById('pacman-score').textContent=pmScore;}
+    else if(pmMap[pr][pc]===2){
+      pmMap[pr][pc]=3;pmScore+=50;sfx.coin();
+      pmEnergized=true;pmEnTimer=5000;
+      pmGhosts.forEach(g=>g.scared=true);
+      document.getElementById('pacman-score').textContent=pmScore;
+    }
+  }
+  // Energizer countdown
+  if(pmEnergized){pmEnTimer-=dt;if(pmEnTimer<=0){pmEnergized=false;pmGhosts.forEach(g=>g.scared=false);}}
+  // Move ghosts
+  pmGhosts.forEach(g=>{
+    const gspd=(pmEnergized?0.03:0.04+pmLevel*0.01)*(dt/16);
+    const dirs=[{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}];
+    const valid=dirs.filter(d=>d.x!==-g.dir.x||d.y!==-g.dir.y).filter(d=>pmCanMove(g.x,g.y,d.x,d.y));
+    if(valid.length>0){
+      if(Math.random()<0.08||!pmCanMove(g.x,g.y,g.dir.x,g.dir.y)){
+        g.dir=valid[Math.floor(Math.random()*valid.length)];
+      }
+    }
+    if(pmCanMove(g.x,g.y,g.dir.x,g.dir.y)){g.x+=g.dir.x*gspd;g.y+=g.dir.y*gspd;}
+    // Ghost-pac collision
+    if(Math.abs(g.x-pmPac.x)<0.8&&Math.abs(g.y-pmPac.y)<0.8){
+      if(g.scared){
+        g.scared=false;pmScore+=200;document.getElementById('pacman-score').textContent=pmScore;
+        g.x=7.5;g.y=6;sfx.celebrate();
+      }else{
+        pmHit();
+      }
+    }
+  });
+  // Mouth animation
+  pmPac.mouth+=0.18*(dt/16);
+  if(pmPac.mouth>0.35){pmPac.mouth=0.35;pmPac.mouthDir=-1;}
+  if(pmPac.mouth<0){pmPac.mouth=0;pmPac.mouthDir=1;}
+  pmPac.mouth+=pmPac.mouthDir*0.01;
+  // Check level complete
+  const remaining=pmMap.flat().filter(v=>v===0||v===2).length;
+  if(remaining===0){pmLevel++;setTimeout(()=>{sfx.levelUp();pmInitLevel();},400);}
+  // Draw
+  pmDraw(canvas);
+  pmRAF=requestAnimationFrame(pmLoop);
+}
+
+function pmHit(){
+  sfx.wrong();pmLives--;
+  const ls='❤️'.repeat(Math.max(0,pmLives));
+  document.getElementById('pacman-lives').textContent=ls||'💀';
+  if(pmLives<=0){pmGameOver();return;}
+  pmPac={x:7.5,y:13,dir:{x:0,y:0},nextDir:{x:1,y:0},mouth:0,mouthDir:1};
+}
+
+function pmGameOver(){
+  pmRunning=false;if(pmRAF){cancelAnimationFrame(pmRAF);pmRAF=null;}
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].pacman;
+  p.gamesPlayed[t].pacman=true;
+  if(!p.highScores)p.highScores={};
+  const isRec=pmScore>(p.highScores.pacman||0);
+  if(isRec)p.highScores.pacman=pmScore;
+  save();if(first)addRobux(3);
+  const canvas=document.getElementById('pacman-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const offX=Math.floor((pmW-PM_COLS*pmCell)/2),offY=Math.floor((pmH-PM_ROWS*pmCell)/2);
+  ctx.fillStyle='rgba(0,0,0,.78)';ctx.fillRect(0,0,pmW,pmH);
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='bold 26px Nunito,sans-serif';ctx.fillStyle='#fef08a';ctx.fillText('GAME OVER',pmW/2,pmH/2-40);
+  ctx.font='bold 20px Nunito,sans-serif';ctx.fillStyle='#f59e0b';ctx.fillText('Score: '+pmScore,pmW/2,pmH/2);
+  if(isRec){ctx.font='bold 14px Nunito,sans-serif';ctx.fillStyle='#fbbf24';ctx.fillText('🏆 NEW RECORD!',pmW/2,pmH/2+30);}
+  ctx.font='bold 16px Nunito,sans-serif';ctx.fillStyle='#94a3b8';ctx.fillText('Tap to play again',pmW/2,pmH/2+60);
+  canvas.ontouchstart=e=>{e.preventDefault();startPacman();};
+  canvas.onclick=()=>startPacman();
+  if(first)showCelebrate('👻','Pac-Man!','Score: '+pmScore+'! +3 R$ earned! 🏆');
+}
+
+function pmDraw(canvas){
+  const ctx=canvas.getContext('2d');
+  const W=pmW,H=pmH,cs=pmCell;
+  const offX=Math.floor((W-PM_COLS*cs)/2),offY=Math.floor((H-PM_ROWS*cs)/2);
+  ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+  // Draw maze
+  for(let r=0;r<PM_ROWS;r++){
+    for(let c=0;c<PM_COLS;c++){
+      const v=pmMap[r][c];
+      const px=offX+c*cs,py=offY+r*cs;
+      if(v===1){
+        ctx.fillStyle='#1e3a8a';ctx.fillRect(px,py,cs,cs);
+        ctx.strokeStyle='#3b82f6';ctx.lineWidth=1;ctx.strokeRect(px+0.5,py+0.5,cs-1,cs-1);
+      }else if(v===0){
+        ctx.fillStyle='#fbbf24';ctx.beginPath();ctx.arc(px+cs/2,py+cs/2,cs*0.12,0,Math.PI*2);ctx.fill();
+      }else if(v===2){
+        ctx.fillStyle='#f97316';ctx.beginPath();ctx.arc(px+cs/2,py+cs/2,cs*0.22,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='rgba(249,115,22,.3)';ctx.beginPath();ctx.arc(px+cs/2,py+cs/2,cs*0.32,0,Math.PI*2);ctx.fill();
+      }
+    }
+  }
+  // Draw Pac-Man
+  const px=offX+pmPac.x*cs,py=offY+pmPac.y*cs;
+  const angle=Math.atan2(pmPac.dir.y,pmPac.dir.x);
+  const mouthAngle=pmPac.mouth*Math.PI;
+  ctx.fillStyle='#fef08a';
+  ctx.beginPath();
+  ctx.moveTo(px,py);
+  ctx.arc(px,py,cs*0.42,angle+mouthAngle,angle+Math.PI*2-mouthAngle);
+  ctx.closePath();ctx.fill();
+  // Draw ghosts
+  pmGhosts.forEach(g=>{
+    const gx=offX+g.x*cs,gy=offY+g.y*cs;
+    ctx.font=Math.floor(cs*0.8)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    if(g.scared){
+      ctx.fillStyle='rgba(59,130,246,.6)';ctx.beginPath();ctx.arc(gx,gy,cs*0.4,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#bae6fd';ctx.font=Math.floor(cs*0.55)+'px serif';ctx.fillText('😨',gx,gy);
+    }else{
+      ctx.fillText(g.emoji,gx,gy);
+    }
+  });
+  // Energizer timer bar
+  if(pmEnergized){
+    const pct=pmEnTimer/5000;
+    ctx.fillStyle='rgba(249,115,22,.3)';ctx.fillRect(offX,offY+PM_ROWS*cs+2,PM_COLS*cs,4);
+    ctx.fillStyle='#f97316';ctx.fillRect(offX,offY+PM_ROWS*cs+2,PM_COLS*cs*pct,4);
+  }
+}
+
+// ===== TETRIS =====
+const TET_COLS=10,TET_ROWS=20;
+const TET_PIECES=[
+  {shape:[[1,1,1,1]],color:'#06b6d4'},// I
+  {shape:[[1,1],[1,1]],color:'#fbbf24'},// O
+  {shape:[[0,1,0],[1,1,1]],color:'#a855f7'},// T
+  {shape:[[0,1,1],[1,1,0]],color:'#22c55e'},// S
+  {shape:[[1,1,0],[0,1,1]],color:'#ef4444'},// Z
+  {shape:[[1,0,0],[1,1,1]],color:'#3b82f6'},// J
+  {shape:[[0,0,1],[1,1,1]],color:'#f97316'},// L
+];
+let tetRunning=false,tetRAF=null,tetLastTime=0,tetDropAccum=0;
+let tetGrid=[],tetCurrent=null,tetNext=null,tetScore=0,tetLevel=1,tetLines=0;
+let tetW=0,tetH=0,tetCS=0;
+let tetTouchSX=0,tetTouchSY=0,tetTouchStartTime=0;
+let tetGameActive=false;
+
+function tetrisStop(){tetRunning=false;if(tetRAF){cancelAnimationFrame(tetRAF);tetRAF=null;}}
+
+function startTetris(){
+  showScreen('s-tetris');
+  const p=getP();
+  document.getElementById('tetris-hs').textContent=p.highScores?.tetris||0;
+  tetrisStop();
+  tetScore=0;tetLevel=1;tetLines=0;
+  document.getElementById('tetris-score').textContent='0';
+  document.getElementById('tetris-level').textContent='1';
+  setTimeout(()=>{
+    const canvas=document.getElementById('tetris-canvas');
+    if(!canvas)return;
+    const avH=canvas.parentElement.offsetHeight||window.innerHeight-130;
+    const avW=(canvas.parentElement.offsetWidth||window.innerWidth)-80;
+    tetCS=Math.floor(Math.min(avW/TET_COLS,avH/TET_ROWS));
+    tetW=canvas.width=TET_COLS*tetCS;
+    tetH=canvas.height=TET_ROWS*tetCS;
+    tetGrid=Array(TET_ROWS).fill(null).map(()=>Array(TET_COLS).fill(0));
+    tetNext=tetRandPiece();
+    tetSpawnPiece();
+    tetGameActive=true;
+    // Touch handlers
+    canvas.ontouchstart=e=>{e.preventDefault();const t=e.touches[0];tetTouchSX=t.clientX;tetTouchSY=t.clientY;tetTouchStartTime=Date.now();};
+    canvas.ontouchend=e=>{
+      e.preventDefault();
+      const t=e.changedTouches[0];
+      const dx=t.clientX-tetTouchSX,dy=t.clientY-tetTouchSY;
+      const dt2=Date.now()-tetTouchStartTime;
+      if(Math.abs(dx)<15&&Math.abs(dy)<15&&dt2<300){tetRotate();return;}
+      if(Math.abs(dy)>Math.abs(dx)&&dy>30){tetHardDrop();return;}
+      if(Math.abs(dx)>20){tetMovePiece(dx>0?1:-1,0);}
+    };
+    tetRunning=true;tetLastTime=0;tetDropAccum=0;
+    tetRAF=requestAnimationFrame(tetLoop);
+  },60);
+}
+
+function tetRandPiece(){
+  const t=TET_PIECES[Math.floor(Math.random()*TET_PIECES.length)];
+  return{shape:t.shape.map(r=>r.slice()),color:t.color,x:Math.floor(TET_COLS/2)-1,y:0};
+}
+
+function tetSpawnPiece(){
+  tetCurrent=tetNext||tetRandPiece();
+  tetCurrent.x=Math.floor(TET_COLS/2)-Math.floor(tetCurrent.shape[0].length/2);
+  tetCurrent.y=0;
+  tetNext=tetRandPiece();
+  tetDrawNext();
+  if(tetCollides(tetCurrent,0,0)){tetGameOverLocal();}
+}
+
+function tetDrawNext(){
+  const canvas=document.getElementById('tetris-next');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,60,60);
+  if(!tetNext)return;
+  const cs=Math.floor(Math.min(60/tetNext.shape[0].length,60/tetNext.shape.length));
+  const offX=Math.floor((60-tetNext.shape[0].length*cs)/2);
+  const offY=Math.floor((60-tetNext.shape.length*cs)/2);
+  tetNext.shape.forEach((row,r)=>row.forEach((v,c)=>{
+    if(v){ctx.fillStyle=tetNext.color;ctx.fillRect(offX+c*cs,offY+r*cs,cs-1,cs-1);}
+  }));
+}
+
+function tetCollides(piece,dx,dy,shape){
+  const sh=shape||piece.shape;
+  for(let r=0;r<sh.length;r++){
+    for(let c=0;c<sh[r].length;c++){
+      if(!sh[r][c])continue;
+      const nx=piece.x+c+dx,ny=piece.y+r+dy;
+      if(nx<0||nx>=TET_COLS||ny>=TET_ROWS)return true;
+      if(ny>=0&&tetGrid[ny][nx])return true;
+    }
+  }
+  return false;
+}
+
+function tetMovePiece(dx,dy){
+  if(!tetCurrent||tetCollides(tetCurrent,dx,dy))return false;
+  tetCurrent.x+=dx;tetCurrent.y+=dy;return true;
+}
+
+function tetRotate(){
+  if(!tetCurrent)return;
+  const rot=tetCurrent.shape[0].map((_,i)=>tetCurrent.shape.map(r=>r[i]).reverse());
+  if(!tetCollides(tetCurrent,0,0,rot)){tetCurrent.shape=rot;sfx.flip();}
+  else if(!tetCollides(tetCurrent,1,0,rot)){tetCurrent.shape=rot;tetCurrent.x+=1;sfx.flip();}
+  else if(!tetCollides(tetCurrent,-1,0,rot)){tetCurrent.shape=rot;tetCurrent.x-=1;sfx.flip();}
+}
+
+function tetHardDrop(){
+  if(!tetCurrent)return;
+  while(!tetCollides(tetCurrent,0,1))tetCurrent.y++;
+  tetLockPiece();
+}
+
+function tetLockPiece(){
+  if(!tetCurrent)return;
+  tetCurrent.shape.forEach((row,r)=>row.forEach((v,c)=>{
+    if(v&&tetCurrent.y+r>=0)tetGrid[tetCurrent.y+r][tetCurrent.x+c]=tetCurrent.color;
+  }));
+  sfx.pop();
+  const cleared=tetClearLines();
+  if(cleared>0){
+    const pts=[0,100,300,500,800][cleared]*tetLevel;
+    tetScore+=pts;tetLines+=cleared;
+    tetLevel=Math.floor(tetLines/10)+1;
+    document.getElementById('tetris-score').textContent=tetScore;
+    document.getElementById('tetris-level').textContent=tetLevel;
+    sfx.taskDone();
+  }
+  tetCurrent=null;
+  tetSpawnPiece();
+}
+
+function tetClearLines(){
+  let count=0;
+  for(let r=TET_ROWS-1;r>=0;r--){
+    if(tetGrid[r].every(v=>v)){
+      tetGrid.splice(r,1);
+      tetGrid.unshift(Array(TET_COLS).fill(0));
+      r++;count++;
+    }
+  }
+  return count;
+}
+
+function tetGetGhost(){
+  if(!tetCurrent)return null;
+  let gy=tetCurrent.y;
+  while(!tetCollides(tetCurrent,0,gy-tetCurrent.y+1))gy++;
+  return{...tetCurrent,y:gy};
+}
+
+function tetGameOverLocal(){
+  tetGameActive=false;tetRunning=false;
+  if(tetRAF){cancelAnimationFrame(tetRAF);tetRAF=null;}
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].tetris;
+  p.gamesPlayed[t].tetris=true;
+  if(!p.highScores)p.highScores={};
+  const isRec=tetScore>(p.highScores.tetris||0);
+  if(isRec)p.highScores.tetris=tetScore;
+  save();if(first)addRobux(3);
+  document.getElementById('tetris-hs').textContent=p.highScores.tetris||0;
+  const canvas=document.getElementById('tetris-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='rgba(0,0,0,.78)';ctx.fillRect(0,0,tetW,tetH);
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='bold 22px Nunito,sans-serif';ctx.fillStyle='#93c5fd';ctx.fillText('GAME OVER',tetW/2,tetH/2-40);
+  ctx.font='bold 18px Nunito,sans-serif';ctx.fillStyle='#f59e0b';ctx.fillText('Score: '+tetScore,tetW/2,tetH/2);
+  if(isRec){ctx.font='bold 14px Nunito,sans-serif';ctx.fillStyle='#fbbf24';ctx.fillText('🏆 NEW RECORD!',tetW/2,tetH/2+28);}
+  ctx.font='bold 15px Nunito,sans-serif';ctx.fillStyle='#94a3b8';ctx.fillText('Tap to play again',tetW/2,tetH/2+56);
+  canvas.ontouchstart=e=>{e.preventDefault();startTetris();};
+  canvas.onclick=()=>startTetris();
+  if(first)showCelebrate('🧱','Tetris!','Score: '+tetScore+'! +3 R$ earned! 🏆');
+}
+
+function tetLoop(ts){
+  if(!tetRunning||!tetGameActive)return;
+  const canvas=document.getElementById('tetris-canvas');
+  if(!canvas){tetRunning=false;return;}
+  if(!tetLastTime)tetLastTime=ts;
+  const dt=Math.min(ts-tetLastTime,50);tetLastTime=ts;
+  const dropInterval=Math.max(100,700-tetLevel*55);
+  tetDropAccum+=dt;
+  if(tetDropAccum>=dropInterval){
+    tetDropAccum=0;
+    if(!tetMovePiece(0,1)){tetLockPiece();}
+  }
+  // Draw
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#050510';ctx.fillRect(0,0,tetW,tetH);
+  // Grid lines
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=0.5;
+  for(let c=0;c<=TET_COLS;c++){ctx.beginPath();ctx.moveTo(c*tetCS,0);ctx.lineTo(c*tetCS,tetH);ctx.stroke();}
+  for(let r=0;r<=TET_ROWS;r++){ctx.beginPath();ctx.moveTo(0,r*tetCS);ctx.lineTo(tetW,r*tetCS);ctx.stroke();}
+  // Placed blocks
+  tetGrid.forEach((row,r)=>row.forEach((v,c)=>{
+    if(v){
+      ctx.fillStyle=v;
+      ctx.fillRect(c*tetCS+1,r*tetCS+1,tetCS-2,tetCS-2);
+      ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;ctx.strokeRect(c*tetCS+1,r*tetCS+1,tetCS-2,tetCS-2);
+    }
+  }));
+  // Ghost piece
+  const ghost=tetGetGhost();
+  if(ghost&&ghost.y!==tetCurrent?.y){
+    ghost.shape.forEach((row,r)=>row.forEach((v,c)=>{
+      if(v&&ghost.y+r>=0){
+        ctx.fillStyle='rgba(255,255,255,.12)';
+        ctx.fillRect((ghost.x+c)*tetCS+1,(ghost.y+r)*tetCS+1,tetCS-2,tetCS-2);
+      }
+    }));
+  }
+  // Current piece
+  if(tetCurrent){
+    tetCurrent.shape.forEach((row,r)=>row.forEach((v,c)=>{
+      if(v&&tetCurrent.y+r>=0){
+        ctx.fillStyle=tetCurrent.color;
+        ctx.fillRect((tetCurrent.x+c)*tetCS+1,(tetCurrent.y+r)*tetCS+1,tetCS-2,tetCS-2);
+        ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.strokeRect((tetCurrent.x+c)*tetCS+1,(tetCurrent.y+r)*tetCS+1,tetCS-2,tetCS-2);
+      }
+    }));
+  }
+  tetRAF=requestAnimationFrame(tetLoop);
+}
+
+// ===== MOTOCROSS =====
+let motoRunning=false,motoRAF=null,motoLastTime=0;
+let motoScore=0,motoGas=false,motoW=0,motoH=0;
+let motoBikeX=0,motoBikeY=0,motoBikeVY=0,motoSpeed=3;
+let motoOffset=0,motoStars=[],motoObstacles=[];
+let motoTerrainPts=[],motoTouchActive=false;
+
+function motoStop(){motoRunning=false;if(motoRAF){cancelAnimationFrame(motoRAF);motoRAF=null;}}
+
+function startMotocross(){
+  showScreen('s-motocross');
+  const p=getP();
+  document.getElementById('moto-hs').textContent=(p.highScores?.motocross||0)+'m';
+  motoStop();
+  setTimeout(()=>{
+    const canvas=document.getElementById('moto-canvas');
+    if(!canvas)return;
+    motoW=canvas.width=canvas.offsetWidth||window.innerWidth;
+    motoH=canvas.height=canvas.offsetHeight||(window.innerHeight-110);
+    motoScore=0;motoGas=false;motoOffset=0;motoSpeed=3;motoStars=[];motoObstacles=[];
+    document.getElementById('moto-score').textContent='0';
+    motoBikeX=motoW*0.18;
+    // Gen terrain
+    motoTerrainPts=motoGenTerrain(0,motoW*3);
+    motoBikeY=motoGroundAt(motoOffset+motoBikeX)-36;
+    motoBikeVY=0;
+    canvas.ontouchstart=e=>{e.preventDefault();motoGas=true;motoTouchActive=true;};
+    canvas.ontouchend=e=>{e.preventDefault();motoGas=false;motoTouchActive=false;};
+    canvas.ontouchcancel=e=>{e.preventDefault();motoGas=false;motoTouchActive=false;};
+    canvas.onclick=()=>{motoGas=!motoGas;};
+    motoRunning=true;motoLastTime=0;
+    motoRAF=requestAnimationFrame(motoLoop);
+  },60);
+}
+
+function motoGenTerrain(startX,endX){
+  const pts=[];
+  let y=motoH*0.6,x=startX;
+  while(x<endX){
+    pts.push({x,y});
+    const hump=Math.random()>0.6?1:0;
+    if(hump){
+      const w=60+Math.random()*80,h=-30-Math.random()*50;
+      pts.push({x:x+w/2,y:y+h});
+      pts.push({x:x+w,y});
+      x+=w;
+    }else{
+      x+=30+Math.random()*50;
+      y+=((Math.random()-0.5)*30);
+      y=Math.max(motoH*0.35,Math.min(motoH*0.72,y));
+    }
+  }
+  pts.push({x:endX,y:motoH*0.6});
+  return pts;
+}
+
+function motoGroundAt(worldX){
+  const pts=motoTerrainPts;
+  for(let i=0;i<pts.length-1;i++){
+    if(worldX>=pts[i].x&&worldX<=pts[i+1].x){
+      const t=(worldX-pts[i].x)/(pts[i+1].x-pts[i].x);
+      return pts[i].y+t*(pts[i+1].y-pts[i].y);
+    }
+  }
+  return motoH*0.6;
+}
+
+function motoLoop(ts){
+  if(!motoRunning)return;
+  const canvas=document.getElementById('moto-canvas');
+  if(!canvas){motoRunning=false;return;}
+  if(!motoLastTime)motoLastTime=ts;
+  const dt=Math.min(ts-motoLastTime,50);motoLastTime=ts;
+  const spd=motoSpeed*(dt/16);
+  motoOffset+=spd;
+  motoScore=Math.floor(motoOffset/10);
+  document.getElementById('moto-score').textContent=motoScore+'m';
+  motoSpeed=Math.min(8,3+motoOffset/800);
+  // Terrain ahead needed
+  const maxX=motoOffset+motoW+200;
+  const lastPt=motoTerrainPts[motoTerrainPts.length-1];
+  if(lastPt.x<maxX){
+    const newPts=motoGenTerrain(lastPt.x,lastPt.x+motoW*2);
+    motoTerrainPts=motoTerrainPts.concat(newPts).slice(-120);
+  }
+  // Spawn stars & obstacles
+  if(Math.random()<0.018){
+    const wx=motoOffset+motoW+50;
+    motoStars.push({wx,wy:motoGroundAt(wx)-30-Math.random()*60});
+  }
+  if(Math.random()<0.012){
+    const wx=motoOffset+motoW+60;
+    motoObstacles.push({wx,type:Math.random()<0.6?'rock':'pit'});
+  }
+  motoStars=motoStars.filter(s=>s.wx>motoOffset-60);
+  motoObstacles=motoObstacles.filter(o=>o.wx>motoOffset-60);
+  // Physics
+  const groundY=motoGroundAt(motoOffset+motoBikeX)-36;
+  if(motoBikeY>=groundY){
+    motoBikeY=groundY;motoBikeVY=0;
+    if(motoGas)motoBikeVY=-7*(dt/16);
+  }else{
+    motoBikeVY+=0.6*(dt/16);
+    motoBikeY+=motoBikeVY;
+  }
+  // Check obstacles
+  motoObstacles.forEach(o=>{
+    const sx=o.wx-motoOffset;
+    if(o.type==='rock'&&Math.abs(sx-motoBikeX)<28&&Math.abs(motoBikeY-(motoGroundAt(o.wx)-36))<36){
+      motoGameOver(canvas);return;
+    }
+    if(o.type==='pit'){
+      const pitGround=motoGroundAt(o.wx);
+      if(Math.abs(sx-motoBikeX)<24&&motoBikeY>pitGround-16){
+        motoGameOver(canvas);return;
+      }
+    }
+  });
+  // Collect stars
+  motoStars=motoStars.filter(s=>{
+    const sx=s.wx-motoOffset;
+    if(Math.abs(sx-motoBikeX)<30&&Math.abs(motoBikeY-s.wy)<30){
+      sfx.coin();motoScore+=5;document.getElementById('moto-score').textContent=motoScore+'m';
+      return false;
+    }
+    return true;
+  });
+  // Draw
+  const ctx=canvas.getContext('2d');
+  // Sky
+  const skyG=ctx.createLinearGradient(0,0,0,motoH);
+  skyG.addColorStop(0,'#0a0600');skyG.addColorStop(1,'#1a1000');
+  ctx.fillStyle=skyG;ctx.fillRect(0,0,motoW,motoH);
+  // Terrain
+  ctx.beginPath();
+  const drawPts=motoTerrainPts.filter(p=>p.x>=motoOffset-10&&p.x<=motoOffset+motoW+10);
+  if(drawPts.length>0){
+    ctx.moveTo(drawPts[0].x-motoOffset,drawPts[0].y);
+    drawPts.forEach(p=>ctx.lineTo(p.x-motoOffset,p.y));
+  }
+  ctx.lineTo(motoW,motoH);ctx.lineTo(0,motoH);ctx.closePath();
+  const tGrad=ctx.createLinearGradient(0,motoH*0.3,0,motoH);
+  tGrad.addColorStop(0,'#4a3000');tGrad.addColorStop(1,'#2a1800');
+  ctx.fillStyle=tGrad;ctx.fill();
+  ctx.strokeStyle='#f97316';ctx.lineWidth=3;ctx.beginPath();
+  if(drawPts.length>0){ctx.moveTo(drawPts[0].x-motoOffset,drawPts[0].y);drawPts.forEach(p=>ctx.lineTo(p.x-motoOffset,p.y));}
+  ctx.stroke();
+  // Stars
+  ctx.font='20px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  motoStars.forEach(s=>ctx.fillText('⭐',s.wx-motoOffset,s.wy));
+  // Obstacles
+  motoObstacles.forEach(o=>{
+    const sx=o.wx-motoOffset;
+    if(o.type==='rock'){ctx.font='24px serif';ctx.fillText('🪨',sx,motoGroundAt(o.wx)-12);}
+    else{
+      ctx.fillStyle='#1a0a00';ctx.fillRect(sx-20,motoGroundAt(o.wx)-4,40,40);
+      ctx.font='14px sans-serif';ctx.fillStyle='#92400e';ctx.textAlign='center';ctx.fillText('PIT',sx,motoGroundAt(o.wx)+12);
+    }
+  });
+  // Gas indicator
+  if(motoGas){ctx.font='16px serif';ctx.textAlign='left';ctx.fillText('🔥 GAS!',8,28);}
+  // Bike
+  ctx.font='32px serif';ctx.textAlign='center';
+  const wheelieAngle=motoGas&&motoBikeY<motoGroundAt(motoOffset+motoBikeX)-50?-0.3:0;
+  ctx.save();ctx.translate(motoBikeX,motoBikeY);ctx.rotate(wheelieAngle);ctx.fillText('🏍️',0,0);ctx.restore();
+  motoRAF=requestAnimationFrame(motoLoop);
+}
+
+function motoGameOver(canvas){
+  motoRunning=false;if(motoRAF){cancelAnimationFrame(motoRAF);motoRAF=null;}
+  sfx.wrong();
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].motocross;
+  p.gamesPlayed[t].motocross=true;
+  if(!p.highScores)p.highScores={};
+  const isRec=motoScore>(p.highScores.motocross||0);
+  if(isRec)p.highScores.motocross=motoScore;
+  save();if(first)addRobux(3);
+  document.getElementById('moto-hs').textContent=(p.highScores.motocross||0)+'m';
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='rgba(0,0,0,.75)';ctx.fillRect(0,0,motoW,motoH);
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='bold 26px Nunito,sans-serif';ctx.fillStyle='#fdba74';ctx.fillText('CRASHED! 💥',motoW/2,motoH/2-40);
+  ctx.font='bold 20px Nunito,sans-serif';ctx.fillStyle='#f59e0b';ctx.fillText('Distance: '+motoScore+'m',motoW/2,motoH/2);
+  if(isRec){ctx.font='bold 14px Nunito,sans-serif';ctx.fillStyle='#fbbf24';ctx.fillText('🏆 NEW RECORD!',motoW/2,motoH/2+30);}
+  ctx.font='bold 16px Nunito,sans-serif';ctx.fillStyle='#94a3b8';ctx.fillText('Tap to ride again',motoW/2,motoH/2+60);
+  canvas.ontouchstart=e=>{e.preventDefault();startMotocross();};
+  canvas.onclick=()=>startMotocross();
+  if(first)showCelebrate('🏍️','Motocross!','Distance: '+motoScore+'m! +3 R$ earned! 🏆');
+}
+
+// ===== FIGHTER =====
+let fighterActive=false,fighterBlocking=false;
+let fighterPlayerHP=100,fighterEnemyHP=100;
+let fighterRound=1,fighterPlayerWins=0,fighterEnemyWins=0;
+let fighterBusy=false,fighterTimer=null;
+
+function fighterStop(){
+  fighterActive=false;
+  clearTimeout(fighterTimer);
+}
+
+function startFighter(){
+  showScreen('s-fighter');
+  fighterActive=true;fighterBusy=false;
+  fighterPlayerHP=100;fighterEnemyHP=100;
+  fighterRound=1;fighterPlayerWins=0;fighterEnemyWins=0;
+  const p=getP();
+  const heroEmoji=p.heroEmoji||(S.currentHero==='lorena'?'👩‍🎤':'🥷');
+  document.getElementById('fighter-player-char').textContent=heroEmoji;
+  document.getElementById('fighter-player-name').textContent=S.currentHero==='lorena'?'LORENA':'SAVIO';
+  fighterUpdateUI();
+  document.getElementById('fighter-round-label').textContent='Round 1 — Fight! 🥊';
+  document.getElementById('fighter-msg').textContent='Tap an attack!';
+  // Schedule enemy attacks
+  fighterScheduleEnemy();
+}
+
+function fighterUpdateUI(){
+  document.getElementById('fighter-player-hp').style.width=Math.max(0,fighterPlayerHP)+'%';
+  document.getElementById('fighter-enemy-hp').style.width=Math.max(0,fighterEnemyHP)+'%';
+  document.getElementById('fighter-player-hp-num').textContent=Math.max(0,fighterPlayerHP);
+  document.getElementById('fighter-enemy-hp-num').textContent=Math.max(0,fighterEnemyHP);
+  document.getElementById('fighter-round').textContent=fighterRound+'/3';
+}
+
+function fighterAttack(type){
+  if(!fighterActive||fighterBusy)return;
+  fighterBusy=true;
+  clearTimeout(fighterTimer);
+  let dmg=0;
+  if(type==='punch')dmg=15+Math.floor(Math.random()*11);
+  else if(type==='kick')dmg=20+Math.floor(Math.random()*16);
+  else if(type==='special')dmg=30+Math.floor(Math.random()*21);
+  else if(type==='block'){fighterBlocking=true;fighterBusy=false;fighterScheduleEnemy();return;}
+  fighterBlocking=false;
+  fighterEnemyHP=Math.max(0,fighterEnemyHP-dmg);
+  sfx.zordakHit();
+  // Hit animation
+  const ec=document.getElementById('fighter-enemy-char');
+  ec.style.animation='none';void ec.offsetWidth;ec.style.animation='fighterHit .2s';
+  // FX
+  const fx=document.getElementById('fighter-hit-fx');
+  fx.textContent=['💥','⚡','👊'][['punch','kick','special'].indexOf(type)]||'💥';
+  fx.style.opacity='1';setTimeout(()=>fx.style.opacity='0',200);
+  document.getElementById('fighter-msg').textContent=(type==='special'?'⚡ SPECIAL MOVE! ':'')+(type==='kick'?'🦵 KICK! ':'')+'−'+dmg+' dmg!';
+  fighterUpdateUI();
+  if(fighterEnemyHP<=0){fighterWinRound('player');return;}
+  setTimeout(()=>{fighterBusy=false;fighterScheduleEnemy();},400);
+}
+
+function fighterScheduleEnemy(){
+  if(!fighterActive)return;
+  clearTimeout(fighterTimer);
+  fighterTimer=setTimeout(()=>{
+    if(!fighterActive)return;
+    const edm=10+Math.floor(Math.random()*25);
+    const actualDmg=fighterBlocking?Math.ceil(edm*0.2):edm;
+    fighterPlayerHP=Math.max(0,fighterPlayerHP-actualDmg);
+    sfx.wrong();
+    const pc=document.getElementById('fighter-player-char');
+    pc.style.animation='none';void pc.offsetWidth;pc.style.animation='fighterHit .2s';
+    if(fighterBlocking)document.getElementById('fighter-msg').textContent='🛡️ BLOCKED! Only −'+actualDmg+' dmg!';
+    else document.getElementById('fighter-msg').textContent='👹 ZORDAK attacks! −'+actualDmg+' dmg!';
+    fighterBlocking=false;
+    fighterUpdateUI();
+    if(fighterPlayerHP<=0){fighterWinRound('enemy');return;}
+    if(fighterActive)fighterScheduleEnemy();
+  },1200+Math.random()*800);
+}
+
+function fighterWinRound(winner){
+  clearTimeout(fighterTimer);
+  if(winner==='player'){fighterPlayerWins++;sfx.celebrate();}else{fighterEnemyWins++;sfx.wrong();}
+  const roundEl=document.getElementById('fighter-round-label');
+  roundEl.textContent=winner==='player'?'✅ You win round '+fighterRound+'!':'❌ ZORDAK wins round '+fighterRound+'!';
+  if(fighterRound>=3||fighterPlayerWins>=2||fighterEnemyWins>=2){
+    setTimeout(()=>fighterEndMatch(),1000);return;
+  }
+  fighterRound++;
+  fighterPlayerHP=100;fighterEnemyHP=100;fighterBusy=false;
+  setTimeout(()=>{
+    roundEl.textContent='Round '+fighterRound+' — Fight! 🥊';
+    document.getElementById('fighter-msg').textContent='Tap an attack!';
+    fighterUpdateUI();
+    fighterScheduleEnemy();
+  },1200);
+}
+
+function fighterEndMatch(){
+  fighterActive=false;
+  const won=fighterPlayerWins>fighterEnemyWins;
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].fighter;
+  p.gamesPlayed[t].fighter=true;
+  if(!p.highScores)p.highScores={};
+  if(won){p.highScores.fighter=(p.highScores.fighter||0)+1;}
+  save();
+  if(first)addRobux(3);
+  if(won){addRobux(5);showCelebrate('🥊','ZORDAK DEFEATED!','You won the fight! +3 R$ + 5 R$ bonus! 💥<br>Champion! 🏆');}
+  else{showCelebrate('😔','You lost!','+3 R$ for playing! Train harder! 💪');}
+  document.getElementById('fighter-round-label').textContent=won?'🏆 YOU WIN THE MATCH!':'💀 ZORDAK WINS...';
+  document.getElementById('fighter-msg').textContent=won?'ZORDAK is defeated! +5 R$ bonus!':'Practice and come back stronger!';
+  // Add replay button
+  const btns=document.querySelector('.fighter-btns');
+  if(btns){btns.innerHTML='<button class="fighter-btn" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);grid-column:span 2" onclick="startFighter()">Play Again! 🥊</button><button class="fighter-btn" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1)" onclick="goGames()">← Back</button>';}
+}
+
+// ===== SUMMER GAMES =====
+const SG_EVENTS=[
+  {id:'sprint',name:'100m Sprint 🏃',color:'#ef4444',sub:'Tap LEFT then RIGHT as fast as you can!'},
+  {id:'weightlifting',name:'Weightlifting 🏋️',color:'#f59e0b',sub:'Hold to fill bar — release in GREEN zone!'},
+  {id:'javelin',name:'Javelin Throw 🎯',color:'#22c55e',sub:'Swipe right — harder & at 45° for max distance!'},
+  {id:'swimming',name:'Swimming 🏊',color:'#3b82f6',sub:'Tap in rhythm with the beat!'}
+];
+let sgCurrentEvent=0,sgTotalScore=0,sgEventScores=[];
+let sgTimer=null,sgRunning=false;
+// Sprint state
+let sgSprintCount=0,sgSprintLastBtn='',sgSprintTime=3000,sgSprintAccum=0,sgSprintStart=0;
+// Weightlifting state
+let sgWLPower=0,sgWLHolding=false,sgWLDone=false;
+// Javelin state
+let sgJavTouchSX=0,sgJavTouchSY=0,sgJavTouchStartTime=0,sgJavThrown=false;
+// Swimming state
+let sgSwimTaps=0,sgSwimBeat=0,sgSwimLastTap=0,sgSwimScore=0,sgSwimInterval=null;
+
+function sgStop(){sgRunning=false;clearTimeout(sgTimer);clearInterval(sgSwimInterval);}
+
+function startSummerGames(){
+  showScreen('s-summergames');
+  sgCurrentEvent=0;sgTotalScore=0;sgEventScores=[];sgRunning=true;
+  sgRenderReady();
+}
+
+function sgRenderReady(){
+  const ev=SG_EVENTS[sgCurrentEvent];
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div style="font-size:56px">${['🏃','🏋️','🎯','🏊'][sgCurrentEvent]}</div>
+    <div style="font-family:'Bangers',cursive;font-size:26px;color:${ev.color};letter-spacing:2px;text-align:center">${ev.name}</div>
+    <div style="font-size:12px;color:#94a3b8;font-weight:700;text-align:center;max-width:280px">${ev.sub}</div>
+    <div style="font-family:'Bangers',cursive;font-size:15px;color:#64748b;letter-spacing:1px">Event ${sgCurrentEvent+1} of 4</div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,${ev.color},${ev.color}aa);color:#fff;font-size:18px" onclick="sgRunEvent()">Ready! ${['🏃','🏋️','🎯','🏊'][sgCurrentEvent]}</button>
+  `;
+  document.getElementById('sg-event-title').textContent=ev.name;
+  document.getElementById('sg-event-sub').textContent='Event '+(sgCurrentEvent+1)+' of 4';
+}
+
+function sgStartEvent(){sgRunEvent();}
+function sgRunEvent(){
+  const ev=SG_EVENTS[sgCurrentEvent];
+  if(ev.id==='sprint')sgRunSprint();
+  else if(ev.id==='weightlifting')sgRunWeightlifting();
+  else if(ev.id==='javelin')sgRunJavelin();
+  else if(ev.id==='swimming')sgRunSwimming();
+}
+
+function sgRunSprint(){
+  sgSprintCount=0;sgSprintLastBtn='';sgSprintAccum=0;sgSprintStart=Date.now();
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div class="sg-timer" id="sg-sprint-timer">3.0</div>
+    <div class="sg-score-row" id="sg-sprint-taps">0 taps</div>
+    <div class="sg-hint">Tap LEFT then RIGHT alternately!</div>
+    <div style="display:flex;gap:10px;width:100%;max-width:300px;margin-top:8px">
+      <button class="sg-big-btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)" ontouchstart="sgSprintTap('L');event.preventDefault()" onclick="sgSprintTap('L')">◀ LEFT</button>
+      <button class="sg-big-btn" style="background:linear-gradient(135deg,#ef4444,#991b1b)" ontouchstart="sgSprintTap('R');event.preventDefault()" onclick="sgSprintTap('R')">RIGHT ▶</button>
+    </div>
+  `;
+  const start=Date.now();
+  const tick=setInterval(()=>{
+    const elapsed=Date.now()-start;
+    const rem=Math.max(0,(3000-elapsed)/1000);
+    const te=document.getElementById('sg-sprint-timer');
+    if(te)te.textContent=rem.toFixed(1);
+    if(elapsed>=3000){
+      clearInterval(tick);
+      const score=Math.min(100,Math.round(sgSprintCount*3.5));
+      sgEventScores.push({name:'Sprint',score,emoji:'🏃'});
+      sgTotalScore+=score;
+      sgNextEvent('You tapped '+sgSprintCount+' times! Score: '+score);
+    }
+  },50);
+}
+
+function sgSprintTap(btn){
+  if(btn!==sgSprintLastBtn){sgSprintCount++;sfx.pop();sgSprintLastBtn=btn;}
+  const te=document.getElementById('sg-sprint-taps');
+  if(te)te.textContent=sgSprintCount+' taps';
+}
+
+function sgRunWeightlifting(){
+  sgWLPower=0;sgWLHolding=false;sgWLDone=false;
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div style="font-size:52px">🏋️</div>
+    <div style="font-family:'Bangers',cursive;font-size:20px;color:#fcd34d;text-align:center">Hold to charge — release in GREEN!</div>
+    <div style="width:100%;max-width:280px;background:rgba(255,255,255,.08);border-radius:12px;height:32px;overflow:hidden;border:2px solid rgba(255,255,255,.15);position:relative" id="sg-wl-wrap">
+      <div id="sg-wl-bar" style="height:100%;width:0%;background:#22c55e;transition:none;border-radius:10px"></div>
+      <div style="position:absolute;top:0;right:0;width:25%;height:100%;background:rgba(34,197,94,.3);border:2px solid #22c55e;border-radius:0 10px 10px 0"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;color:#fff;pointer-events:none">Release in green!</div>
+    </div>
+    <div id="sg-wl-result" style="font-family:'Bangers',cursive;font-size:22px;color:#fcd34d;min-height:28px;text-align:center"></div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;user-select:none;-webkit-user-select:none"
+      ontouchstart="sgWLStart();event.preventDefault()" ontouchend="sgWLRelease();event.preventDefault()"
+      onmousedown="sgWLStart()" onmouseup="sgWLRelease()">HOLD TO LIFT 🏋️</button>
+  `;
+  let raf2=null;
+  window._sgWLraf=raf2;
+  function wlTick(){
+    if(sgWLHolding){sgWLPower=Math.min(100,sgWLPower+1.4);const b=document.getElementById('sg-wl-bar');if(b)b.style.width=sgWLPower+'%';}
+    if(!sgWLDone)window._sgWLraf=requestAnimationFrame(wlTick);
+  }
+  window.sgWLStart=()=>{if(sgWLDone)return;sgWLHolding=true;sgWLPower=0;window._sgWLraf=requestAnimationFrame(wlTick);};
+  window.sgWLRelease=()=>{
+    if(sgWLDone)return;sgWLHolding=false;sgWLDone=true;
+    if(window._sgWLraf)cancelAnimationFrame(window._sgWLraf);
+    const inGreen=sgWLPower>=75&&sgWLPower<=100;
+    const score=inGreen?Math.round(60+sgWLPower*0.4):Math.round(sgWLPower*0.5);
+    const res=document.getElementById('sg-wl-result');
+    if(res)res.textContent=inGreen?'🟢 PERFECT! '+sgWLPower.toFixed(0)+'%':'Power: '+sgWLPower.toFixed(0)+'%';
+    sfx[inGreen?'celebrate':'pop']();
+    sgEventScores.push({name:'Weightlifting',score:Math.min(100,score),emoji:'🏋️'});
+    sgTotalScore+=Math.min(100,score);
+    setTimeout(()=>sgNextEvent('Power: '+sgWLPower.toFixed(0)+'% — Score: '+Math.min(100,score)),1000);
+  };
+}
+
+function sgRunJavelin(){
+  sgJavThrown=false;
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div style="font-size:52px">🎯</div>
+    <div style="font-family:'Bangers',cursive;font-size:20px;color:#22c55e;text-align:center">Swipe RIGHT to throw!</div>
+    <div style="font-size:12px;color:#94a3b8;font-weight:700;text-align:center">Fast swipe = more power<br>Diagonal (45°) = best angle!</div>
+    <canvas id="sg-jav-canvas" width="280" height="120" style="background:linear-gradient(180deg,#1e3a5f,#0f2041);border-radius:12px;display:block"></canvas>
+    <div id="sg-jav-result" style="font-family:'Bangers',cursive;font-size:22px;color:#86efac;min-height:28px;text-align:center"></div>
+  `;
+  // Draw empty field
+  sgJavDrawField(0,0);
+  const arena2=document.getElementById('sg-arena');
+  arena2.ontouchstart=e=>{e.preventDefault();const t=e.touches[0];sgJavTouchSX=t.clientX;sgJavTouchSY=t.clientY;sgJavTouchStartTime=Date.now();};
+  arena2.ontouchend=e=>{
+    if(sgJavThrown)return;
+    e.preventDefault();
+    const t=e.changedTouches[0];
+    const dx=t.clientX-sgJavTouchSX,dy=t.clientY-sgJavTouchSY;
+    const dt2=(Date.now()-sgJavTouchStartTime)/1000;
+    if(dx<20)return;
+    const speed=Math.min(200,dx/dt2);
+    const angle=Math.abs(Math.atan2(-dy,dx)*(180/Math.PI));
+    const optAngle=45,anglePen=1-Math.min(1,Math.abs(angle-optAngle)/45);
+    const distance=Math.round((speed/200)*80*anglePen+Math.random()*5);
+    sgJavThrown=true;
+    sgJavAnimate(distance);
+  };
+  // Mouse fallback
+  let mx=0,my=0,mt=0;
+  arena2.onmousedown=e=>{mx=e.clientX;my=e.clientY;mt=Date.now();};
+  arena2.onmouseup=e=>{
+    if(sgJavThrown)return;
+    const dx=e.clientX-mx,dy=e.clientY-my,dt2=(Date.now()-mt)/1000;
+    if(dx<20)return;
+    const speed=Math.min(200,dx/dt2);
+    const angle=Math.abs(Math.atan2(-dy,dx)*(180/Math.PI));
+    const anglePen=1-Math.min(1,Math.abs(angle-45)/45);
+    const distance=Math.round((speed/200)*80*anglePen+Math.random()*5);
+    sgJavThrown=true;
+    sgJavAnimate(distance);
+  };
+}
+
+function sgJavDrawField(spearX,spearY){
+  const canvas=document.getElementById('sg-jav-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,280,120);
+  // Field
+  ctx.fillStyle='#1e3a1a';ctx.fillRect(0,80,280,40);
+  ctx.fillStyle='#16a34a';ctx.fillRect(0,76,280,8);
+  // Distance markers
+  ctx.strokeStyle='rgba(255,255,255,.2)';ctx.setLineDash([4,4]);
+  [70,140,210].forEach(x=>{ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,120);ctx.stroke();});
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='9px sans-serif';ctx.textAlign='center';
+  [70,140,210].forEach((x,i)=>ctx.fillText([(28),(56),(84)][i]+'m',x,92));
+  if(spearX>0){ctx.font='18px serif';ctx.textAlign='center';ctx.fillText('🎯',spearX,spearY||70);}
+}
+
+function sgJavAnimate(distance){
+  let frame=0;const total=30;
+  const targetX=Math.min(270,Math.round((distance/85)*260));
+  const tick=setInterval(()=>{
+    const x=Math.round((frame/total)*targetX);
+    const y=70-Math.sin((frame/total)*Math.PI)*40;
+    sgJavDrawField(x,y);
+    frame++;
+    if(frame>total){
+      clearInterval(tick);
+      const res=document.getElementById('sg-jav-result');
+      if(res)res.textContent=distance+'m thrown! 🏆';
+      sfx[distance>60?'celebrate':'pop']();
+      const score=Math.min(100,Math.round(distance*1.2));
+      sgEventScores.push({name:'Javelin',score,emoji:'🎯'});
+      sgTotalScore+=score;
+      setTimeout(()=>sgNextEvent(distance+'m — Score: '+score),800);
+    }
+  },30);
+}
+
+function sgRunSwimming(){
+  sgSwimTaps=0;sgSwimScore=0;sgSwimBeat=0;
+  const BPM=120,BEAT_INT=60000/BPM;
+  let beatPhase=0,totalBeats=16,correctTaps=0;
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div style="font-size:52px">🏊</div>
+    <div style="font-family:'Bangers',cursive;font-size:20px;color:#3b82f6;text-align:center">Tap in rhythm!</div>
+    <div class="sg-progress-bar-wrap"><div class="sg-progress-bar" id="sg-swim-beat" style="width:0%;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
+    <div id="sg-swim-info" style="font-family:'Bangers',cursive;font-size:18px;color:#93c5fd">Get ready...</div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)" id="sg-swim-btn" ontouchstart="sgSwimTap();event.preventDefault()" onclick="sgSwimTap()">TAP! 🏊</button>
+  `;
+  let beat=0,taps=[];
+  const startT=Date.now()+500;
+  const beatTick=setInterval(()=>{
+    beat++;beatPhase=(beat%2===0)?1:0;
+    const info=document.getElementById('sg-swim-info');
+    const bar=document.getElementById('sg-swim-beat');
+    if(info)info.textContent=beat<=totalBeats?(beat%2===0?'💧 Stroke!':'↔ Recover'):'Done!';
+    if(bar)bar.style.width=(beat/totalBeats*100)+'%';
+    sfx.bounce();
+    if(beat>=totalBeats){
+      clearInterval(beatTick);
+      // Score based on taps in rhythm
+      const score=Math.min(100,Math.round(correctTaps*(100/totalBeats)));
+      sgEventScores.push({name:'Swimming',score,emoji:'🏊'});
+      sgTotalScore+=score;
+      setTimeout(()=>sgNextEvent('Taps: '+sgSwimTaps+' — Score: '+score),600);
+    }
+  },BEAT_INT);
+  // Track tap timing
+  let lastBeatTime=Date.now();
+  const origBeat=()=>{lastBeatTime=Date.now();};
+  window._sgSwimTapFn=()=>{
+    sgSwimTaps++;
+    const timeSinceBeat=(Date.now()-lastBeatTime)%BEAT_INT;
+    const inSync=timeSinceBeat<BEAT_INT*0.35||timeSinceBeat>BEAT_INT*0.65;
+    if(inSync)correctTaps++;
+    sfx.pop();
+    const b=document.getElementById('sg-swim-btn');
+    if(b){b.style.transform='scale(.9)';setTimeout(()=>b.style.transform='',100);}
+  };
+  // Update lastBeatTime per beat
+  let b2=0;
+  const syncTick=setInterval(()=>{b2++;lastBeatTime=startT+b2*BEAT_INT;if(b2>=totalBeats)clearInterval(syncTick);},BEAT_INT);
+  window.sgSwimTap=window._sgSwimTapFn;
+}
+
+function sgNextEvent(resultMsg){
+  sgCurrentEvent++;
+  if(sgCurrentEvent>=SG_EVENTS.length){sgShowResults();return;}
+  const arena=document.getElementById('sg-arena');
+  const ev=SG_EVENTS[sgCurrentEvent];
+  arena.innerHTML=`
+    <div style="font-size:40px">✅</div>
+    <div style="font-family:'Bangers',cursive;font-size:18px;color:#86efac;text-align:center">${resultMsg}</div>
+    <div style="font-family:'Bangers',cursive;font-size:20px;color:#fcd34d;text-align:center">Next: ${ev.name}</div>
+    <div style="font-size:11px;color:#94a3b8;font-weight:700;text-align:center">${ev.sub}</div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,${ev.color},${ev.color}bb)" onclick="sgRunEvent()">Go! ${['🏃','🏋️','🎯','🏊'][sgCurrentEvent]}</button>
+  `;
+  document.getElementById('sg-event-title').textContent=ev.name;
+}
+
+function sgShowResults(){
+  const total=sgTotalScore;
+  const avg=Math.round(total/4);
+  const medal=avg>=80?'🥇 Gold':avg>=60?'🥈 Silver':avg>=40?'🥉 Bronze':'🏅 Finish';
+  const isGold=avg>=80;
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const first=!p.gamesPlayed[t].summergames;
+  p.gamesPlayed[t].summergames=true;
+  if(!p.highScores)p.highScores={};
+  const isRec=avg>(p.highScores.summergames||0);
+  if(isRec)p.highScores.summergames=avg;
+  save();
+  if(first)addRobux(3);
+  if(isGold)addRobux(5);
+  const arena=document.getElementById('sg-arena');
+  arena.innerHTML=`
+    <div style="font-size:64px">${isGold?'🥇':avg>=60?'🥈':'🥉'}</div>
+    <div style="font-family:'Bangers',cursive;font-size:26px;color:#fcd34d;letter-spacing:2px">${medal}</div>
+    <div style="font-family:'Bangers',cursive;font-size:18px;color:#94a3b8">Average Score: ${avg}/100</div>
+    <div style="width:100%;max-width:280px">
+      ${sgEventScores.map(e=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;font-weight:700"><span style="color:#94a3b8">${e.emoji} ${e.name}</span><span style="color:#fcd34d">${e.score}/100</span></div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:#86efac;font-weight:700;text-align:center">${first?'+3 R$ earned'+(isGold?' + 5 R$ Gold bonus! 🥇':'! 🏅'):'Free play!'}</div>
+    ${isRec?'<div style="font-size:12px;color:#f59e0b;font-weight:800">🏆 NEW RECORD!</div>':''}
+    <div style="display:flex;gap:8px;width:100%;max-width:280px">
+      <button class="sg-big-btn" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)" onclick="startSummerGames()">Play Again! 🏅</button>
+      <button class="sg-big-btn" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);font-size:13px" onclick="goGames()">← Back</button>
+    </div>
+  `;
+  document.getElementById('sg-event-title').textContent='Results';
+  document.getElementById('sg-event-sub').textContent=medal;
+  sfx[isGold?'celebrate':'taskDone']();
+  if(first)showCelebrate(isGold?'🥇':'🥉',isGold?'GOLD MEDAL!':'Summer Games Done!',isGold?'+3 R$ + 5 R$ Gold Bonus! 🏆':'Score: '+avg+'/100 — +3 R$ earned!');
 }
 
 // ===== INIT =====
