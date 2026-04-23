@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SuperKid ⚔️</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',sans-serif;background:#0a0a1a;color:#fff;overflow:hidden;height:100vh;width:100vw}
+.screen{display:none;position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+.screen.active{display:block}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
+@keyframes twinkle{0%{opacity:.1}100%{opacity:.8}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shake{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes pulse{0%,100%{border-color:rgba(239,68,68,.4)}50%{border-color:rgba(239,68,68,.8)}}
+@keyframes zap{0%,100%{opacity:.2;transform:scale(.9)}50%{opacity:.8;transform:scale(1.1)}}
+@keyframes coinPop{0%{transform:scale(1)}30%{transform:scale(1.5)}100%{transform:scale(1)}}
+@keyframes rise{0%{bottom:-80px;opacity:1}100%{bottom:110%;opacity:.3}}
+@keyframes bonk{0%{transform:scale(1)}50%{transform:scale(.6) rotate(-20deg)}100%{transform:scale(1)}}
+@keyframes starPop{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:scale(2) translateY(-20px)}}
+@keyframes popUp{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:scale(2.5) translateY(-30px)}}
+@keyframes celebIn{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+@keyframes bounceIn{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes bossPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes pinShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes spinY{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+@keyframes fwFly{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--tx),var(--ty));opacity:0}}
+/* HERO SELECT */
+#s-hero{background:radial-gradient(ellipse at 50% 100%,#1a0a3e,#0a0a1a 60%);flex-direction:column;align-items:center;padding:36px 20px 20px;min-height:100vh;position:relative}
+#s-hero.active{display:flex}
+.castle{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:120px;opacity:.1;pointer-events:none;z-index:0}
+.lightning{position:absolute;top:55px;font-size:38px;animation:zap 1.5s infinite;opacity:.6;z-index:1}
+.lightning.l{left:12%}.lightning.r{right:12%;animation-delay:.7s}
+.logo{font-family:'Bangers',cursive;font-size:60px;letter-spacing:4px;background:linear-gradient(135deg,#a855f7,#f59e0b,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;line-height:1;margin-bottom:4px;position:relative;z-index:1}
+.logo-sub{font-size:11px;color:#94a3b8;text-align:center;margin-bottom:20px;z-index:1;position:relative;letter-spacing:2px;text-transform:uppercase}
+.zw{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:14px;padding:10px 14px;text-align:center;margin-bottom:18px;position:relative;z-index:1;animation:pulse 2s infinite;max-width:340px;width:100%}
+.zw p{font-size:12px;color:#fca5a5;font-weight:700}
+.choose-txt{font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;color:#94a3b8;text-align:center;margin-bottom:14px;position:relative;z-index:1}
+.heroes{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:340px;position:relative;z-index:1}
+.hero-btn{background:linear-gradient(145deg,#1e1040,#2d1b6e);border:3px solid transparent;border-radius:22px;padding:22px 10px;text-align:center;cursor:pointer;transition:transform .15s}
+.hero-btn:active{transform:scale(.94)}
+.hero-btn.lorena{border-color:#ec4899;box-shadow:0 0 20px rgba(236,72,153,.3)}
+.hero-btn.savio{border-color:#3b82f6;box-shadow:0 0 20px rgba(59,130,246,.3)}
+.hero-char{font-size:60px;display:block;margin-bottom:6px;animation:float 3s ease-in-out infinite}
+.hero-btn.savio .hero-char{animation-delay:.5s}
+.hero-hname{font-family:'Bangers',cursive;font-size:26px;letter-spacing:1px;margin-bottom:3px}
+.hero-btn.lorena .hero-hname{color:#f9a8d4}.hero-btn.savio .hero-hname{color:#93c5fd}
+.hero-rank{font-size:11px;color:#94a3b8;font-weight:700;margin-bottom:3px}
+.hero-coins{font-size:13px;font-weight:800;color:#f59e0b}
+.tap-hint{font-size:11px;color:#475569;text-align:center;margin-top:14px;z-index:1;position:relative}
+.parent-hint{font-size:10px;color:#1e293b;text-align:center;margin-top:6px;z-index:1;position:relative;cursor:pointer;user-select:none}
+/* DASHBOARD */
+#s-dash{background:radial-gradient(ellipse at 50% 0%,#1a0a3e,#0a0a1a 70%);padding:14px 14px 100px;min-height:100vh}
+.dash-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.hero-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 14px rgba(124,58,237,.5);flex-shrink:0}
+.hero-av.sav{background:linear-gradient(135deg,#2563eb,#7c3aed)}
+.dash-info{flex:1}
+.dash-name{font-family:'Bangers',cursive;font-size:24px;letter-spacing:1px;line-height:1}
+.dash-name.lor{color:#f9a8d4}.dash-name.sav{color:#93c5fd}
+.dash-rank{font-size:10px;color:#94a3b8;font-weight:700}
+.coin-disp{background:linear-gradient(135deg,#92400e,#f59e0b);border-radius:18px;padding:7px 11px;display:flex;flex-direction:column;align-items:center;box-shadow:0 0 10px rgba(245,158,11,.4);cursor:pointer}
+.coin-disp .ci{font-size:17px;animation:spinY 3s linear infinite}
+.coin-disp .am{font-family:'Bangers',cursive;font-size:18px;line-height:1}
+.coin-disp .ct{font-size:8px;color:rgba(255,255,255,.75);line-height:1}
+.coin-disp.pop{animation:coinPop .3s ease}
+.mood-label{font-size:10px;color:#64748b;font-weight:700;margin-bottom:4px}
+.mood-row{display:flex;justify-content:space-between;background:rgba(255,255,255,.04);border-radius:12px;padding:8px 4px;margin-bottom:10px}
+.mb{font-size:26px;background:none;border:none;cursor:pointer;border-radius:50%;padding:2px 4px;transition:transform .15s;flex:1;text-align:center}
+.mb:active{transform:scale(1.3)}.mb.picked{background:rgba(255,255,255,.15);transform:scale(1.15)}
+.zbar{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:14px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.zface{font-size:30px;animation:shake .8s infinite;flex-shrink:0}
+.zinfo{flex:1}
+.zlabel{font-size:10px;color:#fca5a5;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.zhpbar{height:9px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.zhpfill{height:100%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:5px;transition:width 1s ease}
+.ztip{font-size:10px;color:#94a3b8;margin-top:2px}
+.cprog{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.25);border-radius:14px;padding:10px 12px;margin-bottom:10px}
+.cptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cplabel{font-size:12px;font-weight:800;color:#fcd34d}.cpval{font-size:11px;color:#94a3b8}
+.cpbar{height:11px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+.cpfill{height:100%;background:linear-gradient(90deg,#7c3aed,#f59e0b);border-radius:6px;transition:width 1s}
+.cpbot{font-size:10px;color:#64748b;margin-top:3px;text-align:center}
+.streak-row{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:7px 11px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.sl{font-size:13px;font-weight:800;color:#fcd34d}.sr{font-size:11px;color:#94a3b8}
+.papa-row{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:7px 11px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.pr-t{font-size:13px;font-weight:800;color:#6ee7b7}
+.pr-b{background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.4);border-radius:7px;padding:3px 8px;font-size:11px;font-weight:800;color:#6ee7b7}
+.sec-label{font-family:'Bangers',cursive;font-size:19px;letter-spacing:2px;color:#94a3b8;margin:10px 0 7px;display:flex;align-items:center;gap:7px}
+.qcard{background:linear-gradient(135deg,#1e1040,#16213e);border:2px solid rgba(124,58,237,.35);border-radius:17px;padding:11px;display:flex;align-items:center;gap:11px;margin-bottom:8px;position:relative;overflow:hidden;transition:transform .15s}
+.qcard:active{transform:scale(.97)}.qcard.done{border-color:rgba(16,185,129,.4);background:linear-gradient(135deg,#0f2e1a,#0d1f2d)}
+.qcard.wknd{border-color:rgba(245,158,11,.4)}.qcard.skip{opacity:.6;border-color:rgba(100,116,139,.3)}
+.qorb{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:rgba(124,58,237,.2);border:2px solid rgba(124,58,237,.4)}
+.qcard.done .qorb{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4)}
+.qcard.wknd .qorb{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.4)}
+.qbody{flex:1;min-width:0}
+.qtitle{font-weight:900;font-size:14px;line-height:1.2;margin-bottom:2px}
+.qmeta{font-size:11px;color:#94a3b8;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.qrew{font-weight:800;color:#f59e0b}
+.qcat{font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700}
+.cat-learn{background:rgba(16,185,129,.15);color:#6ee7b7}.cat-chill{background:rgba(139,92,246,.15);color:#c4b5fd}
+.cat-edu{background:rgba(59,130,246,.15);color:#93c5fd}.cat-sport{background:rgba(245,158,11,.15);color:#fcd34d}
+.qact{flex-shrink:0;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.done-stamp{background:rgba(16,185,129,.2);border:2px solid #10b981;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.dobtn{background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:11px;padding:8px 11px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 3px 10px rgba(124,58,237,.4)}
+.dobtn.wbtn{background:linear-gradient(135deg,#92400e,#f59e0b)}
+.skipbtn{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.25);border-radius:8px;padding:4px 7px;color:#64748b;font-size:10px;font-weight:700;cursor:pointer}
+.fskip{color:#64748b;font-size:11px;font-weight:700;cursor:pointer;background:none;border:none}
+.gbanner{background:linear-gradient(135deg,#1e3a5f,#0f2041);border:2px solid rgba(59,130,246,.4);border-radius:17px;padding:13px;display:flex;align-items:center;gap:11px;margin-top:4px;cursor:pointer;transition:transform .15s}
+.gbanner:active{transform:scale(.97)}
+.gib{font-size:38px}.gititle{font-family:'Bangers',cursive;font-size:19px;color:#93c5fd;letter-spacing:1px}
+.gisub{font-size:11px;color:#64748b;margin-top:1px}
+.gbadge{margin-left:auto;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.4);border-radius:9px;padding:3px 8px;font-size:11px;font-weight:800;color:#93c5fd}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,26,.95);backdrop-filter:blur(10px);border-top:1px solid rgba(124,58,237,.2);display:grid;grid-template-columns:repeat(4,1fr);z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+.nb{padding:9px 4px 7px;background:none;border:none;color:#475569;font-size:10px;font-family:'Nunito',sans-serif;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.nb .ni{font-size:22px}.nb.act{color:#a855f7}.nb.act .ni{filter:drop-shadow(0 0 6px #a855f7)}
+/* GAMES HUB */
+#s-games{background:radial-gradient(ellipse at 50% 0%,#0f1a40,#0a0a1a 70%);padding:18px 14px 100px}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 11px;color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer}
+.gtitle{font-family:'Bangers',cursive;font-size:30px;letter-spacing:2px;color:#93c5fd}
+.ebanner{background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.3);border-radius:13px;padding:9px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.eicon{font-size:22px}.etext{font-size:12px;color:#fcd34d;font-weight:700}
+.gcards{display:flex;flex-direction:column;gap:10px}
+.gc{border-radius:20px;overflow:hidden;cursor:pointer;transition:transform .15s;position:relative}
+.gc:active{transform:scale(.97)}
+.gcin{padding:16px;display:flex;align-items:center;gap:12px}
+.gcicon{font-size:44px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+.gcbody{flex:1}.gcname{font-family:'Bangers',cursive;font-size:24px;letter-spacing:1px;margin-bottom:2px}
+.gcdesc{font-size:12px;color:rgba(255,255,255,.6);line-height:1.4}
+.gcbadge{display:inline-flex;align-items:center;gap:3px;margin-top:4px;background:rgba(0,0,0,.3);border-radius:7px;padding:2px 7px;font-size:11px;font-weight:800}
+.gcarrow{font-size:20px;opacity:.5;flex-shrink:0}
+.gcnew{position:absolute;top:9px;right:9px;background:#ef4444;border-radius:5px;padding:2px 5px;font-size:9px;font-weight:800;letter-spacing:1px}
+.gc.whack{background:linear-gradient(135deg,#7f1d1d,#450a0a);border:2px solid rgba(239,68,68,.5);box-shadow:0 4px 18px rgba(239,68,68,.2)}
+.gc.whack .gcname{color:#fca5a5}.gc.whack .gcbadge{color:#fca5a5}
+.gc.bubble{background:linear-gradient(135deg,#1e1b4b,#0f0c2e);border:2px solid rgba(124,58,237,.5);box-shadow:0 4px 18px rgba(124,58,237,.2)}
+.gc.bubble .gcname{color:#c4b5fd}.gc.bubble .gcbadge{color:#c4b5fd}
+.gc.memory{background:linear-gradient(135deg,#0f2e1a,#0a1f14);border:2px solid rgba(16,185,129,.5);box-shadow:0 4px 18px rgba(16,185,129,.2)}
+.gc.memory .gcname{color:#86efac}.gc.memory .gcbadge{color:#86efac}
+.gc.boss{background:linear-gradient(135deg,#1c0533,#0d0120);border:2px solid rgba(168,85,247,.5);box-shadow:0 4px 18px rgba(168,85,247,.2)}
+.gc.boss .gcname{color:#d8b4fe}.gc.boss .gcbadge{color:#fbbf24}
+.gc.done-today{opacity:.55}
+/* WHACK */
+#s-whack{background:radial-gradient(ellipse at 50% 30%,#3d0a0a,#0a0a1a 70%);padding:18px 14px 80px}
+.ghdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ghdr h2{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;color:#fca5a5}
+.sbox{border-radius:10px;padding:5px 11px;text-align:center}
+.sbox .sv{font-family:'Bangers',cursive;font-size:20px}.sbox .sl{font-size:9px;color:#94a3b8;font-weight:700}
+.sbox.red{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4)}.sbox.red .sv{color:#fca5a5}
+.tbar-wrap{height:9px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;margin-bottom:10px}
+.tbar{height:100%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:5px;width:100%;transition:width .1s linear}
+.whint{text-align:center;color:#94a3b8;font-size:12px;font-weight:700;margin-bottom:12px}
+.holes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 4px;max-width:320px;margin:0 auto}
+.hole{aspect-ratio:1;border-radius:50%;background:radial-gradient(ellipse at 50% 100%,#1a0a0a 60%,#0a0505);border:3px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+.hi{font-size:0;transition:font-size .15s,transform .15s;position:absolute;bottom:0;transform:translateY(100%)}
+.hole.active .hi{font-size:36px;transform:translateY(0)}
+.hole.bonk .hi{animation:bonk .2s ease}
+.hole.friend-hole{border-color:rgba(251,191,36,.6);box-shadow:0 0 12px rgba(251,191,36,.3)}
+/* PONG */
+#s-pong{background:#0a0a1a;touch-action:none}
+.pong-ready{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;gap:10px}
+.pong-player-card{border-radius:18px;padding:14px 24px;text-align:center;width:100%;max-width:300px}
+.pong-player-card.sav{background:rgba(59,130,246,.1);border:2px solid rgba(59,130,246,.4)}
+.pong-player-card.lor{background:rgba(236,72,153,.1);border:2px solid rgba(236,72,153,.4)}
+.pong-vs{font-family:'Bangers',cursive;font-size:28px;color:#475569;letter-spacing:3px}
+.pong-start-btn{background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:16px;padding:15px 0;color:#000;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;cursor:pointer;width:100%;max-width:300px;margin-top:6px}
+.pong-wrap{position:relative;width:100%;height:100vh}
+.pong-hud{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:10;pointer-events:none}
+.pong-hud.top{top:6px}.pong-hud.bot{bottom:6px}
+.pong-name{font-family:'Bangers',cursive;font-size:20px;letter-spacing:1px}
+.pong-pts{font-family:'Bangers',cursive;font-size:34px;color:#fff;min-width:28px;text-align:center}
+.pong-result{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:10px;padding:24px;text-align:center}
+/* touch optimization */
+button{touch-action:manipulation}
+.bstar{position:absolute;font-size:20px;pointer-events:none;z-index:10;animation:starPop .5s forwards}
+.wres{text-align:center;padding:14px 0}
+.wrscore{font-family:'Bangers',cursive;font-size:52px;color:#fca5a5}
+.wrrew{font-size:16px;color:#f59e0b;font-weight:800;margin:6px 0}
+.playagain{background:linear-gradient(135deg,#ef4444,#b91c1c);border:none;border-radius:13px;padding:12px 26px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:10px}
+/* BUBBLE */
+#s-bubble{background:radial-gradient(ellipse at 50% 100%,#1e1b4b,#0a0a1a 70%);padding:18px 14px;height:100vh;overflow:hidden;position:relative}
+.bhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.bhdr h2{font-family:'Bangers',cursive;font-size:24px;color:#c4b5fd}
+.sbox.purple{background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.4)}.sbox.purple .sv{color:#c4b5fd}
+.bubq{text-align:center;font-family:'Bangers',cursive;font-size:40px;color:#fff;margin:6px 0;text-shadow:0 0 20px rgba(168,85,247,.6)}
+.bubhint{text-align:center;font-size:12px;color:#94a3b8;margin-bottom:5px}
+.bubarena{position:relative;height:calc(100vh - 170px);overflow:hidden}
+.bub{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bangers',cursive;font-size:21px;cursor:pointer;animation:rise linear forwards;color:#fff}
+.bub:active{transform:scale(.85)}
+.bub.bc{background:radial-gradient(circle at 40% 35%,rgba(16,185,129,.9),rgba(5,150,105,.7));border:3px solid #10b981;box-shadow:0 0 18px rgba(16,185,129,.5)}
+.bub.bw{background:radial-gradient(circle at 40% 35%,rgba(124,58,237,.8),rgba(91,33,182,.7));border:3px solid #7c3aed;box-shadow:0 0 18px rgba(124,58,237,.4)}
+.popfx{position:absolute;pointer-events:none;z-index:10;font-size:26px;animation:popUp .5s forwards}
+/* MEMORY */
+#s-memory{background:radial-gradient(ellipse at 50% 0%,#0f2e1a,#0a0a1a 70%);padding:18px 14px 80px}
+.mhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.mhdr h2{font-family:'Bangers',cursive;font-size:26px;color:#86efac}
+.sbox.green{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3)}.sbox.green .sv{color:#86efac}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-width:340px;margin:0 auto}
+.mc{aspect-ratio:1;border-radius:13px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .4s}
+.mc.flipped{transform:rotateY(180deg)}
+.mcf,.mcb{position:absolute;inset:0;border-radius:13px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden}
+.mcf{background:linear-gradient(135deg,#166534,#14532d);border:2px solid rgba(16,185,129,.4)}
+.mcb{background:linear-gradient(135deg,#1e1040,#2d1b6e);border:2px solid rgba(124,58,237,.4);font-size:24px;transform:rotateY(180deg)}
+.mc.matched .mcf{background:linear-gradient(135deg,#064e3b,#065f46);border-color:rgba(16,185,129,.7)}
+.mc-q{font-size:22px;color:rgba(16,185,129,.4)}
+/* BOSS */
+#s-boss{background:radial-gradient(ellipse at 50% 0%,#2a0066,#0a0a1a 70%);padding:18px 14px 80px}
+.bossface{font-size:64px;animation:bossPulse 1s infinite;display:block;text-align:center}
+.bossname{font-family:'Bangers',cursive;font-size:44px;color:#d8b4fe;letter-spacing:3px;text-align:center}
+.bosshpw{max-width:320px;margin:10px auto 16px}
+.bosshp{height:18px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
+.bosshpf{height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);border-radius:9px;transition:width .5s}
+.bossqc{background:rgba(168,85,247,.1);border:2px solid rgba(168,85,247,.4);border-radius:18px;padding:18px;margin:0 auto 14px;max-width:320px;text-align:center}
+.bossq{font-family:'Bangers',cursive;font-size:36px;color:#fff;margin-bottom:14px}
+.bossopts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.bopt{background:rgba(168,85,247,.15);border:2px solid rgba(168,85,247,.3);border-radius:13px;padding:13px;font-family:'Bangers',cursive;font-size:22px;color:#d8b4fe;cursor:pointer;transition:transform .1s}
+.bopt:active{transform:scale(.94)}.bopt.cor{background:rgba(16,185,129,.3);border-color:#10b981;color:#6ee7b7}
+.bopt.wrg{background:rgba(239,68,68,.3);border-color:#ef4444;color:#fca5a5}
+/* PIGGY */
+#s-piggy{background:radial-gradient(ellipse at 50% 0%,#1a0a3e,#0a0a1a 70%);padding:18px 14px 100px;min-height:100vh}
+.piggyhdr{text-align:center;margin-bottom:16px}
+.piggyfx{font-size:58px;animation:float 3s ease-in-out infinite;display:block}
+.pigtitle{font-family:'Bangers',cursive;font-size:36px;color:#f9a8d4;letter-spacing:2px;margin-top:6px}
+.pigsub{font-size:12px;color:#94a3b8}
+.pigcard{background:linear-gradient(135deg,rgba(236,72,153,.1),rgba(124,58,237,.05));border:2px solid rgba(236,72,153,.3);border-radius:18px;padding:18px;margin-bottom:14px}
+.pigamt{font-family:'Bangers',cursive;font-size:52px;color:#f9a8d4;text-align:center}
+.piglbl{text-align:center;font-size:11px;color:#94a3b8;margin-top:3px}
+.pigrate{text-align:center;margin-top:6px;font-size:12px;color:#fcd34d;font-weight:800}
+.pigproj{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:13px;padding:11px;margin-bottom:14px}
+.pptitle{font-size:11px;color:#fcd34d;font-weight:800;margin-bottom:6px}
+.pprow{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;color:#94a3b8}
+.pprow strong{color:#f59e0b}
+.dep-label{font-size:12px;font-weight:800;color:#f9a8d4;margin-bottom:6px}
+.depbtns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.depbtn{background:linear-gradient(135deg,#831843,#ec4899);border:none;border-radius:11px;padding:9px 12px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer}
+.depbtn:disabled{opacity:.35;cursor:not-allowed}
+.wdbtn{background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);border-radius:11px;padding:9px;color:#fcd34d;font-weight:800;font-size:12px;width:100%;cursor:pointer}
+/* REDEEM */
+#s-redeem{background:radial-gradient(ellipse at 50% 0%,#1a3a0a,#0a0a1a 70%);padding:18px 14px 100px;min-height:100vh}
+.redtitle{font-family:'Bangers',cursive;font-size:36px;color:#86efac;letter-spacing:2px;text-align:center}
+.redsub{font-size:12px;color:#94a3b8;text-align:center;margin-bottom:14px}
+.redwallet{background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.05));border:2px solid rgba(16,185,129,.3);border-radius:18px;padding:18px;margin-bottom:14px;text-align:center}
+.redamt{font-family:'Bangers',cursive;font-size:52px;color:#86efac}
+.redbr{font-size:11px;color:#94a3b8;margin-top:5px;line-height:1.9}
+.mcards{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.mcard{background:linear-gradient(135deg,#1e1040,#16213e);border:2px solid rgba(124,58,237,.35);border-radius:15px;padding:13px;display:flex;align-items:center;justify-content:space-between;transition:transform .15s}
+.mcard.unlocked{border-color:rgba(16,185,129,.5);background:linear-gradient(135deg,#0f2e1a,#0d1f2d);cursor:pointer}
+.mcard.unlocked:active{transform:scale(.97)}.mcard.locked{opacity:.4}
+.mcleft .mcr{font-family:'Bangers',cursive;font-size:26px;color:#86efac}
+.mcleft .mcreal{font-size:11px;color:#94a3b8}.mcleft .mccash{font-size:11px;color:#fcd34d;font-weight:700}
+.mcright{background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:9px;padding:7px 13px;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+.mcright:disabled{opacity:.4;cursor:not-allowed;background:rgba(100,116,139,.3)}
+/* PARENT */
+#s-parent{background:#0f0f1a;padding:18px 14px 40px;min-height:100vh}
+.ptitle{font-family:'Bangers',cursive;font-size:28px;letter-spacing:2px;color:#fcd34d;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.psec{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:15px;padding:14px;margin-bottom:10px}
+.psec h3{font-size:13px;font-weight:800;color:#94a3b8;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.srow:last-child{border:none}
+.slbl{font-size:12px;color:#64748b}.sval{font-size:12px;font-weight:800;color:#e2e8f0}
+.pbtn{background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:11px;padding:9px 14px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;margin-top:7px;width:100%}
+.pbtn.gold{background:linear-gradient(135deg,#92400e,#f59e0b)}.pbtn.danger{background:linear-gradient(135deg,#991b1b,#7f1d1d)}
+.code-disp{font-family:'Bangers',cursive;font-size:44px;letter-spacing:8px;color:#fcd34d;text-align:center;background:rgba(245,158,11,.1);border:2px dashed rgba(245,158,11,.4);border-radius:14px;padding:10px;margin:8px 0}
+.code-task-lbl{text-align:center;font-size:11px;color:#94a3b8;margin-bottom:5px}
+.pinp{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:9px 11px;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;width:100%;margin-bottom:7px}
+.qsel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:7px 11px;color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;width:100%;margin-bottom:7px}
+.qsel option{background:#1a1a2e}
+/* PIN MODAL */
+#pin-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(8px)}
+#pin-modal.show{display:flex}
+.pinbox{background:linear-gradient(135deg,#1e1040,#2d1b6e);border:2px solid rgba(124,58,237,.5);border-radius:22px;padding:26px 22px;width:90%;max-width:320px;text-align:center}
+.pintitle{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;color:#a855f7;margin-bottom:5px}
+.pinsub{font-size:11px;color:#94a3b8;margin-bottom:18px}
+.pindots{display:flex;justify-content:center;gap:11px;margin-bottom:18px}
+.pd{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);transition:all .2s}
+.pd.filled{background:#a855f7;border-color:#a855f7;box-shadow:0 0 8px rgba(168,85,247,.6)}
+.pinnumpad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.pk{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px;font-family:'Bangers',cursive;font-size:22px;color:#fff;cursor:pointer;transition:transform .1s;user-select:none}
+.pk:active{transform:scale(.88);background:rgba(168,85,247,.3)}
+.pk.clr{color:#94a3b8;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif}
+.pk.cnl{color:#ef4444;font-size:12px;font-weight:800;font-family:'Nunito',sans-serif}
+.pinerr{color:#ef4444;font-size:12px;font-weight:800;height:16px;margin-bottom:4px}
+.pinerr.shake{animation:pinShake .3s}
+/* PAPA MODAL */
+#papa-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#papa-modal.show{display:flex}
+.papabox{background:linear-gradient(135deg,#0f2e1a,#0d1f2d);border:2px solid rgba(16,185,129,.5);border-radius:22px;padding:26px 22px;width:90%;max-width:320px;text-align:center}
+.papatitle{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;color:#6ee7b7;margin-bottom:6px}
+.papasub{font-size:12px;color:#94a3b8;margin-bottom:16px}
+.papaci{display:flex;gap:7px;justify-content:center;margin:0 0 14px}
+.pci{width:52px;height:60px;background:rgba(16,185,129,.1);border:2px solid rgba(16,185,129,.3);border-radius:11px;font-family:'Bangers',cursive;font-size:28px;color:#6ee7b7;text-align:center;text-transform:uppercase;outline:none;caret-color:transparent}
+.pci:focus{border-color:#10b981;box-shadow:0 0 8px rgba(16,185,129,.4)}
+.papasub2{background:linear-gradient(135deg,#065f46,#10b981);border:none;border-radius:13px;padding:12px 26px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;width:100%}
+.papacnl{background:none;border:none;color:#64748b;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;display:block;width:100%}
+/* CELEBRATE */
+#celebrate{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:90;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(4px)}
+#celebrate.show{display:flex;animation:celebIn .3s ease}
+.celbox{background:linear-gradient(135deg,#1a0a3e,#2d1b6e);border:3px solid #a855f7;border-radius:22px;padding:26px 18px;text-align:center;max-width:280px;width:90%;box-shadow:0 0 40px rgba(168,85,247,.5)}
+.celemoji{font-size:66px;animation:bounceIn .5s ease;display:block;margin-bottom:7px}
+.celtitle{font-family:'Bangers',cursive;font-size:32px;letter-spacing:2px;background:linear-gradient(135deg,#a855f7,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:7px}
+.celmsg{font-size:13px;color:#e2e8f0;font-weight:700;line-height:1.5;margin-bottom:14px}
+.celclose{background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:13px;padding:11px 26px;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer}
+.fw{position:fixed;pointer-events:none;z-index:85}
+.fws{position:absolute;width:5px;height:5px;border-radius:50%;animation:fwFly .9s forwards}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<!-- HERO SELECT -->
+<div id="s-hero" class="screen active">
+  <div class="lightning l">⚡</div><div class="lightning r">⚡</div>
+  <div class="castle">🏰</div>
+  <div class="logo" id="logo-lp" ontouchstart="logoHold(true)" ontouchend="logoHold(false)" ontouchcancel="logoHold(false)" onmousedown="logoHold(true)" onmouseup="logoHold(false)" onmouseleave="logoHold(false)" style="user-select:none">SUPER<br>KID</div>
+  <div class="logo-sub">⚔️ The Adventure Begins ⚔️</div>
+  <!-- Long press 2s on logo = Parent Mode (kids won't find this) -->
+  <div class="zw"><p>👹 ZORDAK is getting stronger!<br>Complete your quests to defeat him!</p></div>
+  <div class="choose-txt">Choose Your Hero</div>
+  <div class="heroes">
+    <div class="hero-btn lorena" onclick="selectHero('lorena')">
+      <span class="hero-char">👩‍🎤</span>
+      <div class="hero-hname">Lorena</div>
+      <div class="hero-rank" id="rank-lorena">🌱 Apprentice</div>
+      <div class="hero-coins" id="coins-lorena">💰 0 R$</div>
+    </div>
+    <div class="hero-btn savio" onclick="selectHero('savio')">
+      <span class="hero-char">🥷</span>
+      <div class="hero-hname">Savio</div>
+      <div class="hero-rank" id="rank-savio">🌱 Apprentice</div>
+      <div class="hero-coins" id="coins-savio">💰 0 R$</div>
+    </div>
+  </div>
+  <div class="tap-hint">Tap your hero to start!</div>
+  <div class="parent-hint" onclick="openParent()" style="opacity:0;font-size:8px">·</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="s-dash" class="screen">
+  <div class="dash-top">
+    <div class="hero-av" id="dash-av">👸</div>
+    <div class="dash-info">
+      <div class="dash-name lor" id="dash-name">Lorena</div>
+      <div class="dash-rank" id="dash-rank">🌱 Apprentice Hero</div>
+    </div>
+    <div class="coin-disp" onclick="cycleCurrency()">
+      <span class="ci">🪙</span>
+      <span class="am" id="dash-coins">0</span>
+      <span class="ct" id="dash-curr">≈ $0.00</span>
+    </div>
+  </div>
+  <div id="word-of-day" style="display:none;background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(168,85,247,.1));border:2px solid rgba(236,72,153,.3);border-radius:14px;padding:10px 14px;margin-bottom:10px;text-align:center">
+    <div style="font-size:10px;color:#f9a8d4;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">📖 Word of the Day</div>
+    <div id="wod-emoji" style="font-size:36px;line-height:1.2">🍎</div>
+    <div id="wod-word" style="font-family:'Bangers',cursive;font-size:38px;color:#fff;letter-spacing:4px;line-height:1.1">APPLE</div>
+    <div id="wod-hint" style="font-size:11px;color:#c4b5fd;font-weight:700;margin-top:2px">Can you say it? 🗣️</div>
+  </div>
+  <div class="mood-label" id="mood-lbl">How are you feeling today? 🌟</div>
+  <div class="mood-row">
+    <button class="mb" onclick="setMood(0)">😄</button>
+    <button class="mb" onclick="setMood(1)">😊</button>
+    <button class="mb" onclick="setMood(2)">😐</button>
+    <button class="mb" onclick="setMood(3)">😕</button>
+    <button class="mb" onclick="setMood(4)">😢</button>
+  </div>
+  <div class="zbar">
+    <div class="zface">👹</div>
+    <div class="zinfo">
+      <div class="zlabel">⚔️ ZORDAK's Power</div>
+      <div class="zhpbar"><div class="zhpfill" id="zhpfill" style="width:100%"></div></div>
+      <div class="ztip" id="ztip">Complete quests to weaken him!</div>
+    </div>
+  </div>
+  <div class="cprog">
+    <div class="cptop"><span class="cplabel">🎮 Next Milestone</span><span class="cpval" id="cpval">0 / 400 R$</span></div>
+    <div class="cpbar"><div class="cpfill" id="cpfill" style="width:0%"></div></div>
+    <div class="cpbot" id="cpbot">400 R$ = 80 real Robux 🎮</div>
+  </div>
+  <div class="streak-row" style="cursor:pointer" onclick="openMyPin()">
+    <span class="sl" id="streak-txt">🔥 0 Day Streak</span>
+    <span class="sr" id="streak-sub">Keep going!</span>
+    <span style="font-size:16px;margin-left:8px" id="pin-lock-icon">🔓</span>
+  </div>
+  <div class="papa-row" id="papa-row" style="display:none" onclick="openPapaModal()">
+    <span class="pr-t">📬 Papa sent a Quest!</span><span class="pr-b">Enter Code</span>
+  </div>
+  <div class="sec-label">📜 Today's Quests</div>
+  <div id="quest-list"></div>
+  <div class="gbanner" onclick="goGames()">
+    <div class="gib">🎮</div>
+    <div style="flex:1"><div class="gititle">Hero Training</div><div class="gisub">Play games — earn Robux!</div></div>
+    <div class="gbadge">+20 R$</div>
+  </div>
+  <div class="bnav">
+    <button class="nb act" onclick="goQuests()"><span class="ni">⚔️</span>Quests</button>
+    <button class="nb" onclick="goGames()"><span class="ni">🎮</span>Games</button>
+    <button class="nb" onclick="goPiggy()"><span class="ni">🐷</span>Piggy</button>
+    <button class="nb" onclick="goRedeem()"><span class="ni">🎁</span>Redeem</button>
+  </div>
+</div>
+
+<!-- GAMES HUB -->
+<div id="s-games" class="screen">
+  <div class="back-row"><button class="back-btn" onclick="goQuests()">← Back</button><div class="gtitle">🎮 Hero Training</div></div>
+  <div class="ebanner"><div class="eicon">💰</div><div class="etext">Earn R$ on your <strong>first play</strong> each day — then play free forever! 🎮</div></div>
+  <div class="gcards">
+    <div class="gc whack" id="gc-whack" onclick="startWhack()">
+      <div class="gcnew">🔥 HOT</div>
+      <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Whack-a-ZORDAK!</div><div class="gcdesc">ZORDAK clones pop up — but don't hit your sibling! 👀</div><div class="gcbadge" id="hs-whack">💰 Up to +5 R$</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc bubble" id="gc-bubble" onclick="startBubble()">
+      <div class="gcin"><div class="gcicon">🫧</div><div class="gcbody"><div class="gcname">Bubble Math!</div><div class="gcdesc">Pop the right answer before it floats away!</div><div class="gcbadge" id="hs-bubble">💰 Up to +5 R$</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc memory" id="gc-memory" onclick="startMem()">
+      <div class="gcin"><div class="gcicon">🧠</div><div class="gcbody"><div class="gcname">Memory Quest</div><div class="gcdesc">Flip magical cards and find all the matching pairs!</div><div class="gcbadge" id="hs-memory">💰 +5 R$</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a);border:2px solid rgba(34,197,94,.5);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-pong" onclick="startPong()">
+      <div class="gcnew" style="background:#16a34a">👥 2P</div>
+      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Lorena vs Savio — same tablet, first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">💰 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc boss" id="gc-boss" onclick="startBoss()">
+      <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
+    </div>
+  </div>
+  <div class="bnav">
+    <button class="nb" onclick="goQuests()"><span class="ni">⚔️</span>Quests</button>
+    <button class="nb act"><span class="ni">🎮</span>Games</button>
+    <button class="nb" onclick="goPiggy()"><span class="ni">🐷</span>Piggy</button>
+    <button class="nb" onclick="goRedeem()"><span class="ni">🎁</span>Redeem</button>
+  </div>
+</div>
+
+<!-- WHACK A ZORDAK -->
+<div id="s-whack" class="screen">
+  <div style="background:radial-gradient(ellipse at 50% 30%,#3d0a0a,#0a0a1a 70%);padding:18px 14px 80px;min-height:100vh">
+  <div class="ghdr"><button class="back-btn" onclick="goGames()">← Back</button><h2>👹 Whack-a-ZORDAK!</h2><div class="sbox red"><div class="sv" id="wscore">0</div><div class="sl">HITS</div></div></div>
+  <div class="tbar-wrap"><div class="tbar" id="wbar"></div></div>
+  <div class="whint" id="whint">Tap ZORDAK as fast as you can! 💥</div>
+  <div class="holes" id="holes">
+    <div class="hole" onclick="whack(0)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(1)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(2)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(3)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(4)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(5)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(6)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(7)"><div class="hi">👹</div></div>
+    <div class="hole" onclick="whack(8)"><div class="hi">👹</div></div>
+  </div>
+  <div id="wres" style="display:none" class="wres"></div>
+  </div>
+</div>
+
+<!-- BUBBLE MATH -->
+<div id="s-bubble" class="screen">
+  <div class="bhdr"><button class="back-btn" onclick="goGames()">← Back</button><h2>🫧 Bubble Math</h2><div class="sbox purple"><div class="sv" id="bscore">0</div><div class="sl">SCORE</div></div></div>
+  <div class="bubq" id="bubq">? + ? = ?</div>
+  <div class="bubhint">Pop the correct bubble! 🫧</div>
+  <div class="bubarena" id="bubarena"></div>
+</div>
+
+<!-- MEMORY -->
+<div id="s-memory" class="screen">
+  <div style="background:radial-gradient(ellipse at 50% 0%,#0f2e1a,#0a0a1a 70%);padding:18px 14px 80px;min-height:100vh">
+  <div class="mhdr"><button class="back-btn" onclick="goGames()">← Back</button><h2>🧠 Memory Quest</h2><div class="sbox green"><div class="sv" id="mpairs">0/8</div><div class="sl">PAIRS</div></div></div>
+  <div class="mgrid" id="mgrid"></div>
+  </div>
+</div>
+
+<!-- BOSS BATTLE -->
+<div id="s-boss" class="screen">
+  <div style="padding:18px 14px 80px;min-height:100vh">
+  <div style="display:flex;justify-content:space-between;margin-bottom:12px"><button class="back-btn" onclick="goGames()">← Back</button><div class="sbox purple"><div class="sv" id="boss-score">0/3</div><div class="sl">CORRECT</div></div></div>
+  <span class="bossface">👹</span>
+  <div class="bossname">ZORDAK!</div>
+  <div class="bosshpw"><div class="bosshp"><div class="bosshpf" id="bosshpf" style="width:100%"></div></div></div>
+  <div class="bossqc" id="bossqc"><div class="bossq" id="bossq">Get ready...</div><div class="bossopts" id="bossopts"></div></div>
+  <div id="bossres" style="display:none;text-align:center;padding:20px 0"></div>
+  </div>
+</div>
+
+<!-- PIGGY BANK -->
+<div id="s-piggy" class="screen">
+  <div class="piggyhdr"><span class="piggyfx">🐷</span><div class="pigtitle">Piggy Bank</div><div class="pigsub">+20% every Sunday 📈</div></div>
+  <div class="pigcard">
+    <div class="pigamt" id="pig-amt">0</div>
+    <div class="piglbl">R$ saved</div>
+    <div class="pigrate" id="pig-rate">🔒 Deposit to start growing!</div>
+  </div>
+  <div class="pigproj" id="pig-proj" style="display:none">
+    <div class="pptitle">📊 Growth Projection (20%/week)</div>
+    <div id="proj-rows"></div>
+  </div>
+  <div class="dep-label">💰 Deposit R$</div>
+  <div class="depbtns">
+    <button class="depbtn" id="dep10" onclick="deposit(10)">+10 R$</button>
+    <button class="depbtn" id="dep20" onclick="deposit(20)">+20 R$</button>
+    <button class="depbtn" id="dep50" onclick="deposit(50)">+50 R$</button>
+    <button class="depbtn" id="dep100" onclick="deposit(100)">+100 R$</button>
+  </div>
+  <button class="wdbtn" onclick="withdrawPiggy()">💸 Withdraw (PIN required)</button>
+  <div class="bnav">
+    <button class="nb" onclick="goQuests()"><span class="ni">⚔️</span>Quests</button>
+    <button class="nb" onclick="goGames()"><span class="ni">🎮</span>Games</button>
+    <button class="nb act"><span class="ni">🐷</span>Piggy</button>
+    <button class="nb" onclick="goRedeem()"><span class="ni">🎁</span>Redeem</button>
+  </div>
+</div>
+
+<!-- REDEEM -->
+<div id="s-redeem" class="screen">
+  <div class="redtitle">🎮 Redeem</div>
+  <div class="redsub">Turn your R$ into real Robux!</div>
+  <div class="redwallet">
+    <div class="redamt" id="red-amt">0 R$</div>
+    <div class="redbr" id="red-br">= 0 real Robux<br>≈ $0.00</div>
+  </div>
+  <div class="mcards" id="mcards"></div>
+  <div class="bnav">
+    <button class="nb" onclick="goQuests()"><span class="ni">⚔️</span>Quests</button>
+    <button class="nb" onclick="goGames()"><span class="ni">🎮</span>Games</button>
+    <button class="nb" onclick="goPiggy()"><span class="ni">🐷</span>Piggy</button>
+    <button class="nb act"><span class="ni">🎁</span>Redeem</button>
+  </div>
+</div>
+
+<!-- PARENT MODE -->
+<div id="s-parent" class="screen">
+  <div class="ptitle">⚙️ Parent Mode</div>
+  <div class="psec">
+    <h3>👸 Lorena's Stats</h3>
+    <div class="srow"><span class="slbl">R$ Balance</span><span class="sval" id="p-lor-r">0</span></div>
+    <div class="srow"><span class="slbl">Total Earned</span><span class="sval" id="p-lor-te">0</span></div>
+    <div class="srow"><span class="slbl">Day Streak</span><span class="sval" id="p-lor-st">0</span></div>
+    <div class="srow"><span class="slbl">Piggy Bank</span><span class="sval" id="p-lor-pig">0 R$</span></div>
+    <div class="srow"><span class="slbl">Mood (7 days)</span><span class="sval" id="p-lor-mood">—</span></div>
+  </div>
+  <div class="psec">
+    <h3>🧙‍♂️ Savio's Stats</h3>
+    <div class="srow"><span class="slbl">R$ Balance</span><span class="sval" id="p-sav-r">0</span></div>
+    <div class="srow"><span class="slbl">Total Earned</span><span class="sval" id="p-sav-te">0</span></div>
+    <div class="srow"><span class="slbl">Day Streak</span><span class="sval" id="p-sav-st">0</span></div>
+    <div class="srow"><span class="slbl">Piggy Bank</span><span class="sval" id="p-sav-pig">0 R$</span></div>
+    <div class="srow"><span class="slbl">Mood (7 days)</span><span class="sval" id="p-sav-mood">—</span></div>
+  </div>
+  <div class="psec">
+    <h3>📬 Papa Quest Code</h3>
+    <div class="code-task-lbl" id="code-task-lbl">Select a quest to send</div>
+    <select class="qsel" id="papa-quest-sel">
+      <option value="shop">🛒 Help with Shopping (+15 R$)</option>
+      <option value="dog">🐕 Walk the Dog (+15 R$)</option>
+      <option value="clean">🧹 Help Clean (+10 R$)</option>
+      <option value="cook">🍳 Help Cook (+15 R$)</option>
+      <option value="letter">💌 Write a Letter (+10 R$)</option>
+    </select>
+    <button class="pbtn gold" onclick="genPapaCode()">🔑 Generate Code</button>
+    <div class="code-disp" id="code-disp" style="display:none"></div>
+  </div>
+  <div class="psec">
+    <h3>🔐 Kid PINs</h3>
+    <p style="font-size:11px;color:#64748b;margin-bottom:8px">Each kid enters their own PIN to open their profile. Leave empty = no PIN needed.</p>
+    <div class="srow"><span class="slbl">👩‍🎤 Lorena PIN</span><span class="sval" id="lor-pin-st">—</span></div>
+    <input class="pinp" type="password" id="lor-pin-inp" placeholder="4 digits for Lorena" maxlength="4" inputmode="numeric" style="margin-top:6px">
+    <button class="pbtn" onclick="setKidPin('lorena')" style="margin-bottom:8px">💾 Save Lorena PIN</button>
+    <button class="pbtn danger" onclick="clearKidPin('lorena')" style="font-size:11px">🗑 Remove Lorena PIN</button>
+    <div class="srow" style="margin-top:10px"><span class="slbl">🥷 Savio PIN</span><span class="sval" id="sav-pin-st">—</span></div>
+    <input class="pinp" type="password" id="sav-pin-inp" placeholder="4 digits for Savio" maxlength="4" inputmode="numeric" style="margin-top:6px">
+    <button class="pbtn" onclick="setKidPin('savio')" style="margin-bottom:8px">💾 Save Savio PIN</button>
+    <button class="pbtn danger" onclick="clearKidPin('savio')" style="font-size:11px">🗑 Remove Savio PIN</button>
+  </div>
+  <div class="psec">
+    <h3>⚙️ Settings</h3>
+    <div class="srow"><span class="slbl">Skip Cost</span><span class="sval" id="skip-cost-val">60 R$</span></div>
+    <input class="pinp" type="number" id="skip-cost-inp" placeholder="Skip cost (R$), default: 60" min="5" max="200">
+    <button class="pbtn" onclick="saveSkipCost()">Save Skip Cost</button>
+    <input class="pinp" type="password" id="new-pin-inp" placeholder="New PIN (4 digits)" maxlength="4" style="margin-top:8px">
+    <button class="pbtn" onclick="changePin()">Change PIN</button>
+  </div>
+  <div class="psec">
+    <h3>🔧 Tools</h3>
+    <button class="pbtn" onclick="resetDay()">🔄 Reset Today's Tasks</button>
+    <button class="pbtn" onclick="forcePiggyInterest()">🐷 Force Piggy Interest Now</button>
+    <button class="pbtn danger" style="margin-top:8px" onclick="leaveParent()">← Back to Hero Select</button>
+  </div>
+</div>
+
+<!-- MY PIN MODAL (kid sets own PIN) -->
+<div id="mypin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center">
+  <div style="background:#1e1040;border:2px solid rgba(124,58,237,.5);border-radius:22px;padding:24px 20px;width:90%;max-width:320px;text-align:center">
+    <div id="mypin-emoji" style="font-size:44px">🔐</div>
+    <div id="mypin-title" style="font-family:'Bangers',cursive;font-size:26px;color:#c4b5fd;letter-spacing:2px;margin:6px 0">My Secret PIN</div>
+    <div id="mypin-sub" style="font-size:12px;color:#64748b;font-weight:700;margin-bottom:14px">Choose 4 numbers — only you know it!</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:6px">
+      <input id="mpi0" class="pci" maxlength="1" type="password" inputmode="numeric" oninput="mpiNext(0)" style="font-size:22px;text-align:center;width:48px;height:52px;background:rgba(255,255,255,.06);border:2px solid rgba(124,58,237,.4);border-radius:12px;color:#fff">
+      <input id="mpi1" class="pci" maxlength="1" type="password" inputmode="numeric" oninput="mpiNext(1)" style="font-size:22px;text-align:center;width:48px;height:52px;background:rgba(255,255,255,.06);border:2px solid rgba(124,58,237,.4);border-radius:12px;color:#fff">
+      <input id="mpi2" class="pci" maxlength="1" type="password" inputmode="numeric" oninput="mpiNext(2)" style="font-size:22px;text-align:center;width:48px;height:52px;background:rgba(255,255,255,.06);border:2px solid rgba(124,58,237,.4);border-radius:12px;color:#fff">
+      <input id="mpi3" class="pci" maxlength="1" type="password" inputmode="numeric" oninput="mpiNext(3)" style="font-size:22px;text-align:center;width:48px;height:52px;background:rgba(255,255,255,.06);border:2px solid rgba(124,58,237,.4);border-radius:12px;color:#fff">
+    </div>
+    <div id="mypin-err" style="font-size:12px;color:#f87171;font-weight:700;min-height:18px;margin-bottom:8px"></div>
+    <button onclick="saveMyPin()" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:13px;padding:12px 0;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;width:100%;margin-bottom:8px">🔐 Save My PIN!</button>
+    <button onclick="closeMypinModal()" style="background:none;border:none;color:#475569;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
+  </div>
+</div>
+
+<!-- PIN MODAL -->
+<div id="pin-modal">
+  <div class="pinbox">
+    <div class="pintitle" id="pin-title">🔐 PIN Required</div>
+    <div class="pinsub" id="pin-sub">Enter 4-digit PIN</div>
+    <div class="pindots"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div><div class="pd" id="pd3"></div></div>
+    <div class="pinerr" id="pinerr"></div>
+    <div class="pinnumpad">
+      <div class="pk" onclick="pk(1)">1</div><div class="pk" onclick="pk(2)">2</div><div class="pk" onclick="pk(3)">3</div>
+      <div class="pk" onclick="pk(4)">4</div><div class="pk" onclick="pk(5)">5</div><div class="pk" onclick="pk(6)">6</div>
+      <div class="pk" onclick="pk(7)">7</div><div class="pk" onclick="pk(8)">8</div><div class="pk" onclick="pk(9)">9</div>
+      <div class="pk cnl" onclick="cancelPin()">Cancel</div><div class="pk" onclick="pk(0)">0</div><div class="pk clr" onclick="delPin()">⌫</div>
+    </div>
+  </div>
+</div>
+
+<!-- PONG -->
+<div id="s-pong" class="screen">
+  <div id="pong-ready" class="pong-ready">
+    <div style="font-family:'Bangers',cursive;font-size:52px;color:#f59e0b;letter-spacing:4px;text-shadow:0 0 30px rgba(245,158,11,.5)">🏓 PONG!</div>
+    <div class="pong-player-card sav">
+      <div style="font-size:40px">🥷</div>
+      <div style="font-family:'Bangers',cursive;font-size:30px;color:#93c5fd;letter-spacing:2px">SAVIO</div>
+      <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▲ PLAYS TOP — touch upper half</div>
+    </div>
+    <div class="pong-vs">VS</div>
+    <div class="pong-player-card lor">
+      <div style="font-size:40px">👩‍🎤</div>
+      <div style="font-family:'Bangers',cursive;font-size:30px;color:#f9a8d4;letter-spacing:2px">LORENA</div>
+      <div style="font-size:11px;color:#64748b;font-weight:700;margin-top:2px">▼ PLAYS BOTTOM — touch lower half</div>
+    </div>
+    <div style="font-size:12px;color:#475569;font-weight:700;text-align:center">First to <strong style="color:#f59e0b">7 points</strong> wins! 🏆</div>
+    <button class="pong-start-btn" onclick="launchPong()">LET'S PLAY! 🏓</button>
+    <button onclick="goGames()" style="background:none;border:none;color:#475569;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;padding:4px">← Back to Games</button>
+  </div>
+  <div id="pong-wrap" class="pong-wrap" style="display:none">
+    <div class="pong-hud top">
+      <div class="pong-name" style="color:#93c5fd">🥷 SAVIO</div>
+      <div class="pong-pts" id="pong-s-savio">0</div>
+    </div>
+    <div class="pong-hud bot">
+      <div class="pong-pts" id="pong-s-lorena">0</div>
+      <div class="pong-name" style="color:#f9a8d4">LORENA 👩‍🎤</div>
+    </div>
+    <canvas id="pong-canvas" style="display:block;width:100%;height:100%;touch-action:none"></canvas>
+  </div>
+  <div id="pong-result" class="pong-result"></div>
+</div>
+
+<!-- PAPA CODE MODAL -->
+<div id="papa-modal">
+  <div class="papabox">
+    <div class="papatitle">📬 Papa's Quest!</div>
+    <div class="papasub" id="papa-modal-sub">Enter the 4-letter code Papa gave you</div>
+    <div class="papaci">
+      <input class="pci" id="pci0" maxlength="1" oninput="pciNext(0)">
+      <input class="pci" id="pci1" maxlength="1" oninput="pciNext(1)">
+      <input class="pci" id="pci2" maxlength="1" oninput="pciNext(2)">
+      <input class="pci" id="pci3" maxlength="1" oninput="pciNext(3)">
+    </div>
+    <button class="papasub2" onclick="submitPapaCode()">✨ Accept Quest!</button>
+    <button class="papacnl" onclick="closePapaModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- CELEBRATE -->
+<div id="celebrate">
+  <div class="celbox">
+    <span class="celemoji" id="cel-emoji">🎉</span>
+    <div class="celtitle" id="cel-title">Amazing!</div>
+    <div class="celmsg" id="cel-msg">You earned R$!</div>
+    <button class="celclose" onclick="closeCelebrate()">Awesome! 🚀</button>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const SK='sk_v5';
+const MOODS=['😄','😊','😐','😕','😢'];
+const LEVELS=[
+  {min:0,name:'Apprentice',emoji:'🌱'},
+  {min:500,name:'Warrior',emoji:'⚔️'},
+  {min:1200,name:'Knight',emoji:'🛡️'},
+  {min:2500,name:'Champion',emoji:'🏆'},
+  {min:5000,name:'Legend',emoji:'⭐'}
+];
+const TASKS={
+  lorena:[
+    {id:'brush',emoji:'🦷',name:'Brush Teeth',reward:10,cat:''},
+    {id:'dressed',emoji:'👗',name:'Get Dressed',reward:10,cat:''},
+    {id:'school_bag',emoji:'🎒',name:'Pack School Bag',reward:10,cat:''},
+    {id:'lunch',emoji:'🥪',name:'Make Lunch',reward:10,cat:''},
+    {id:'read',emoji:'📖',name:'Read 15 min',reward:11,cat:'learn'},
+    {id:'shower',emoji:'🛁',name:'Shower',reward:10,cat:''},
+    {id:'room',emoji:'🌙',name:'Tidy Room',reward:10,cat:''}
+  ],
+  savio:[
+    {id:'brush',emoji:'🦷',name:'Brush Teeth',reward:10,cat:''},
+    {id:'dressed',emoji:'👕',name:'Get Dressed',reward:10,cat:''},
+    {id:'school_bag',emoji:'🎒',name:'Pack School Bag',reward:10,cat:''},
+    {id:'lunch',emoji:'🥪',name:'Make Lunch',reward:10,cat:''},
+    {id:'read',emoji:'📖',name:'Read 15 min',reward:11,cat:'learn'},
+    {id:'shower',emoji:'🛁',name:'Shower',reward:10,cat:''},
+    {id:'room',emoji:'🌙',name:'Tidy Room',reward:10,cat:''}
+  ]
+};
+// Bonus quests — optional, don't block Perfect Day, extra R$ if done
+const BONUS_TASKS={
+  lorena:[
+    {id:'draw',emoji:'🎨',name:'Draw or Paint',reward:11,cat:'chill'},
+    {id:'quiet',emoji:'🧘',name:'Quiet Time',reward:11,cat:'chill'},
+    {id:'dance',emoji:'💃',name:'Dance or Sing',reward:10,cat:'chill'}
+  ],
+  savio:[
+    {id:'chess',emoji:'♟️',name:'Chess 15 min',reward:12,cat:'edu'},
+    {id:'exercise',emoji:'🏃',name:'Exercise',reward:11,cat:'sport'},
+    {id:'quiet',emoji:'🧘',name:'Quiet Time',reward:11,cat:'chill'}
+  ]
+};
+const PAPA_QUESTS={
+  shop:{emoji:'🛒',name:'Help with Shopping',reward:15},
+  dog:{emoji:'🐕',name:'Walk the Dog',reward:15},
+  clean:{emoji:'🧹',name:'Help Clean',reward:10},
+  cook:{emoji:'🍳',name:'Help Cook',reward:15},
+  letter:{emoji:'💌',name:'Write a Letter',reward:10}
+};
+const BOSS_QS=[
+  {q:'12 × 7',a:'84',opts:['72','81','84','88']},
+  {q:'100 − 37',a:'63',opts:['53','63','73','67']},
+  {q:'9 × 9',a:'81',opts:['72','81','84','78']},
+  {q:'8 × 8',a:'64',opts:['56','62','64','68']},
+  {q:'144 ÷ 12',a:'12',opts:['11','12','13','14']},
+  {q:'7 × 11',a:'77',opts:['67','77','70','78']},
+  {q:'15 × 4',a:'60',opts:['54','60','64','56']}
+];
+
+// ===== STATE =====
+let S;
+function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:''};}
+function defS(){return{profiles:{lorena:defP('lorena'),savio:defP('savio')},parentPin:'1234',currency:'usd',currentHero:null,papaCode:null,skipCost:60};}
+function load(){
+  try{S=JSON.parse(localStorage.getItem(SK))||defS();}catch(e){S=defS();}
+  if(!S.profiles)S=defS();
+  ['lorena','savio'].forEach(h=>{if(!S.profiles[h])S.profiles[h]=defP(h);});
+  // sk_v4 migration
+  try{
+    const old=localStorage.getItem('sk_v4');
+    if(old&&!S._migrated){
+      const v4=JSON.parse(old);
+      ['lorena','savio'].forEach(h=>{
+        if(v4.profiles?.[h]?.robux){
+          S.profiles[h].robux=Math.round(v4.profiles[h].robux*5);
+          S.profiles[h].totalEarned=S.profiles[h].robux;
+        }
+      });
+      S._migrated=true;save();
+    }
+  }catch(e){}
+}
+function save(){localStorage.setItem(SK,JSON.stringify(S));}
+function getP(){return S.profiles[S.currentHero];}
+function today(){return new Date().toISOString().split('T')[0];}
+function getDay(){return new Date().getDay();}
+function getLevel(p){
+  const te=p.totalEarned||0;let lv=LEVELS[0];
+  for(const l of LEVELS){if(te>=l.min)lv=l;}
+  return lv;
+}
+
+// ===== CALENDAR TASKS =====
+function getCalTasks(heroId){
+  const d=getDay(),t=[];
+  if(d===1&&heroId==='lorena')t.push({id:'gym_bag',emoji:'🤸',name:'Pack Gym Bag',reward:5,cat:'calendar'});
+  if(d===2&&heroId==='savio')t.push({id:'padel_bag',emoji:'🎾',name:'Pack Padel Bag',reward:5,cat:'calendar'});
+  if(d===0||d===6)t.push({id:'breakfast',emoji:'🥞',name:'Breakfast Together',reward:5,cat:'weekend'});
+  return t;
+}
+function getAllTasks(){
+  const p=getP();
+  const papa=(p.papaQuests?.[today()]||[]);
+  return[...TASKS[S.currentHero],...getCalTasks(S.currentHero),...papa];
+}
+function getBonusTasks(){return BONUS_TASKS[S.currentHero]||[];}
+
+// ===== NEW DAY =====
+function checkNewDay(){
+  const p=getP(),t=today();
+  if(p.lastActiveDay===t)return;
+  if(p.lastActiveDay){
+    if(p.perfectDays[p.lastActiveDay]){
+      p.streak=(p.streak||0)+1;
+      if(p.streak>0&&p.streak%7===0)p.pendingBonus=(p.pendingBonus||0)+100;
+    }else{p.streak=0;}
+  }
+  if(getDay()===0&&p.piggyBank.amount>0&&p.piggyBank.lastCompound!==t){
+    const int=Math.round(p.piggyBank.amount*.20);
+    p.piggyBank.amount+=int;p.piggyBank.lastCompound=t;
+    p.piggyInterestToday=int;
+  }
+  p.lastActiveDay=t;save();
+}
+
+// ===== CURRENCY =====
+function toFiat(r){
+  const c=S.currency||'usd';
+  if(c==='usd')return'$'+(r*0.99/400).toFixed(2);
+  if(c==='eur')return'€'+(r*0.93/400).toFixed(2);
+  return'Rp '+(Math.round(r*45)).toLocaleString();
+}
+function cycleCurrency(){
+  const o=['usd','eur','idr'];
+  S.currency=o[(o.indexOf(S.currency||'usd')+1)%3];save();
+  updateCoinDisp();
+}
+function updateCoinDisp(){
+  const p=getP();
+  document.getElementById('dash-coins').textContent=p.robux;
+  document.getElementById('dash-curr').textContent=toFiat(p.robux);
+}
+
+// ===== ECONOMY =====
+function addRobux(amount){
+  const p=getP();
+  const prev=Math.floor(p.robux/400);
+  p.robux+=amount;p.totalEarned=(p.totalEarned||0)+amount;
+  save();
+  const next=Math.floor(p.robux/400);
+  if(next>prev&&p.robux>=400){
+    setTimeout(()=>showCelebrate('🏆',next*400+' R$ Milestone!','= '+next*80+' real Robux! 🎮<br>Ask Papa to redeem! You\'re amazing!'),200);
+  }
+  updateDash();
+}
+function spendRobux(amount){
+  const p=getP();if(p.robux<amount)return false;
+  p.robux-=amount;save();updateDash();return true;
+}
+
+// ===== TASKS =====
+function completeTask(tid){
+  const p=getP(),t=today();
+  if(!p.dailyTasks[t])p.dailyTasks[t]={};
+  if(p.dailyTasks[t][tid])return;
+  const tasks=getAllTasks();
+  const task=tasks.find(x=>x.id===tid);
+  if(!task)return;
+  p.dailyTasks[t][tid]=true;save();
+  addRobux(task.reward);
+  checkPerfect();renderQuests();
+}
+function familySkip(tid){
+  const p=getP(),t=today();
+  if(!p.dailyTasks[t])p.dailyTasks[t]={};
+  p.dailyTasks[t][tid]='family_skip';save();renderQuests();updateDash();
+}
+function skipTask(tid){
+  const cost=S.skipCost||60;
+  requirePin('Skip Task ⚠️','Skip costs '+cost+' R$! Are you sure?',()=>{
+    const p=getP();
+    if(p.robux<cost){showCelebrate('😅','Not enough R$!','You need '+cost+' R$ to skip. Keep earning!');return;}
+    spendRobux(cost);
+    const t=today();
+    if(!p.dailyTasks[t])p.dailyTasks[t]={};
+    p.dailyTasks[t][tid]='skip';save();
+    renderQuests();updateDash();
+  });
+}
+function checkPerfect(){
+  const p=getP(),t=today();
+  if(p.perfectDays[t])return;
+  const tasks=getAllTasks(),done=p.dailyTasks[t]||{};
+  const allDone=tasks.length>0&&tasks.every(tk=>done[tk.id]===true||done[tk.id]==='family_skip');
+  if(allDone){
+    p.perfectDays[t]=true;save();
+    setTimeout(()=>{showCelebrate('⭐','Perfect Day!','+30 R$ bonus! 🎉<br>You completed ALL quests!<br>ZORDAK is DEFEATED! 💥');addRobux(30);},300);
+  }
+}
+
+// ===== RENDER DASHBOARD =====
+function updateDash(){
+  const p=getP();
+  updateCoinDisp();
+  const tasks=getAllTasks(),done=p.dailyTasks[today()]||{};
+  const doneCount=tasks.filter(t=>done[t.id]===true||done[t.id]==='family_skip').length;
+  const total=tasks.length;
+  const hp=total>0?Math.max(0,Math.round((1-doneCount/total)*100)):100;
+  document.getElementById('zhpfill').style.width=hp+'%';
+  const left=total-doneCount;
+  document.getElementById('ztip').textContent=left>0?'Complete '+left+' more quest'+(left>1?'s':'')+' to weaken him!':'🎉 ZORDAK is defeated today!';
+  const r=p.robux,milestone=Math.max(400,Math.ceil((r+1)/400)*400);
+  const prev=Math.floor(r/400)*400;
+  const pct=milestone>prev?Math.round((r-prev)/(milestone-prev)*100):100;
+  document.getElementById('cpfill').style.width=pct+'%';
+  document.getElementById('cpval').textContent=r+' / '+milestone+' R$';
+  document.getElementById('cpbot').textContent=(milestone-r)+' R$ to go → '+Math.floor(milestone/5)+' real Robux 🎮';
+  const str=p.streak||0;
+  document.getElementById('streak-txt').textContent='🔥 '+str+' Day Streak';
+  document.getElementById('streak-sub').textContent=str>=7?'🏆 Weekly bonus reached!':(7-str)+' days to weekly bonus!';
+  const hasPapa=S.papaCode&&S.papaCode.expires>Date.now();
+  document.getElementById('papa-row').style.display=hasPapa?'flex':'none';
+}
+function renderMood(){
+  const p=getP(),t=today(),picked=p.moodLog[t];
+  document.querySelectorAll('.mb').forEach((b,i)=>b.classList.toggle('picked',picked===i));
+  document.getElementById('mood-lbl').textContent=picked!==undefined?'You feel '+MOODS[picked]+' today!':'How are you feeling today? 🌟';
+}
+function renderQuests(){
+  const p=getP(),t=today(),done=p.dailyTasks[t]||{};
+  const tasks=getAllTasks();
+  const catBadge={learn:'<span class="qcat cat-learn">📖 +1</span>',chill:'<span class="qcat cat-chill">✨ bonus</span>',edu:'<span class="qcat cat-edu">🧠 +2</span>',sport:'<span class="qcat cat-sport">🏃 bonus</span>',weekend:'<span class="qcat cat-sport">📅 Weekend</span>',calendar:'<span class="qcat cat-sport">📅 Today</span>'};
+  function taskHtml(task){
+    const st=done[task.id];
+    const isDone=st===true,isSkip=st==='skip',isFSkip=st==='family_skip',isWknd=task.cat==='weekend';
+    let action='';
+    if(isDone)action='<div class="done-stamp">✅</div>';
+    else if(isSkip)action='<div style="color:#64748b;font-size:11px;text-align:center">Skipped 💨</div>';
+    else if(isFSkip)action='<div style="color:#64748b;font-size:11px;text-align:center">We went out 💛</div>';
+    else if(isWknd)action='<button class="dobtn wbtn" onclick="completeTask(\''+task.id+'\')">Done! ✓</button><button class="fskip" onclick="familySkip(\''+task.id+'\')">We went out 💛</button>';
+    else action='<button class="dobtn" onclick="completeTask(\''+task.id+'\')">Done! ✓</button><button class="skipbtn" onclick="skipTask(\''+task.id+'\')">Skip -'+(S.skipCost||60)+'R$</button>';
+    return'<div class="qcard'+(isDone?' done':'')+(isWknd?' wknd':'')+(isSkip||isFSkip?' skip':'')+'">'+
+      '<div class="qorb">'+task.emoji+'</div>'+
+      '<div class="qbody"><div class="qtitle"'+(isDone?' style="color:#86efac"':'')+'>'+task.name+'</div>'+
+      '<div class="qmeta"><span class="qrew">+'+task.reward+' R$</span>'+(catBadge[task.cat]||'')+'</div></div>'+
+      '<div class="qact">'+action+'</div></div>';
+  }
+  const bonusTasks=getBonusTasks();
+  let html=tasks.map(t=>taskHtml(t)).join('');
+  if(bonusTasks.length){
+    html+='<div class="sec-label" style="margin-top:14px">🌟 Bonus Quests <span style="font-size:12px;color:#64748b;font-family:\'Nunito\',sans-serif;font-weight:700">(optional — just for fun!)</span></div>';
+    html+=bonusTasks.map(t=>taskHtml(t)).join('');
+  }
+  document.getElementById('quest-list').innerHTML=html;
+}
+function renderGamesHub(){
+  const p=getP(),gp=p.gamesPlayed[today()]||{};
+  const hs=p.highScores||{};
+  ['whack','bubble','memory','boss','pong'].forEach(g=>{
+    const el=document.getElementById('gc-'+g);
+    if(el)el.classList.toggle('done-today',!!gp[g]);
+  });
+  if(hs.whack>0){const e=document.getElementById('hs-whack');if(e)e.innerHTML='💰 Up to +5 R$ &nbsp;🏆 Best: '+hs.whack+' hits';}
+  if(hs.bubble>0){const e=document.getElementById('hs-bubble');if(e)e.innerHTML='💰 Up to +5 R$ &nbsp;🏆 Best: '+hs.bubble+'/5';}
+  if(hs.pong>0){const e=document.getElementById('hs-pong');if(e)e.innerHTML='💰 Winner +8 R$ &nbsp;🏆 Wins: '+hs.pong;}
+  const isSun=getDay()===0;
+  document.getElementById('boss-desc').textContent=isSun?'⚔️ ZORDAK is here! Answer 3 questions to defeat him and win 50 R$!':'Every Sunday, ZORDAK appears for the ultimate battle!';
+  document.getElementById('boss-arrow').textContent=isSun?'▶':'🔒';
+}
+function renderPiggy(){
+  const p=getP(),amt=p.piggyBank.amount||0;
+  document.getElementById('pig-amt').textContent=amt;
+  document.getElementById('pig-rate').textContent=amt>0?'Next Sunday: '+amt+' → '+Math.round(amt*1.2)+' R$ (+20%)':'🔒 Deposit to start growing!';
+  const proj=document.getElementById('pig-proj');
+  if(amt>0){
+    proj.style.display='block';
+    let v=amt;
+    document.getElementById('proj-rows').innerHTML=[1,2,3,4].map(w=>{v=Math.round(v*1.2);return'<div class="pprow"><span>Week '+w+'</span><strong>'+v+' R$</strong></div>';}).join('');
+  }else{proj.style.display='none';}
+  const r=p.robux;
+  [{id:'dep10',val:10},{id:'dep20',val:20},{id:'dep50',val:50},{id:'dep100',val:100}].forEach(x=>{
+    document.getElementById(x.id).disabled=r<x.val;
+  });
+}
+function renderRedeem(){
+  const p=getP();
+  document.getElementById('red-amt').textContent=p.robux+' R$';
+  document.getElementById('red-br').innerHTML='= '+Math.floor(p.robux/5)+' real Robux<br>≈ '+toFiat(p.robux);
+  const tiers=[{cost:400,real:80},{cost:800,real:160},{cost:2000,real:400}];
+  document.getElementById('mcards').innerHTML=tiers.map(t=>{
+    const can=p.robux>=t.cost;
+    return'<div class="mcard '+(can?'unlocked':'locked')+'">'+
+      '<div class="mcleft"><div class="mcr">'+t.cost+' R$</div><div class="mcreal">= '+t.real+' real Robux</div><div class="mccash">≈ '+toFiat(t.cost)+'</div></div>'+
+      '<button class="mcright" '+(can?'':'disabled')+' onclick="redeemRobux('+t.cost+','+t.real+')">'+(can?'Redeem! 🎮':'🔒 Locked')+'</button></div>';
+  }).join('');
+}
+function renderParent(){
+  ['lorena','savio'].forEach(h=>{
+    const p=S.profiles[h],pre=h==='lorena'?'lor':'sav';
+    document.getElementById('p-'+pre+'-r').textContent=p.robux+' R$';
+    document.getElementById('p-'+pre+'-te').textContent=(p.totalEarned||0)+' R$';
+    document.getElementById('p-'+pre+'-st').textContent=(p.streak||0)+' days';
+    document.getElementById('p-'+pre+'-pig').textContent=(p.piggyBank?.amount||0)+' R$';
+    const entries=Object.entries(p.moodLog||{}).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);
+    document.getElementById('p-'+pre+'-mood').textContent=entries.length?entries.map(([,m])=>MOODS[m]).join(' '):'No data';
+  });
+  document.getElementById('skip-cost-val').textContent=(S.skipCost||60)+' R$';
+  if(S.papaCode){document.getElementById('code-disp').style.display='block';document.getElementById('code-disp').textContent=S.papaCode.code;}
+  // Kid PIN status
+  const lps=document.getElementById('lor-pin-st'),sps=document.getElementById('sav-pin-st');
+  if(lps)lps.textContent=S.profiles.lorena.pin?'✅ Set':'Not set';
+  if(sps)sps.textContent=S.profiles.savio.pin?'✅ Set':'Not set';
+}
+
+// ===== NAVIGATION =====
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function selectHero(id){
+  const p=S.profiles[id];
+  if(p.pin&&p.pin.length===4){
+    requirePin(
+      (id==='lorena'?'👩‍🎤 Lorena':'🥷 Savio')+' — Enter PIN',
+      'Your secret code 🔐',
+      ()=>enterHero(id),
+      p.pin
+    );
+  }else{enterHero(id);}
+}
+function enterHero(id){
+  S.currentHero=id;save();checkNewDay();
+  const p=getP();
+  if(p.pendingBonus>0){const b=p.pendingBonus;p.pendingBonus=0;save();setTimeout(()=>{showCelebrate('🔥','7-Day Streak!','+'+b+' R$ bonus for 7 perfect days in a row! 🏆');addRobux(b);},600);}
+  if(p.piggyInterestToday){const i=p.piggyInterestToday;delete p.piggyInterestToday;save();setTimeout(()=>showCelebrate('🐷','Piggy Bank grew!','+'+i+' R$ interest added this Sunday! 📈'),1000);}
+  const lv=getLevel(p);
+  const av=document.getElementById('dash-av');
+  av.textContent=id==='lorena'?'👩‍🎤':'🥷';av.className='hero-av'+(id==='savio'?' sav':'');
+  const dn=document.getElementById('dash-name');
+  dn.textContent=id==='lorena'?'Lorena':'Savio';dn.className='dash-name '+(id==='lorena'?'lor':'sav');
+  document.getElementById('dash-rank').textContent=lv.emoji+' '+lv.name+' Hero';
+  renderWordOfDay();
+  const lockIcon=document.getElementById('pin-lock-icon');
+  if(lockIcon)lockIcon.textContent=getP().pin?'🔒':'🔓';
+  updateDash();renderMood();renderQuests();showScreen('s-dash');
+}
+function goQuests(){showScreen('s-dash');updateDash();renderMood();renderQuests();}
+function goGames(){renderGamesHub();showScreen('s-games');}
+function goPiggy(){renderPiggy();showScreen('s-piggy');}
+function goRedeem(){renderRedeem();showScreen('s-redeem');}
+function openParent(){requirePin('Parent Mode 🔐','Enter your 4-digit PIN',()=>{renderParent();showScreen('s-parent');});}
+function leaveParent(){showScreen('s-hero');updateHeroSelect();}
+function updateHeroSelect(){
+  ['lorena','savio'].forEach(h=>{
+    const p=S.profiles[h],lv=getLevel(p);
+    document.getElementById('rank-'+h).textContent=lv.emoji+' '+lv.name;
+    document.getElementById('coins-'+h).textContent='💰 '+p.robux+' R$';
+  });
+}
+
+// ===== WORD OF THE DAY (Lorena reading) =====
+const WORDS_OF_DAY=[
+  // Simple (3-4 letters)
+  {w:'SUN',e:'☀️'},{w:'MOON',e:'🌙'},{w:'STAR',e:'⭐'},{w:'FISH',e:'🐠'},
+  {w:'BIRD',e:'🐦'},{w:'CAKE',e:'🎂'},{w:'BOOK',e:'📖'},{w:'TREE',e:'🌳'},
+  // Medium (5-6 letters)
+  {w:'APPLE',e:'🍎'},{w:'HAPPY',e:'😊'},{w:'DANCE',e:'💃'},{w:'MUSIC',e:'🎵'},
+  {w:'HEART',e:'💗'},{w:'DREAM',e:'💭'},{w:'CLOUD',e:'☁️'},{w:'SMILE',e:'😄'},
+  {w:'FLOWER',e:'🌸'},{w:'DRAGON',e:'🐉'},{w:'MAGIC',e:'✨'},{w:'BRAVE',e:'💪'},
+  {w:'OCEAN',e:'🌊'},{w:'TIGER',e:'🐯'},{w:'PIZZA',e:'🍕'},{w:'CROWN',e:'👑'},
+  // Longer (7+ letters) — 8 year olds can handle this!
+  {w:'RAINBOW',e:'🌈'},{w:'UNICORN',e:'🦄'},{w:'DOLPHIN',e:'🐬'},
+  {w:'PENGUIN',e:'🐧'},{w:'GIRAFFE',e:'🦒'},{w:'MONSTER',e:'👾'},
+  {w:'TREASURE',e:'💎'},{w:'PRINCESS',e:'👸'},{w:'ELEPHANT',e:'🐘'},
+  {w:'BUTTERFLY',e:'🦋'},{w:'ADVENTURE',e:'🗺️'},{w:'CHOCOLATE',e:'🍫'},
+  {w:'BEAUTIFUL',e:'🌺'},{w:'WONDERFUL',e:'🌟'},{w:'FANTASTIC',e:'🎉'},
+  {w:'STRAWBERRY',e:'🍓'},{w:'SUPERSTAR',e:'🌠'},{w:'FRIENDSHIP',e:'🤝'},
+  {w:'MAGICAL',e:'🪄'},{w:'SPARKLING',e:'✨'},{w:'CHAMPION',e:'🏆'},
+];
+function renderWordOfDay(){
+  const el=document.getElementById('word-of-day');
+  if(!el)return;
+  if(S.currentHero!=='lorena'){el.style.display='none';return;}
+  const d=new Date();
+  const idx=(d.getDate()+d.getMonth()*31)%WORDS_OF_DAY.length;
+  const w=WORDS_OF_DAY[idx];
+  el.style.display='block';
+  document.getElementById('wod-emoji').textContent=w.e;
+  document.getElementById('wod-word').textContent=w.w;
+  // Spell it out with spaces for easier reading
+  document.getElementById('wod-hint').textContent=w.w.split('').join(' · ')+'  👆 say each letter!';
+}
+
+// ===== MOOD =====
+function setMood(i){const p=getP();p.moodLog[today()]=i;save();renderMood();}
+
+// ===== PIN =====
+let pinBuf='',pinCb=null,pinExpected=null;
+function requirePin(title,sub,cb,expectedPin){
+  pinBuf='';pinCb=cb;pinExpected=expectedPin!==undefined?String(expectedPin):null;
+  document.getElementById('pin-title').textContent=title||'🔐 PIN Required';
+  document.getElementById('pin-sub').textContent=sub||'Enter 4-digit PIN';
+  document.getElementById('pinerr').textContent='';
+  updatePinDots();document.getElementById('pin-modal').classList.add('show');
+}
+function pk(n){
+  if(pinBuf.length>=4)return;
+  pinBuf+=n;updatePinDots();
+  if(pinBuf.length===4){
+    const target=pinExpected!==null?pinExpected:String(S.parentPin||'1234');
+    if(pinBuf===target){
+      document.getElementById('pin-modal').classList.remove('show');
+      pinBuf='';pinExpected=null;if(pinCb)pinCb();
+    }else{
+      const err=document.getElementById('pinerr');
+      err.textContent='Wrong PIN! Try again. ❌';err.classList.add('shake');
+      setTimeout(()=>err.classList.remove('shake'),400);
+      pinBuf='';updatePinDots();
+    }
+  }
+}
+function delPin(){pinBuf=pinBuf.slice(0,-1);updatePinDots();}
+function cancelPin(){document.getElementById('pin-modal').classList.remove('show');pinBuf='';pinExpected=null;}
+function updatePinDots(){for(let i=0;i<4;i++)document.getElementById('pd'+i).classList.toggle('filled',i<pinBuf.length);}
+
+// ===== MY PIN (kid sets own) =====
+let mypinStep=0; // 0=set new, 1=confirm, 2=change(verify old first)
+let mypinFirst='';
+function openMyPin(){
+  const p=getP();
+  const hero=S.currentHero;
+  const modal=document.getElementById('mypin-modal');
+  modal.style.display='flex';
+  ['mpi0','mpi1','mpi2','mpi3'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('mypin-err').textContent='';
+  document.getElementById('mypin-emoji').textContent=hero==='lorena'?'👩‍🎤':'🥷';
+  if(!p.pin){
+    mypinStep=0;mypinFirst='';
+    document.getElementById('mypin-title').textContent='Create My PIN';
+    document.getElementById('mypin-sub').textContent='Choose 4 secret numbers 🤫';
+  }else{
+    mypinStep=2;mypinFirst='';
+    document.getElementById('mypin-title').textContent='Change My PIN';
+    document.getElementById('mypin-sub').textContent='Enter your current PIN first 🔐';
+  }
+  setTimeout(()=>document.getElementById('mpi0').focus(),100);
+}
+function mpiNext(i){
+  const val=document.getElementById('mpi'+i).value;
+  if(!/^\d$/.test(val)){document.getElementById('mpi'+i).value='';return;}
+  if(i<3)setTimeout(()=>document.getElementById('mpi'+(i+1)).focus(),50);
+}
+function getMpiVal(){return['mpi0','mpi1','mpi2','mpi3'].map(id=>document.getElementById(id).value).join('');}
+function clearMpi(){['mpi0','mpi1','mpi2','mpi3'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('mpi0').focus();}
+function saveMyPin(){
+  const val=getMpiVal();
+  if(val.length!==4||!/^\d{4}$/.test(val)){
+    document.getElementById('mypin-err').textContent='Enter exactly 4 numbers!';return;
+  }
+  const p=getP();
+  if(mypinStep===0){
+    // First time: ask to confirm
+    mypinFirst=val;mypinStep=1;
+    document.getElementById('mypin-title').textContent='Confirm PIN';
+    document.getElementById('mypin-sub').textContent='Type the same 4 numbers again 🔁';
+    document.getElementById('mypin-err').textContent='';
+    clearMpi();
+  }else if(mypinStep===1){
+    // Confirm
+    if(val!==mypinFirst){
+      document.getElementById('mypin-err').textContent="Didn't match! Try again.";
+      mypinStep=0;mypinFirst='';
+      document.getElementById('mypin-title').textContent='Create My PIN';
+      document.getElementById('mypin-sub').textContent='Choose 4 secret numbers 🤫';
+      clearMpi();return;
+    }
+    p.pin=val;save();
+    document.getElementById('pin-lock-icon').textContent='🔒';
+    closeMypinModal();
+    showCelebrate('🔐','PIN saved!','Your secret code is set! Only YOU know it! 🤫');
+  }else if(mypinStep===2){
+    // Verify old PIN
+    if(val!==p.pin){
+      document.getElementById('mypin-err').textContent='Wrong PIN! Try again.';
+      clearMpi();return;
+    }
+    mypinFirst='';mypinStep=0;
+    document.getElementById('mypin-title').textContent='New PIN';
+    document.getElementById('mypin-sub').textContent='Choose your new 4 numbers 🆕';
+    document.getElementById('mypin-err').textContent='';
+    clearMpi();
+  }
+}
+function closeMypinModal(){document.getElementById('mypin-modal').style.display='none';}
+
+// ===== KID PIN (parent sets) =====
+function setKidPin(heroId){
+  const inp=document.getElementById(heroId==='lorena'?'lor-pin-inp':'sav-pin-inp');
+  const val=(inp.value||'').trim();
+  if(!/^\d{4}$/.test(val)){
+    alert('PIN must be exactly 4 numbers! Example: 1234');return;
+  }
+  S.profiles[heroId].pin=val;save();inp.value='';
+  renderParent();
+  alert('✅ '+(heroId==='lorena'?'Lorena':'Savio')+"'s PIN saved!");
+}
+function clearKidPin(heroId){
+  S.profiles[heroId].pin='';save();
+  renderParent();
+  alert('🗑 PIN removed for '+(heroId==='lorena'?'Lorena':'Savio'));
+}
+
+// ===== LOGO LONG PRESS =====
+let logoTimer=null;
+function logoHold(start){
+  if(start){
+    logoTimer=setTimeout(()=>{
+      logoTimer=null;
+      openParent();
+    },2000);
+  }else{clearTimeout(logoTimer);logoTimer=null;}
+}
+
+// ===== PAPA CODE =====
+function genPapaCode(){
+  const sel=document.getElementById('papa-quest-sel').value;
+  const q={...PAPA_QUESTS[sel],id:'papa_'+Date.now()};
+  const chars='ABCDEFHJKLMNPQRSTUVWXYZ23456789';
+  const code=Array(4).fill(0).map(()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  S.papaCode={code,task:q,expires:Date.now()+86400000};save();
+  document.getElementById('code-disp').style.display='block';
+  document.getElementById('code-disp').textContent=code;
+  document.getElementById('code-task-lbl').textContent=q.emoji+' '+q.name+' (+'+q.reward+' R$)';
+}
+function openPapaModal(){
+  ['pci0','pci1','pci2','pci3'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('papa-modal-sub').textContent='Enter the 4-letter code Papa gave you';
+  document.getElementById('papa-modal').classList.add('show');
+  setTimeout(()=>document.getElementById('pci0').focus(),100);
+}
+function closePapaModal(){document.getElementById('papa-modal').classList.remove('show');}
+function pciNext(i){
+  const v=document.getElementById('pci'+i).value;
+  if(v&&i<3)document.getElementById('pci'+(i+1)).focus();
+}
+function submitPapaCode(){
+  const code=['pci0','pci1','pci2','pci3'].map(id=>document.getElementById(id).value).join('').toUpperCase();
+  if(code.length<4){document.getElementById('papa-modal-sub').textContent='⚠️ Enter all 4 characters!';return;}
+  if(!S.papaCode||S.papaCode.expires<Date.now()){document.getElementById('papa-modal-sub').textContent='⚠️ No active Papa code!';return;}
+  if(S.papaCode.code!==code){document.getElementById('papa-modal-sub').textContent='⚠️ Wrong code! Ask Papa again.';return;}
+  const q=S.papaCode.task,p=getP(),t=today();
+  if(!p.papaQuests)p.papaQuests={};
+  if(!p.papaQuests[t])p.papaQuests[t]=[];
+  p.papaQuests[t].push(q);S.papaCode=null;save();
+  closePapaModal();
+  showCelebrate('📬','Papa Quest!',q.emoji+' '+q.name+'! (+'+q.reward+' R$)<br>Check your quest list!');
+  renderQuests();updateDash();
+}
+
+// ===== REDEEM =====
+function redeemRobux(cost,real){
+  requirePin('Redeem Robux 🎮','Papa will buy '+real+' real Robux for you!',()=>{
+    if(!spendRobux(cost))return;
+    renderRedeem();
+    showCelebrate('🎮','Robux Redeemed!',real+' real Robux are coming! 🎉<br>Ask Papa to buy the package!<br>Keep earning more! 💪');
+  });
+}
+
+// ===== PIGGY BANK =====
+function deposit(amount){
+  const p=getP();
+  if(p.robux<amount){showCelebrate('😅','Not enough!','You need '+amount+' R$ to deposit.');return;}
+  spendRobux(amount);
+  p.piggyBank.amount=(p.piggyBank.amount||0)+amount;
+  if(!p.piggyBank.depositedAt)p.piggyBank.depositedAt=today();
+  save();renderPiggy();updateDash();
+  showCelebrate('🐷','Saved!',amount+' R$ added to your Piggy Bank!<br>It grows +20% every Sunday! 📈');
+}
+function withdrawPiggy(){
+  requirePin('Withdraw Piggy Bank 💸','Parent confirms withdrawal',()=>{
+    const p=getP(),amt=p.piggyBank.amount||0;
+    if(!amt){showCelebrate('😅','Piggy is empty!','Nothing to withdraw yet!');return;}
+    addRobux(amt);p.piggyBank={amount:0,lastCompound:null,depositedAt:null};save();renderPiggy();
+    showCelebrate('💸','Piggy Withdrawn!',amt+' R$ moved to your wallet! 🎉');
+  });
+}
+
+// ===== PARENT ACTIONS =====
+function saveSkipCost(){
+  const v=parseInt(document.getElementById('skip-cost-inp').value);
+  if(v>=5&&v<=200){S.skipCost=v;save();document.getElementById('skip-cost-val').textContent=v+' R$';showCelebrate('✅','Saved!','Skip cost updated to '+v+' R$');}
+  else showCelebrate('⚠️','Invalid!','Enter a number between 5 and 200.');
+}
+function changePin(){
+  const v=document.getElementById('new-pin-inp').value;
+  if(v.length===4&&/^\d{4}$/.test(v)){S.parentPin=v;save();showCelebrate('✅','PIN Changed!','New PIN saved! Remember it!');}
+  else showCelebrate('⚠️','Invalid!','PIN must be exactly 4 digits.');
+}
+function resetDay(){
+  const p=getP(),t=today();
+  delete p.dailyTasks[t];delete p.perfectDays[t];delete p.gamesPlayed[t];save();
+  showCelebrate('🔄','Day Reset!','Tasks reset for today!');
+  renderQuests();updateDash();
+}
+function forcePiggyInterest(){
+  const p=getP();
+  if(!(p.piggyBank.amount)){showCelebrate('😅','Empty Piggy!','No R$ in piggy bank yet.');return;}
+  const int=Math.round(p.piggyBank.amount*.20);
+  p.piggyBank.amount+=int;p.piggyBank.lastCompound=today();save();renderParent();
+  showCelebrate('🐷','Interest Added!','+'+int+' R$ added! Piggy Bank now has '+p.piggyBank.amount+' R$');
+}
+
+// ===== CELEBRATE =====
+function showCelebrate(emoji,title,msg){
+  document.getElementById('cel-emoji').textContent=emoji;
+  document.getElementById('cel-title').textContent=title;
+  document.getElementById('cel-msg').innerHTML=msg;
+  document.getElementById('celebrate').classList.add('show');
+  launchFW();
+}
+function closeCelebrate(){document.getElementById('celebrate').classList.remove('show');}
+function launchFW(){
+  const colors=['#a855f7','#f59e0b','#ec4899','#3b82f6','#10b981','#ef4444'];
+  for(let i=0;i<6;i++){
+    const fw=document.createElement('div');fw.className='fw';
+    fw.style.cssText='left:'+(15+Math.random()*70)+'vw;top:'+(10+Math.random()*40)+'vh';
+    for(let j=0;j<10;j++){
+      const s=document.createElement('div');s.className='fws';
+      const a=Math.random()*360,d=40+Math.random()*80;
+      s.style.cssText='background:'+colors[j%colors.length]+';--tx:'+Math.cos(a*Math.PI/180)*d+'px;--ty:'+Math.sin(a*Math.PI/180)*d+'px;animation-delay:'+(i*.12)+'s;animation-duration:'+(0.7+Math.random()*.4)+'s';
+      fw.appendChild(s);
+    }
+    document.body.appendChild(fw);setTimeout(()=>fw.remove(),1600+i*120);
+  }
+}
+
+// ===== WHACK A ZORDAK =====
+let wScore=0,wTimer=null,wActive=[],wActiveType={};
+function wFriendEmoji(){return S.currentHero==='lorena'?'🥷':'👩‍🎤';}
+function startWhack(){
+  const p=getP();
+  showScreen('s-whack');
+  wScore=0;wActive=[];wActiveType={};
+  document.getElementById('wscore').textContent='0';
+  document.getElementById('wres').style.display='none';
+  document.getElementById('holes').style.display='grid';
+  const friend=wFriendEmoji();
+  document.getElementById('whint').innerHTML='Hit 👹 ZORDAK — but <span style="color:#f87171">NOT '+friend+'!</span> 💥';
+  document.querySelectorAll('.hole').forEach(h=>{h.classList.remove('active','bonk','friend-hole');h.querySelector('.hi').textContent='👹';});
+  const bar=document.getElementById('wbar');
+  bar.style.transition='none';bar.style.width='100%';
+  setTimeout(()=>{bar.style.transition='width 20000ms linear';bar.style.width='0%';},50);
+  wTimer=setTimeout(endWhack,20000);schedW();
+}
+function schedW(){
+  if(!wTimer)return;
+  setTimeout(()=>{
+    if(!wTimer)return;
+    const holes=document.querySelectorAll('.hole');
+    const inactive=[...holes].filter((_,i)=>!wActive.includes(i));
+    if(!inactive.length){schedW();return;}
+    const hEl=inactive[Math.floor(Math.random()*inactive.length)];
+    const idx=[...holes].indexOf(hEl);
+    const isFriend=Math.random()<0.25;
+    wActive.push(idx);
+    wActiveType[idx]=isFriend?'friend':'zordak';
+    hEl.querySelector('.hi').textContent=isFriend?wFriendEmoji():'👹';
+    hEl.classList.toggle('friend-hole',isFriend);
+    hEl.classList.add('active');
+    const ht=setTimeout(()=>{hEl.classList.remove('active','friend-hole');wActive=wActive.filter(i=>i!==idx);delete wActiveType[idx];},(1100-Math.min(400,wScore*18)));
+    hEl.dataset.ht=ht;schedW();
+  },Math.max(350,880-wScore*28));
+}
+function whack(idx){
+  const hole=document.querySelectorAll('.hole')[idx];
+  if(!hole.classList.contains('active'))return;
+  clearTimeout(parseInt(hole.dataset.ht));
+  hole.classList.remove('active','friend-hole');hole.classList.add('bonk');
+  wActive=wActive.filter(i=>i!==idx);
+  const isFriend=wActiveType[idx]==='friend';
+  delete wActiveType[idx];
+  if(isFriend){
+    wScore=Math.max(0,wScore-2);
+    const star=document.createElement('div');star.className='bstar';star.textContent='😱';star.style.color='#f87171';
+    hole.appendChild(star);setTimeout(()=>star.remove(),600);
+    hole.style.borderColor='rgba(248,113,113,.8)';
+    setTimeout(()=>{hole.style.borderColor='';},500);
+  }else{
+    wScore++;
+    const star=document.createElement('div');star.className='bstar';star.textContent='💥';
+    hole.appendChild(star);setTimeout(()=>star.remove(),500);
+  }
+  document.getElementById('wscore').textContent=wScore;
+  setTimeout(()=>hole.classList.remove('bonk'),200);
+}
+function endWhack(){
+  wTimer=null;
+  document.querySelectorAll('.hole').forEach(h=>h.classList.remove('active','friend-hole'));
+  document.getElementById('holes').style.display='none';
+  const reward=Math.min(5,Math.floor(wScore/3));
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  const firstPlay=!p.gamesPlayed[t].whack;
+  p.gamesPlayed[t].whack=true;
+  if(!p.highScores)p.highScores={whack:0,bubble:0,memory:0,pong:0};
+  const isRecord=wScore>p.highScores.whack;
+  if(isRecord)p.highScores.whack=wScore;
+  save();
+  if(firstPlay&&reward>0)addRobux(reward);
+  const res=document.getElementById('wres');res.style.display='block';
+  res.innerHTML='<div style="font-size:52px">'+(wScore>=15?'🏆':wScore>=8?'⭐':'💪')+'</div>'+
+    '<div class="wrscore">'+wScore+' HITS!</div>'+
+    (firstPlay?'<div class="wrrew">💰 +'+reward+' R$ earned!</div>':'<div style="color:#64748b;font-size:13px;font-weight:700">Free play — no R$ (already earned today)</div>')+
+    (isRecord?'<div style="color:#f59e0b;font-weight:800;font-size:14px">🏆 NEW RECORD!</div>':'')+
+    '<div style="font-size:12px;color:#64748b;margin:5px 0">Best: '+p.highScores.whack+' hits</div>'+
+    '<button class="playagain" onclick="startWhack()">Play Again! 🔄</button>'+
+    '<br><button class="back-btn" style="margin-top:10px;display:inline-block" onclick="goGames()">← Back to Games</button>';
+}
+
+// ===== BUBBLE MATH =====
+let bScore=0,bQ=0,bCorrect=0,bTimers=[],bQuestions=[];
+function genWrongs(c,cnt,mn,mx){
+  const w=new Set();
+  while(w.size<cnt){const o=(Math.random()>.5?1:-1)*(1+Math.floor(Math.random()*3));const v=c+o;if(v!==c&&v>=mn&&v<=mx)w.add(v);}
+  while(w.size<cnt){const v=mn+Math.floor(Math.random()*(mx-mn+1));if(v!==c)w.add(v);}
+  return[...w];
+}
+function genBubQ(heroId){
+  if(heroId==='lorena'){
+    const op=Math.random()>.5?'+':'-';
+    const a=1+Math.floor(Math.random()*10),b2=1+Math.floor(Math.random()*10);
+    const[n1,n2]=op==='-'?[Math.max(a,b2),Math.min(a,b2)]:[a,b2];
+    const ans=op==='+'?n1+n2:n1-n2;
+    return{q:n1+' '+op+' '+n2+' = ?',a:ans,wrong:genWrongs(ans,3,0,20)};
+  }else{
+    if(Math.random()>.4){
+      const a=2+Math.floor(Math.random()*11),b2=2+Math.floor(Math.random()*11);
+      return{q:a+' × '+b2+' = ?',a:a*b2,wrong:genWrongs(a*b2,3,4,144)};
+    }else{
+      const b2=2+Math.floor(Math.random()*11),ans=2+Math.floor(Math.random()*11);
+      return{q:(b2*ans)+' ÷ '+b2+' = ?',a:ans,wrong:genWrongs(ans,3,2,12)};
+    }
+  }
+}
+function startBubble(){
+  const p=getP(),gp=p.gamesPlayed[today()]||{};
+  showScreen('s-bubble');
+  bScore=0;bQ=0;bCorrect=0;bTimers=[];
+  bQuestions=Array(5).fill(0).map(()=>genBubQ(S.currentHero));
+  document.getElementById('bscore').textContent='0';
+  document.getElementById('bubarena').innerHTML='';
+  nextBubQ();
+}
+function nextBubQ(){
+  if(bQ>=5){
+    const p=getP(),t=today();
+    if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+    const firstPlay=!p.gamesPlayed[t].bubble;
+    p.gamesPlayed[t].bubble=true;
+    if(!p.highScores)p.highScores={whack:0,bubble:0,memory:0,pong:0};
+    const isRecord=bCorrect>p.highScores.bubble;
+    if(isRecord)p.highScores.bubble=bCorrect;
+    save();
+    if(firstPlay&&bCorrect>0)addRobux(bCorrect);
+    document.getElementById('bubarena').innerHTML='<div style="text-align:center;padding:40px 20px">'+
+      '<div style="font-size:52px">'+(bCorrect>=4?'🏆':bCorrect>=2?'⭐':'💪')+'</div>'+
+      '<div style="font-family:\'Bangers\',cursive;font-size:40px;color:#c4b5fd">'+bCorrect+'/5 Correct!</div>'+
+      (firstPlay?'<div style="color:#f59e0b;font-weight:800;font-size:16px;margin:8px 0">+'+bCorrect+' R$ earned!</div>':'<div style="color:#64748b;font-size:13px;font-weight:700;margin:8px 0">Free play — no R$ (already earned today)</div>')+
+      (isRecord?'<div style="color:#f59e0b;font-weight:800;font-size:14px">🏆 NEW RECORD!</div>':'')+
+      '<div style="font-size:11px;color:#64748b;margin:4px 0">Best: '+p.highScores.bubble+'/5</div>'+
+      '<button onclick="startBubble()" style="background:linear-gradient(135deg,#7c3aed,#4c1d95);border:none;border-radius:14px;padding:12px 24px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px">Play Again 🔄</button>'+
+      '<br><button class="back-btn" style="margin-top:10px;display:inline-block" onclick="goGames()">← Back</button></div>';
+    return;
+  }
+  const q=bQuestions[bQ];
+  document.getElementById('bubq').textContent=q.q;
+  const arena=document.getElementById('bubarena');
+  arena.innerHTML='';bTimers.forEach(clearTimeout);bTimers=[];
+  const answers=[q.a,...q.wrong].sort(()=>Math.random()-.5);
+  answers.forEach((ans,i)=>{
+    const b=document.createElement('div');
+    b.className='bub bw';
+    const size=62+Math.random()*22;
+    b.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(5+Math.random()*72)+'%;animation-duration:'+(5+Math.random()*3)+'s;animation-delay:'+(i*.35)+'s';
+    b.textContent=ans;
+    b.onclick=()=>popBub(b,ans===q.a,arena);
+    arena.appendChild(b);
+    bTimers.push(setTimeout(()=>{if(document.getElementById('s-bubble').classList.contains('active')){bQ++;nextBubQ();}},8200+(i*300)));
+  });
+}
+function popBub(el,correct,arena){
+  bTimers.forEach(clearTimeout);bTimers=[];
+  const pop=document.createElement('div');pop.className='popfx';
+  pop.style.cssText='left:'+(el.offsetLeft+12)+'px;top:'+el.offsetTop+'px';
+  pop.textContent=correct?'✨':'💔';arena.appendChild(pop);setTimeout(()=>pop.remove(),500);
+  if(correct)bCorrect++;
+  document.getElementById('bscore').textContent=bCorrect;
+  el.style.transform='scale(2)';el.style.opacity='0';el.style.transition='all .3s';
+  bQ++;setTimeout(nextBubQ,600);
+}
+
+// ===== MEMORY =====
+const MEMS=['🦁','🐯','🦊','🐸','🦋','🐳','🌟','🎯'];
+let mCards=[],mFlipped=[],mMatched=[],mLocked=false;
+function startMem(){
+  const p=getP(),gp=p.gamesPlayed[today()]||{};
+  showScreen('s-memory');
+  const pairs=[...MEMS,...MEMS].sort(()=>Math.random()-.5);
+  mCards=pairs;mFlipped=[];mMatched=[];mLocked=false;
+  document.getElementById('mpairs').textContent='0/8';
+  document.getElementById('mgrid').innerHTML=pairs.map((e,i)=>
+    '<div class="mc" id="mc'+i+'" onclick="flipMem('+i+')"><div class="mcf"><span class="mc-q">?</span></div><div class="mcb">'+e+'</div></div>'
+  ).join('');
+}
+function flipMem(i){
+  if(mLocked||mFlipped.includes(i)||mMatched.includes(i))return;
+  mFlipped.push(i);document.getElementById('mc'+i).classList.add('flipped');
+  if(mFlipped.length===2){
+    mLocked=true;const[a,b]=mFlipped;
+    if(mCards[a]===mCards[b]){
+      mMatched.push(a,b);mFlipped=[];mLocked=false;
+      document.getElementById('mc'+a).classList.add('matched');
+      document.getElementById('mc'+b).classList.add('matched');
+      document.getElementById('mpairs').textContent=(mMatched.length/2)+'/8';
+      if(mMatched.length===16){
+        const p=getP(),t=today();
+        if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+        const firstPlay=!p.gamesPlayed[t].memory;
+        p.gamesPlayed[t].memory=true;
+        if(!p.highScores)p.highScores={whack:0,bubble:0,memory:0,pong:0};
+        p.highScores.memory=(p.highScores.memory||0)+1;
+        save();
+        if(firstPlay)addRobux(5);
+        const msg=firstPlay?'You found all 8 pairs! +5 R$ earned! 🏆':'You found all 8 pairs! (Free play — R$ already earned today)';
+        setTimeout(()=>showCelebrate('🧠','Memory Master!',msg),300);
+      }
+    }else{
+      setTimeout(()=>{
+        document.getElementById('mc'+a).classList.remove('flipped');
+        document.getElementById('mc'+b).classList.remove('flipped');
+        mFlipped=[];mLocked=false;
+      },900);
+    }
+  }
+}
+
+// ===== BOSS BATTLE =====
+let bossQs=[],bossIdx=0,bossCorrect=0;
+function startBoss(){
+  if(getDay()!==0){showCelebrate('👹','Not yet!','Boss Battle is only available on Sundays! Come back then! 📅');return;}
+  const p=getP(),gp=p.gamesPlayed[today()]||{};
+  if(gp.boss){showCelebrate('⏰','Already fought!','You already beat ZORDAK today! Come back next Sunday!');return;}
+  showScreen('s-boss');
+  bossQs=[...BOSS_QS].sort(()=>Math.random()-.5).slice(0,3);
+  bossIdx=0;bossCorrect=0;
+  document.getElementById('bosshpf').style.width='100%';
+  document.getElementById('boss-score').textContent='0/3';
+  document.getElementById('bossres').style.display='none';
+  document.getElementById('bossqc').style.display='block';
+  showBossQ();
+}
+function showBossQ(){
+  if(bossIdx>=3){endBoss();return;}
+  const q=bossQs[bossIdx];
+  document.getElementById('bossq').textContent=q.q+' = ?';
+  document.getElementById('bossopts').innerHTML=q.opts.map(o=>
+    '<div class="bopt" onclick="answerBoss(\''+o+'\',\''+q.a+'\')">'+o+'</div>').join('');
+}
+function answerBoss(ans,correct){
+  document.querySelectorAll('.bopt').forEach(o=>{
+    if(o.textContent===correct)o.classList.add('cor');
+    else if(o.textContent===ans&&ans!==correct)o.classList.add('wrg');
+    o.onclick=null;
+  });
+  if(ans===correct)bossCorrect++;
+  document.getElementById('bosshpf').style.width=Math.max(0,Math.round((1-(bossCorrect/(bossIdx+1))*.85)*100))+'%';
+  document.getElementById('boss-score').textContent=bossCorrect+'/'+(bossIdx+1);
+  bossIdx++;setTimeout(showBossQ,1300);
+}
+function endBoss(){
+  const p=getP(),t=today();
+  if(!p.gamesPlayed[t])p.gamesPlayed[t]={};
+  p.gamesPlayed[t].boss=true;save();
+  document.getElementById('bossqc').style.display='none';
+  const won=bossCorrect>=2;
+  if(won)addRobux(50);
+  const res=document.getElementById('bossres');res.style.display='block';
+  res.innerHTML='<div style="font-size:52px">'+(won?'🏆':'💀')+'</div>'+
+    '<div style="font-family:\'Bangers\',cursive;font-size:34px;color:'+(won?'#86efac':'#fca5a5')+'">'+(won?'ZORDAK DEFEATED!':'You lost this time...')+'</div>'+
+    '<div style="font-size:13px;color:#94a3b8;margin:8px 0">'+bossCorrect+'/3 correct'+(won?' — +50 R$ earned! 🎮':' — Practice and come back next Sunday!')+'</div>'+
+    '<button class="back-btn" style="margin-top:12px;display:inline-block" onclick="goGames()">← Back to Games</button>';
+  if(won)showCelebrate('🏆','ZORDAK DEFEATED!','You beat the Boss! +50 R$ earned! 🎉<br>You\'re a true Champion! ⚔️');
+}
+
+// ===== INIT =====
+(()=>{
+  const sc=document.getElementById('stars');
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div');s.className='star';
+    s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation-delay:'+Math.random()*2+'s;animation-duration:'+(1+Math.random()*2)+'s';
+    sc.appendChild(s);
+  }
+})();
+load();
+updateHeroSelect();
+
+// ===== PONG =====
+let pongRAF=null,pongRunning=false,pongScore={lorena:0,savio:0};
+let pongBall={x:0,y:0,vx:0,vy:0},pongPaddles={lorena:0,savio:0};
+const PW=88,PH=13,BS=14;
+
+function startPong(){
+  showScreen('s-pong');
+  document.getElementById('pong-ready').style.display='flex';
+  document.getElementById('pong-wrap').style.display='none';
+  document.getElementById('pong-result').style.display='none';
+}
+
+function launchPong(){
+  if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
+  pongRunning=false;
+  document.getElementById('pong-ready').style.display='none';
+  document.getElementById('pong-result').style.display='none';
+  const wrap=document.getElementById('pong-wrap');wrap.style.display='block';
+  const canvas=document.getElementById('pong-canvas');
+  // Set canvas resolution to match display size
+  setTimeout(()=>{
+    const W=canvas.offsetWidth,H=canvas.offsetHeight;
+    canvas.width=W;canvas.height=H;
+    pongScore={lorena:0,savio:0};
+    document.getElementById('pong-s-lorena').textContent='0';
+    document.getElementById('pong-s-savio').textContent='0';
+    pongPaddles={lorena:W/2-PW/2,savio:W/2-PW/2};
+    pongResetBall(W,H,1);
+    pongRunning=true;
+    // Touch controls — track by Y position
+    function onTouch(e){
+      e.preventDefault();
+      const rect=canvas.getBoundingClientRect();
+      const scaleX=W/rect.width,scaleY=H/rect.height;
+      for(const t of e.touches){
+        const tx=(t.clientX-rect.left)*scaleX;
+        const ty=(t.clientY-rect.top)*scaleY;
+        const px=Math.max(0,Math.min(W-PW,tx-PW/2));
+        if(ty<H/2)pongPaddles.savio=px;
+        else pongPaddles.lorena=px;
+      }
+    }
+    canvas.ontouchstart=onTouch;canvas.ontouchmove=onTouch;
+    pongLoop(canvas,W,H);
+  },50);
+}
+
+function pongResetBall(W,H,dir){
+  pongBall={x:W/2,y:H/2,vx:(Math.random()>.5?1:-1)*4.5,vy:dir*4.5};
+}
+
+function pongLoop(canvas,W,H){
+  if(!pongRunning)return;
+  const ctx=canvas.getContext('2d');
+  // Move
+  pongBall.x+=pongBall.vx;
+  pongBall.y+=pongBall.vy;
+  // Wall bounce
+  if(pongBall.x<=BS/2){pongBall.x=BS/2;pongBall.vx=Math.abs(pongBall.vx);}
+  if(pongBall.x>=W-BS/2){pongBall.x=W-BS/2;pongBall.vx=-Math.abs(pongBall.vx);}
+  // Lorena paddle (bottom)
+  const lpy=H-36;
+  if(pongBall.vy>0&&pongBall.y+BS/2>=lpy&&pongBall.y+BS/2<=lpy+PH+4&&
+     pongBall.x>=pongPaddles.lorena&&pongBall.x<=pongPaddles.lorena+PW){
+    pongBall.vy=-Math.abs(pongBall.vy)*1.06;
+    pongBall.vx+=((pongBall.x-(pongPaddles.lorena+PW/2))/(PW/2))*3;
+    pongBall.y=lpy-BS/2-1;
+  }
+  // Savio paddle (top)
+  const spy=36;
+  if(pongBall.vy<0&&pongBall.y-BS/2<=spy+PH&&pongBall.y-BS/2>=spy-4&&
+     pongBall.x>=pongPaddles.savio&&pongBall.x<=pongPaddles.savio+PW){
+    pongBall.vy=Math.abs(pongBall.vy)*1.06;
+    pongBall.vx+=((pongBall.x-(pongPaddles.savio+PW/2))/(PW/2))*3;
+    pongBall.y=spy+PH+BS/2+1;
+  }
+  // Speed cap
+  const spd=Math.sqrt(pongBall.vx**2+pongBall.vy**2);
+  if(spd>13){pongBall.vx=pongBall.vx/spd*13;pongBall.vy=pongBall.vy/spd*13;}
+  // Score
+  if(pongBall.y<0){pongScore.lorena++;pongUpdateScore();if(pongScore.lorena>=7){pongEnd('lorena');return;}pongResetBall(W,H,1);}
+  if(pongBall.y>H){pongScore.savio++;pongUpdateScore();if(pongScore.savio>=7){pongEnd('savio');return;}pongResetBall(W,H,-1);}
+  // Draw
+  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
+  // Center line
+  ctx.setLineDash([6,8]);ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();ctx.setLineDash([]);
+  // Savio paddle (blue, top)
+  ctx.fillStyle='#3b82f6';
+  ctx.beginPath();if(ctx.roundRect)ctx.roundRect(pongPaddles.savio,spy,PW,PH,6);else ctx.rect(pongPaddles.savio,spy,PW,PH);ctx.fill();
+  // Lorena paddle (pink, bottom)
+  ctx.fillStyle='#ec4899';
+  ctx.beginPath();if(ctx.roundRect)ctx.roundRect(pongPaddles.lorena,lpy,PW,PH,6);else ctx.rect(pongPaddles.lorena,lpy,PW,PH);ctx.fill();
+  // Ball
+  ctx.shadowBlur=16;ctx.shadowColor='#fff';ctx.fillStyle='#fff';
+  ctx.beginPath();ctx.arc(pongBall.x,pongBall.y,BS/2,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur=0;
+  pongRAF=requestAnimationFrame(()=>pongLoop(canvas,W,H));
+}
+
+function pongUpdateScore(){
+  document.getElementById('pong-s-lorena').textContent=pongScore.lorena;
+  document.getElementById('pong-s-savio').textContent=pongScore.savio;
+}
+
+function pongEnd(winner){
+  pongRunning=false;if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
+  document.getElementById('pong-wrap').style.display='none';
+  const loser=winner==='lorena'?'savio':'lorena';
+  const t=today();
+  const alreadyPlayed=S.profiles.lorena.gamesPlayed[t]?.pong||S.profiles.savio.gamesPlayed[t]?.pong;
+  if(!alreadyPlayed){
+    [winner,loser].forEach((h,i)=>{
+      const pr=S.profiles[h];
+      const earn=i===0?8:3;
+      pr.robux+=earn;pr.totalEarned=(pr.totalEarned||0)+earn;
+      if(!pr.gamesPlayed[t])pr.gamesPlayed[t]={};
+      pr.gamesPlayed[t].pong=true;
+      if(!pr.highScores)pr.highScores={whack:0,bubble:0,memory:0,pong:0};
+      if(i===0)pr.highScores.pong=(pr.highScores.pong||0)+1;
+    });
+    save();
+  }
+  const wName=winner==='lorena'?'👩‍🎤 LORENA':'🥷 SAVIO';
+  const wColor=winner==='lorena'?'#f9a8d4':'#93c5fd';
+  const scoreStr=winner==='savio'?pongScore.savio+' — '+pongScore.lorena:pongScore.lorena+' — '+pongScore.savio;
+  const res=document.getElementById('pong-result');
+  res.style.display='flex';
+  res.innerHTML=
+    '<div style="font-size:80px">'+(winner==='lorena'?'👩‍🎤':'🥷')+'</div>'+
+    '<div style="font-family:\'Bangers\',cursive;font-size:44px;color:'+wColor+';letter-spacing:3px">'+wName+'</div>'+
+    '<div style="font-family:\'Bangers\',cursive;font-size:30px;color:#f59e0b;letter-spacing:2px">WINS! 🏆</div>'+
+    '<div style="font-family:\'Bangers\',cursive;font-size:28px;color:#fff;margin:4px 0">'+scoreStr+'</div>'+
+    (alreadyPlayed
+      ?'<div style="color:#64748b;font-size:13px;font-weight:700">Free play — R$ already earned today</div>'
+      :'<div style="color:#f59e0b;font-weight:800;font-size:15px">Winner +8 R$ &nbsp;·&nbsp; Loser +3 R$ 💰</div>')+
+    '<button onclick="launchPong()" style="margin-top:16px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:16px;padding:14px 32px;color:#fff;font-family:\'Nunito\',sans-serif;font-size:16px;font-weight:900;cursor:pointer;width:100%;max-width:280px">Rematch! 🏓</button>'+
+    '<button onclick="goGames()" style="margin-top:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 20px;color:#94a3b8;font-family:\'Nunito\',sans-serif;font-size:13px;font-weight:800;cursor:pointer;width:100%;max-width:280px">← Back to Games</button>';
+}
+</script>
+</body>
+</html>
