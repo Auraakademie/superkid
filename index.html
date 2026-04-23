@@ -900,7 +900,8 @@ const LEVELS=[
 ];
 const TASKS={
   lorena:[
-    {id:'brush',emoji:'🦷',name:'Brush Teeth',reward:10,cat:''},
+    {id:'brush_m',emoji:'🦷',name:'Brush Teeth 🌅',reward:10,cat:'',timeHint:'morning'},
+    {id:'brush_e',emoji:'🦷',name:'Brush Teeth 🌙',reward:10,cat:'',timeHint:'evening'},
     {id:'dressed',emoji:'👗',name:'Get Dressed',reward:10,cat:''},
     {id:'school_bag',emoji:'🎒',name:'Pack School Bag',reward:10,cat:''},
     {id:'lunch',emoji:'🥪',name:'Make Lunch',reward:10,cat:''},
@@ -909,7 +910,8 @@ const TASKS={
     {id:'room',emoji:'🌙',name:'Tidy Room',reward:10,cat:''}
   ],
   savio:[
-    {id:'brush',emoji:'🦷',name:'Brush Teeth',reward:10,cat:''},
+    {id:'brush_m',emoji:'🦷',name:'Brush Teeth 🌅',reward:10,cat:'',timeHint:'morning'},
+    {id:'brush_e',emoji:'🦷',name:'Brush Teeth 🌙',reward:10,cat:'',timeHint:'evening'},
     {id:'dressed',emoji:'👕',name:'Get Dressed',reward:10,cat:''},
     {id:'school_bag',emoji:'🎒',name:'Pack School Bag',reward:10,cat:''},
     {id:'lunch',emoji:'🥪',name:'Make Lunch',reward:10,cat:''},
@@ -1194,6 +1196,19 @@ function renderQuests(){
   const p=getP(),t=today(),done=p.dailyTasks[t]||{};
   const tasks=getAllTasks();
   const catBadge={learn:'<span class="qcat cat-learn">📖 Read</span>',chill:'<span class="qcat cat-chill">✨ Chill</span>',edu:'<span class="qcat cat-edu">🧠 Study</span>',sport:'<span class="qcat cat-sport">🏃 Sport</span>',weekend:'<span class="qcat cat-sport">📅 Weekend</span>',calendar:'<span class="qcat cat-sport">📅 Today</span>'};
+  const baliH=(new Date(Date.now()+8*3600000)).getUTCHours();
+  function timeBadge(task){
+    if(!task.timeHint)return'';
+    if(task.timeHint==='morning'){
+      const active=baliH>=7&&baliH<9;
+      return'<span class="qcat" style="background:rgba(251,191,36,.15);color:'+(active?'#fbbf24':'#64748b')+';border-color:rgba(251,191,36,'+(active?'.4':'.15')+')">'+(active?'⏰':'🌅')+' 7–9 AM</span>';
+    }
+    if(task.timeHint==='evening'){
+      const active=baliH>=18&&baliH<21;
+      return'<span class="qcat" style="background:rgba(139,92,246,.15);color:'+(active?'#a78bfa':'#64748b')+';border-color:rgba(139,92,246,'+(active?'.4':'.15')+')">'+(active?'⏰':'🌙')+' 6–9 PM</span>';
+    }
+    return'';
+  }
   function taskHtml(task){
     const st=done[task.id];
     const isDone=st===true,isSkip=st==='skip',isFSkip=st==='family_skip',isWknd=task.cat==='weekend';
@@ -1206,7 +1221,7 @@ function renderQuests(){
     return'<div class="qcard'+(isDone?' done':'')+(isWknd?' wknd':'')+(isSkip||isFSkip?' skip':'')+'">'+
       '<div class="qorb">'+task.emoji+'</div>'+
       '<div class="qbody"><div class="qtitle"'+(isDone?' style="color:#86efac"':'')+'>'+task.name+'</div>'+
-      '<div class="qmeta"><span class="qrew">+'+task.reward+' R$</span>'+(catBadge[task.cat]||'')+'</div></div>'+
+      '<div class="qmeta"><span class="qrew">+'+task.reward+' R$</span>'+(catBadge[task.cat]||'')+timeBadge(task)+'</div></div>'+
       '<div class="qact">'+action+'</div></div>';
   }
   const bonusTasks=getBonusTasks();
@@ -2069,11 +2084,23 @@ function setPaintBrush(size){
 }
 
 function clearCanvas(){
-  if(!confirm('Really clear everything? 🗑️'))return;
   const canvas=document.getElementById('paint-canvas');
   if(!canvas||!paintCtx)return;
-  paintCtx.fillStyle='#2d1b4e';
-  paintCtx.fillRect(0,0,canvas.width,canvas.height);
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px';
+  overlay.innerHTML='<div style="font-size:32px">🗑️</div>'+
+    '<div style="font-family:\'Bangers\',cursive;font-size:22px;color:#fca5a5;letter-spacing:2px">Clear everything?</div>'+
+    '<div style="display:flex;gap:10px">'+
+    '<button id="clear-yes" style="background:#ef4444;border:none;border-radius:12px;padding:11px 22px;color:#fff;font-family:\'Nunito\',sans-serif;font-weight:800;font-size:15px;cursor:pointer">Yes, clear! 🗑️</button>'+
+    '<button id="clear-no" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:11px 22px;color:#fff;font-family:\'Nunito\',sans-serif;font-weight:800;font-size:15px;cursor:pointer">Cancel</button>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('#clear-yes').onclick=function(){
+    overlay.remove();
+    paintCtx.fillStyle='#2d1b4e';
+    paintCtx.fillRect(0,0,canvas.width,canvas.height);
+  };
+  overlay.querySelector('#clear-no').onclick=function(){overlay.remove();};
 }
 
 function finishPainting(){
