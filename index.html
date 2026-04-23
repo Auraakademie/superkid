@@ -346,8 +346,9 @@ button{touch-action:manipulation}
     <div class="dash-info">
       <div class="dash-name lor" id="dash-name">Lorena</div>
       <div class="dash-rank" id="dash-rank">🌱 Apprentice Hero</div>
+      <div id="bali-clock" style="font-size:10px;color:#475569;font-weight:700;margin-top:1px"></div>
     </div>
-    <div class="coin-disp" onclick="cycleCurrency()">
+    <div class="coin-disp" onclick="openWalletModal()">
       <span class="ci">🪙</span>
       <span class="am" id="dash-coins">0</span>
       <span class="ct" id="dash-curr">≈ $0.00</span>
@@ -406,7 +407,7 @@ button{touch-action:manipulation}
 <!-- GAMES HUB -->
 <div id="s-games" class="screen">
   <div class="back-row"><button class="back-btn" onclick="goQuests()">← Back</button><div class="gtitle">🎮 Hero Training</div></div>
-  <div class="ebanner"><div class="eicon">💰</div><div class="etext">Earn ⭐ Coins on your <strong>first play</strong> each day — then play free forever! 🎮</div></div>
+  <div class="ebanner"><div class="eicon">💰</div><div class="etext">Earn <strong>R$</strong> on your <strong>first play</strong> each day — then play free forever! 🎮</div></div>
   <div class="gcards">
     <div class="gc whack" id="gc-whack" onclick="startWhack()">
       <div class="gcnew">🔥 HOT</div>
@@ -420,7 +421,7 @@ button{touch-action:manipulation}
     </div>
     <div class="gc" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a);border:2px solid rgba(34,197,94,.5);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-pong" onclick="startPong()">
       <div class="gcnew" style="background:#16a34a">👤👥 Solo+2P</div>
-      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Solo vs AI or Lorena vs Savio — first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">⭐ Winner +8 Coins</div></div><div class="gcarrow">▶</div></div>
+      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Solo vs AI or Lorena vs Savio — first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">🏆 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
     </div>
     <div class="gc boss" id="gc-boss" onclick="startBoss()">
       <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
@@ -678,6 +679,31 @@ button{touch-action:manipulation}
   </div>
 </div>
 
+<!-- WALLET MODAL -->
+<div id="wallet-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(10px)" onclick="closeWalletModal()">
+  <div style="background:linear-gradient(135deg,#1a0a3e,#2d1b6e);border:2px solid rgba(245,158,11,.5);border-radius:24px;padding:26px 22px;width:90%;max-width:320px;text-align:center" onclick="event.stopPropagation()">
+    <div id="wm-hero" style="font-size:54px;margin-bottom:4px">🪙</div>
+    <div id="wm-name" style="font-family:'Bangers',cursive;font-size:22px;letter-spacing:2px;color:#fcd34d;margin-bottom:12px">MY WALLET</div>
+    <div style="background:rgba(245,158,11,.1);border:2px solid rgba(245,158,11,.3);border-radius:16px;padding:16px;margin-bottom:16px">
+      <div id="wm-robux" style="font-family:'Bangers',cursive;font-size:58px;color:#f59e0b;line-height:1">0</div>
+      <div style="font-size:13px;color:#94a3b8;font-weight:700">R$ (App Robux)</div>
+      <div id="wm-real" style="font-size:13px;color:#fcd34d;font-weight:800;margin-top:4px">= 0 real Robux 🎮</div>
+    </div>
+    <div style="font-size:11px;color:#64748b;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Show value in:</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button id="wcurr-usd" onclick="setWalletCurr('usd')" style="flex:1;border-radius:12px;padding:10px 4px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🇺🇸 USD</button>
+      <button id="wcurr-eur" onclick="setWalletCurr('eur')" style="flex:1;border-radius:12px;padding:10px 4px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🇪🇺 EUR</button>
+      <button id="wcurr-idr" onclick="setWalletCurr('idr')" style="flex:1;border-radius:12px;padding:10px 4px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);color:#94a3b8;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer">🇮🇩 IDR</button>
+    </div>
+    <div id="wm-fiat" style="font-family:'Bangers',cursive;font-size:34px;color:#86efac;margin-bottom:14px">$0.00</div>
+    <div id="wm-progress" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:4px"><span style="color:#94a3b8">Next milestone</span><span id="wm-miles" style="color:#fcd34d">0 / 400 R$</span></div>
+      <div style="height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden"><div id="wm-pbar" style="height:100%;background:linear-gradient(90deg,#7c3aed,#f59e0b);border-radius:5px;transition:width .5s;width:0%"></div></div>
+    </div>
+    <button onclick="closeWalletModal()" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:13px;padding:11px 0;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;width:100%">Close 💪</button>
+  </div>
+</div>
+
 <!-- LANDSCAPE WARNING -->
 <div id="landscape-warn">
   <div style="font-size:64px">📱</div>
@@ -871,6 +897,42 @@ function updateCoinDisp(){
   document.getElementById('dash-coins').textContent=p.robux;
   document.getElementById('dash-curr').textContent=toFiat(p.robux);
 }
+function openWalletModal(){
+  const p=getP(),r=p.robux;
+  const el=document.getElementById('wallet-modal');
+  document.getElementById('wm-hero').textContent=S.currentHero==='lorena'?'👩‍🎤':'🥷';
+  document.getElementById('wm-name').textContent=(S.currentHero==='lorena'?'LORENA':'SAVIO')+"'S WALLET";
+  document.getElementById('wm-robux').textContent=r;
+  document.getElementById('wm-real').textContent='= '+Math.floor(r/5)+' real Robux 🎮';
+  updateWalletFiat();
+  const milestone=Math.ceil(r/400)*400||400;
+  const prev=milestone-400;
+  const pct=Math.min(100,Math.round((r-prev)/400*100));
+  document.getElementById('wm-miles').textContent=r+' / '+milestone+' R$';
+  document.getElementById('wm-pbar').style.width=pct+'%';
+  el.style.display='flex';
+}
+function setWalletCurr(c){S.currency=c;save();updateCoinDisp();updateWalletFiat();}
+function updateWalletFiat(){
+  const p=getP(),r=p.robux,c=S.currency||'usd';
+  ['usd','eur','idr'].forEach(x=>{
+    const btn=document.getElementById('wcurr-'+x);
+    if(!btn)return;
+    if(x===c){btn.style.background='rgba(245,158,11,.25)';btn.style.borderColor='rgba(245,158,11,.6)';btn.style.color='#fcd34d';}
+    else{btn.style.background='rgba(255,255,255,.06)';btn.style.borderColor='rgba(255,255,255,.1)';btn.style.color='#94a3b8';}
+  });
+  document.getElementById('wm-fiat').textContent=toFiat(r);
+}
+function closeWalletModal(){document.getElementById('wallet-modal').style.display='none';}
+function updateBaliClock(){
+  const el=document.getElementById('bali-clock');if(!el)return;
+  const utcMs=Date.now()+(new Date().getTimezoneOffset()*60000);
+  const bali=new Date(utcMs+8*3600000);
+  const h=bali.getUTCHours(),m=bali.getUTCMinutes();
+  const ampm=h>=12?'PM':'AM';const hh=h%12||12;
+  el.textContent='🌴 '+(hh<10?'0':'')+hh+':'+(m<10?'0':'')+m+' '+ampm+' Bali';
+}
+setInterval(updateBaliClock,30000);
 
 // ===== ECONOMY =====
 function addRobux(amount){
@@ -895,12 +957,9 @@ function completeTask(tid){
   const p=getP(),t=today();
   if(!p.dailyTasks[t])p.dailyTasks[t]={};
   if(p.dailyTasks[t][tid])return;
-  const tasks=getAllTasks();
-  const task=tasks.find(x=>x.id===tid);
-  if(!task)return;
   p.dailyTasks[t][tid]=true;save();
-  sfx.taskDone();
-  addRobux(task.reward);
+  const task=[...getAllTasks(),...getBonusTasks()].find(x=>x.id===tid);
+  if(task){sfx.taskDone();addRobux(task.reward);}
   checkPerfect();renderQuests();
 }
 function familySkip(tid){
@@ -962,7 +1021,7 @@ function renderMood(){
 function renderQuests(){
   const p=getP(),t=today(),done=p.dailyTasks[t]||{};
   const tasks=getAllTasks();
-  const catBadge={learn:'<span class="qcat cat-learn">📖 +1</span>',chill:'<span class="qcat cat-chill">✨ bonus</span>',edu:'<span class="qcat cat-edu">🧠 +2</span>',sport:'<span class="qcat cat-sport">🏃 bonus</span>',weekend:'<span class="qcat cat-sport">📅 Weekend</span>',calendar:'<span class="qcat cat-sport">📅 Today</span>'};
+  const catBadge={learn:'<span class="qcat cat-learn">📖 Read</span>',chill:'<span class="qcat cat-chill">✨ Chill</span>',edu:'<span class="qcat cat-edu">🧠 Study</span>',sport:'<span class="qcat cat-sport">🏃 Sport</span>',weekend:'<span class="qcat cat-sport">📅 Weekend</span>',calendar:'<span class="qcat cat-sport">📅 Today</span>'};
   function taskHtml(task){
     const st=done[task.id];
     const isDone=st===true,isSkip=st==='skip',isFSkip=st==='family_skip',isWknd=task.cat==='weekend';
@@ -1008,7 +1067,11 @@ function renderPiggy(){
   if(amt>0){
     proj.style.display='block';
     let v=amt;
-    document.getElementById('proj-rows').innerHTML=[1,2,3,4].map(w=>{v=Math.round(v*1.2);return'<div class="pprow"><span>Week '+w+'</span><strong>'+v+' R$</strong></div>';}).join('');
+    document.getElementById('proj-rows').innerHTML=[1,2,4,8,13,26,52].map(w=>{
+      const val=Math.round(amt*Math.pow(1.2,w));
+      const lbl=w===52?'🏆 1 Year':w===26?'6 Months':w===13?'3 Months':w===8?'2 Months':'Week '+w;
+      return'<div class="pprow"><span>'+lbl+'</span><strong>'+val+' R$</strong></div>';
+    }).join('');
   }else{proj.style.display='none';}
   const r=p.robux;
   [{id:'dep10',val:10},{id:'dep20',val:20},{id:'dep50',val:50},{id:'dep100',val:100}].forEach(x=>{
@@ -1017,7 +1080,7 @@ function renderPiggy(){
 }
 function renderRedeem(){
   const p=getP();
-  document.getElementById('red-amt').textContent='⭐ '+p.robux+' Coins';
+  document.getElementById('red-amt').textContent=p.robux+' R$';
   document.getElementById('red-br').innerHTML='🎮 '+Math.floor(p.robux/5)+' Robux redeemable<br>≈ '+toFiat(p.robux)+'  (ask Papa!)';
   const tiers=[{cost:400,real:80},{cost:800,real:160},{cost:2000,real:400}];
   document.getElementById('mcards').innerHTML=tiers.map(t=>{
@@ -1070,6 +1133,7 @@ function enterHero(id){
   dn.textContent=id==='lorena'?'Lorena':'Savio';dn.className='dash-name '+(id==='lorena'?'lor':'sav');
   document.getElementById('dash-rank').textContent=lv.emoji+' '+lv.name+' Hero';
   renderWordOfDay();
+  updateBaliClock();
   const lockIcon=document.getElementById('pin-lock-icon');
   if(lockIcon)lockIcon.textContent=getP().pin?'🔒':'🔓';
   updateDash();renderMood();renderQuests();showScreen('s-dash');
