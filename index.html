@@ -196,13 +196,13 @@ button{touch-action:manipulation}
 .fighter-round-row{text-align:center;padding:4px 0;font-family:'Bangers',cursive;font-size:18px;color:#fcd34d;flex-shrink:0;letter-spacing:2px}
 .fighter-msg{text-align:center;font-size:13px;font-weight:800;color:#94a3b8;padding:4px 14px;flex-shrink:0;min-height:22px}
 /* SUMMER GAMES specific */
-.sg-header{padding:10px 14px;flex-shrink:0;background:rgba(0,0,0,.4)}
-.sg-event-title{font-family:'Bangers',cursive;font-size:26px;letter-spacing:2px;text-align:center;margin-bottom:4px}
-.sg-event-sub{font-size:12px;color:#94a3b8;font-weight:700;text-align:center}
-.sg-arena{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;gap:10px}
-.sg-big-btn{border:none;border-radius:18px;padding:18px 0;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;cursor:pointer;width:100%;max-width:300px;transition:transform .1s}
+.sg-header{padding:12px 16px;flex-shrink:0;background:rgba(0,0,0,.4)}
+.sg-event-title{font-family:'Bangers',cursive;font-size:34px;letter-spacing:2px;text-align:center;margin-bottom:6px}
+.sg-event-sub{font-size:15px;color:#94a3b8;font-weight:700;text-align:center}
+.sg-arena{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;gap:16px}
+.sg-big-btn{border:none;border-radius:22px;padding:26px 0;color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:24px;cursor:pointer;width:100%;max-width:400px;transition:transform .1s;box-shadow:0 6px 24px rgba(0,0,0,.4)}
 .sg-big-btn:active{transform:scale(.93)}
-.sg-progress-bar-wrap{width:100%;max-width:300px;background:rgba(255,255,255,.08);border-radius:10px;height:22px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+.sg-progress-bar-wrap{width:100%;max-width:400px;background:rgba(255,255,255,.08);border-radius:12px;height:28px;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
 .sg-progress-bar{height:100%;border-radius:10px;transition:width .1s}
 .sg-score-row{font-family:'Bangers',cursive;font-size:36px;color:#fff;letter-spacing:2px}
 .sg-timer{font-family:'Bangers',cursive;font-size:48px;color:#f59e0b}
@@ -1078,7 +1078,7 @@ button{touch-action:manipulation}
 const sfx={
   ctx:null,
   init(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();},
-  play(freq,dur,type='square',vol=0.3,slide=0){
+  play(freq,dur,type='square',vol=0.4,slide=0){
     try{
       this.init();
       const o=this.ctx.createOscillator(),g=this.ctx.createGain();
@@ -1090,70 +1090,102 @@ const sfx={
       o.start();o.stop(this.ctx.currentTime+dur);
     }catch(e){}
   },
-  // Pong bounce — punchy thwack
-  bounce(){this.play(300,0.06,'square',0.35,180)},
+  noise(dur=0.08,vol=0.3){
+    try{
+      this.init();
+      const buf=this.ctx.createBuffer(1,this.ctx.sampleRate*dur,this.ctx.sampleRate);
+      const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+      const src=this.ctx.createBufferSource(),g=this.ctx.createGain();
+      src.buffer=buf;src.connect(g);g.connect(this.ctx.destination);
+      g.gain.setValueAtTime(vol,this.ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+dur);
+      src.start();src.stop(this.ctx.currentTime+dur);
+    }catch(e){}
+  },
+  // Pong bounce — fat thwack
+  bounce(){this.play(280,0.07,'square',0.5,160);this.noise(0.04,0.2)},
   // Point scored — ascending fanfare
-  score(){
-    [0,80,160,280].forEach((d,i)=>{
-      setTimeout(()=>this.play([523,659,784,1047][i],0.15,'sine',0.35),d);
-    });
-  },
+  score(){[0,80,160,280].forEach((d,i)=>setTimeout(()=>this.play([523,659,784,1047][i],0.18,'sine',0.45),d));},
   // Task done — satisfying 2-tone ding
-  taskDone(){
-    this.play(523,0.12,'sine',0.3);
-    setTimeout(()=>this.play(784,0.2,'sine',0.35),130);
-  },
-  // Coin earned — sparkle up
+  taskDone(){this.play(523,0.14,'sine',0.45);setTimeout(()=>this.play(784,0.22,'sine',0.45),130);},
+  // Coin earned — sparkle triple
   coin(){
-    this.play(880,0.06,'sine',0.3);
-    setTimeout(()=>this.play(1108,0.06,'sine',0.28),70);
-    setTimeout(()=>this.play(1320,0.1,'sine',0.25),140);
+    this.play(880,0.07,'sine',0.4);
+    setTimeout(()=>this.play(1108,0.07,'sine',0.38),70);
+    setTimeout(()=>this.play(1568,0.12,'sine',0.35),140);
   },
-  // Wrong answer — sad trombone slide down
-  wrong(){this.play(350,0.4,'sawtooth',0.25,120)},
-  // Correct answer — happy ping
-  correct(){
-    this.play(660,0.08,'sine',0.3);
-    setTimeout(()=>this.play(990,0.15,'sine',0.3),90);
-  },
-  // Power up / level up — rising arpeggio
-  levelUp(){
-    [0,100,200,320,460].forEach((d,i)=>{
-      setTimeout(()=>this.play([392,523,659,784,1047][i],0.18,'sine',0.32),d);
-    });
-  },
+  // Wrong / crash / death — heavy descending
+  wrong(){this.play(220,0.15,'sawtooth',0.5,80);setTimeout(()=>this.play(110,0.3,'sawtooth',0.4,55),100);},
+  // Correct — happy double ping
+  correct(){this.play(660,0.1,'sine',0.42);setTimeout(()=>this.play(1047,0.18,'sine',0.42),100);},
+  // Level up — big 5-note rise
+  levelUp(){[0,100,200,320,460].forEach((d,i)=>setTimeout(()=>this.play([392,523,659,784,1047][i],0.2,'sine',0.42),d));},
   // Celebrate — joyful melody burst
   celebrate(){
     const notes=[523,659,784,659,880,1047];
-    const times=[0,90,180,270,380,500];
-    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.18,'sine',0.35),times[i]));
+    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.2,'sine',0.42),i*90));
   },
-  // Perfect Day — extra big fanfare
+  // Perfect Day — BIG fanfare
   perfectDay(){
     const notes=[523,659,784,1047,1319,1047,784,1319];
     const times=[0,80,160,260,380,500,600,720];
-    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.2,'sine',0.4),times[i]));
-    setTimeout(()=>this.play(1047,0.6,'sine',0.3),820);
+    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.22,'sine',0.5),times[i]));
+    setTimeout(()=>this.play(1319,0.8,'sine',0.4),820);
   },
-  // ZORDAK hit — monster grunt
-  zordakHit(){this.play(120,0.25,'sawtooth',0.4,60)},
+  // ZORDAK hit — deep monster grunt
+  zordakHit(){this.play(80,0.18,'sawtooth',0.55,40);this.noise(0.12,0.35);},
   // Friendly whack — cheerful boing
-  friendlyHit(){this.play(660,0.1,'sine',0.2);setTimeout(()=>this.play(880,0.15,'sine',0.15),80)},
+  friendlyHit(){this.play(660,0.1,'sine',0.3);setTimeout(()=>this.play(880,0.15,'sine',0.25),80);},
   // Card flip
-  flip(){this.play(800,0.06,'sine',0.15)},
-  // Match found
-  match(){
-    this.play(523,0.1,'sine',0.25);
-    setTimeout(()=>this.play(784,0.12,'sine',0.3),100);
-    setTimeout(()=>this.play(1047,0.18,'sine',0.28),220);
+  flip(){this.play(900,0.07,'sine',0.3,1200);},
+  // Memory match found — triumphant 3-note
+  match(){this.play(523,0.12,'sine',0.4);setTimeout(()=>this.play(784,0.14,'sine',0.42),110);setTimeout(()=>this.play(1047,0.2,'sine',0.45),240);},
+  // Bubble pop — springy
+  pop(){this.play(600,0.06,'sine',0.4,1100);},
+  // Streak — drumroll + fanfare
+  streak(){for(let i=0;i<10;i++)setTimeout(()=>this.noise(0.03,0.3),i*35);setTimeout(()=>this.levelUp(),380);},
+  // SHOOT — laser zap (Space Invaders, etc.)
+  shoot(){this.play(880,0.08,'sawtooth',0.38,220);},
+  // EXPLOSION — alien/enemy dies
+  explode(){this.noise(0.18,0.55);this.play(120,0.2,'sawtooth',0.45,60);},
+  // JUMP — springy hop (Frogger, Flappy)
+  jump(){this.play(300,0.06,'square',0.4,600);},
+  // EAT / CHOMP — Snake, Pac-Man eating
+  chomp(){this.play(800,0.04,'square',0.38,400);},
+  // LINE CLEAR — Tetris line clear (satisfying sweep)
+  lineClear(){
+    [0,60,120,180].forEach((d,i)=>setTimeout(()=>this.play([440,523,659,880][i],0.15,'sine',0.45),d));
+    setTimeout(()=>this.noise(0.06,0.3),240);
   },
-  // Bubble pop
-  pop(){this.play(400,0.08,'sine',0.3,700)},
-  // Streak — drumroll-like
-  streak(){
-    for(let i=0;i<8;i++)setTimeout(()=>this.play(200+i*15,0.04,'square',0.2),i*40);
-    setTimeout(()=>this.levelUp(),360);
-  }
+  // HARD DROP — Tetris slam
+  drop(){this.noise(0.06,0.5);this.play(150,0.08,'square',0.45,100);},
+  // PUNCH — Fighter hit
+  punch(){this.noise(0.07,0.6);this.play(200,0.06,'square',0.5,120);},
+  // BLOCK — Fighter block
+  block(){this.play(350,0.09,'square',0.4,280);this.noise(0.05,0.25);},
+  // ENGINE REV — Motocross / Fire Truck
+  rev(){this.play(80,0.12,'sawtooth',0.35,120);},
+  // SIREN — Fire Truck collect
+  siren(){this.play(880,0.08,'sine',0.4,1320);setTimeout(()=>this.play(1320,0.08,'sine',0.4,880),120);},
+  // SPLASH / SWIM — Summer Games
+  splash(){this.noise(0.1,0.4);this.play(400,0.1,'sine',0.3,200);},
+  // WHISTLE — Summer Games start
+  whistle(){this.play(1200,0.06,'sine',0.45,1600);setTimeout(()=>this.play(1600,0.12,'sine',0.45),80);},
+  // GAME OVER — dramatic descend
+  gameOver(){
+    [0,150,320,520].forEach((d,i)=>setTimeout(()=>this.play([392,311,233,196][i],0.25,'sawtooth',0.45),d));
+    setTimeout(()=>this.noise(0.2,0.4),550);
+  },
+  // GAME START — countdown beep
+  start(){this.play(440,0.1,'sine',0.4);setTimeout(()=>this.play(440,0.1,'sine',0.4),200);setTimeout(()=>this.play(880,0.2,'sine',0.5),400);},
+  // SELECT — menu tap
+  select(){this.play(1047,0.06,'sine',0.35);},
+  // FLAP — Flappy Bird wing
+  flap(){this.play(500,0.05,'square',0.35,300);},
+  // CHESS move — wooden click
+  chessMove(){this.noise(0.04,0.4);this.play(600,0.05,'square',0.3);},
+  // CHECK — chess check alert
+  check(){this.play(880,0.08,'sine',0.45);setTimeout(()=>this.play(660,0.12,'sine',0.4),100);},
 };
 
 // FUTURE GAMES IDEAS:
@@ -2865,7 +2897,7 @@ function snakeLoop(ts){
     }
     snakeBody.unshift(head);
     if(head.x===snakeFood.x&&head.y===snakeFood.y){
-      snakeScore++;sfx.pop();
+      snakeScore++;sfx.chomp();
       document.getElementById('snake-score').textContent=snakeScore;
       placeSnakeFood(canvas);
       if(snakeScore%5===0&&snakeInterval>80)snakeInterval=Math.max(80,snakeInterval-15);
@@ -2907,6 +2939,7 @@ function drawSnake(canvas){
 }
 
 function snakeGameOver(canvas){
+  sfx.gameOver();
   snakeRunning=false;
   if(snakeRAF){cancelAnimationFrame(snakeRAF);snakeRAF=null;}
   const p=getP(),t=today();
@@ -3146,7 +3179,7 @@ function startInvaders(){
 
 function invFireBullet(){
   invBullets.push({x:invShipX,y:invH-60,vy:-12});
-  sfx.pop();
+  sfx.shoot();
 }
 
 function invLoop(ts){
@@ -3183,7 +3216,7 @@ function invLoop(ts){
   invBullets=invBullets.filter(b=>{
     const hit=invAliens.find(a=>b.x>a.x&&b.x<a.x+a.w&&b.y>a.y&&b.y<a.y+a.h);
     if(hit){
-      sfx.zordakHit();
+      sfx.explode();
       invAliens.splice(invAliens.indexOf(hit),1);
       invScore+=10;document.getElementById('inv-score').textContent=invScore;
       return false;
@@ -3491,8 +3524,9 @@ function ftLoop(ts){
     ftSpeed=Math.min(8,ftSpeed+0.05);
   }
   if(ftDistAccum>=ftNextFire){
-    const side=Math.random()<0.5?ftW*0.1:ftW*0.86;
-    ftFires.push({x:side,y:-30,active:true,w:30,h:36});
+    // Spawn fires in reachable road area (between 20% and 80% of width)
+    const fx=ftW*0.2+Math.random()*ftW*0.6;
+    ftFires.push({x:fx,y:-30,active:true,w:30,h:36});
     ftNextFire=ftDistAccum+45+Math.random()*45;
   }
   // Move + check
@@ -3719,7 +3753,7 @@ function startFlappy(){
     const tap=e=>{
       e.preventDefault();
       if(!flappyRunning){flappyRunning=true;flappyStarted=true;flappyRAF=requestAnimationFrame(flappyLoop);}
-      flappyBirdVY=flappyFlapForce;sfx.pop();
+      flappyBirdVY=flappyFlapForce;sfx.flap();
     };
     c.ontouchstart=tap;
     c.onclick=tap;
@@ -4183,7 +4217,7 @@ function tetLockPiece(){
   tetCurrent.shape.forEach((row,r)=>row.forEach((v,c)=>{
     if(v&&tetCurrent.y+r>=0)tetGrid[tetCurrent.y+r][tetCurrent.x+c]=tetCurrent.color;
   }));
-  sfx.pop();
+  sfx.drop();
   const cleared=tetClearLines();
   if(cleared>0){
     const pts=[0,100,300,500,800][cleared]*tetLevel;
@@ -4191,7 +4225,7 @@ function tetLockPiece(){
     tetLevel=Math.floor(tetLines/10)+1;
     document.getElementById('tetris-score').textContent=tetScore;
     document.getElementById('tetris-level').textContent=tetLevel;
-    sfx.taskDone();
+    if(cleared>=4)sfx.levelUp();else sfx.lineClear();
   }
   tetCurrent=null;
   tetSpawnPiece();
@@ -4500,6 +4534,16 @@ function startFighter(){
   fighterActive=true;fighterBusy=false;
   fighterPlayerHP=100;fighterEnemyHP=100;
   fighterRound=1;fighterPlayerWins=0;fighterEnemyWins=0;
+  // Restore attack buttons (may have been replaced by Play Again after last match)
+  const btns=document.querySelector('.fighter-btns');
+  if(btns&&!btns.querySelector('[onclick*="punch"]')){
+    btns.innerHTML='<button class="fighter-btn" style="background:linear-gradient(135deg,#dc2626,#991b1b)" ontouchstart="fighterAttack(\'punch\');event.preventDefault()" onclick="fighterAttack(\'punch\')">👊 Punch<br><span style="font-size:11px;opacity:.7">15-25 dmg</span></button>'+
+    '<button class="fighter-btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" ontouchstart="fighterAttack(\'kick\');event.preventDefault()" onclick="fighterAttack(\'kick\')">🦵 Kick<br><span style="font-size:11px;opacity:.7">20-35 dmg</span></button>'+
+    '<button class="fighter-btn" style="background:linear-gradient(135deg,#d97706,#92400e)" ontouchstart="fighterAttack(\'special\');event.preventDefault()" onclick="fighterAttack(\'special\')">⚡ Special<br><span style="font-size:11px;opacity:.7">30-50 dmg</span></button>'+
+    '<button class="fighter-btn" style="background:linear-gradient(135deg,#374151,#1f2937);border:2px solid rgba(255,255,255,.2)" ontouchstart="fighterAttack(\'block\');event.preventDefault()" onclick="fighterAttack(\'block\')">🛡️ Block<br><span style="font-size:11px;opacity:.7">-80% dmg</span></button>';
+  }
+  document.getElementById('fighter-round-label').textContent='Round 1 — Fight! 🥊';
+  document.getElementById('fighter-msg').textContent='Tap an attack!';
   const p=getP();
   const heroEmoji=p.heroEmoji||(S.currentHero==='lorena'?'👩‍🎤':'🥷');
   document.getElementById('fighter-player-char').textContent=heroEmoji;
@@ -4805,51 +4849,40 @@ function sgJavAnimate(distance){
 }
 
 function sgRunSwimming(){
-  sgSwimTaps=0;sgSwimScore=0;sgSwimBeat=0;
-  const BPM=120,BEAT_INT=60000/BPM;
-  let beatPhase=0,totalBeats=16,correctTaps=0;
+  sgSwimTaps=0;sgSwimScore=0;
+  const SWIM_SECS=6;
   const arena=document.getElementById('sg-arena');
   arena.innerHTML=`
-    <div style="font-size:52px">🏊</div>
-    <div style="font-family:'Bangers',cursive;font-size:20px;color:#3b82f6;text-align:center">Tap in rhythm!</div>
-    <div class="sg-progress-bar-wrap"><div class="sg-progress-bar" id="sg-swim-beat" style="width:0%;background:linear-gradient(90deg,#3b82f6,#06b6d4)"></div></div>
-    <div id="sg-swim-info" style="font-family:'Bangers',cursive;font-size:18px;color:#93c5fd">Get ready...</div>
-    <button class="sg-big-btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8)" id="sg-swim-btn" ontouchstart="sgSwimTap();event.preventDefault()" onclick="sgSwimTap()">TAP! 🏊</button>
+    <div style="font-size:72px" id="sg-swim-emoji">🏊</div>
+    <div style="font-family:'Bangers',cursive;font-size:28px;color:#3b82f6;text-align:center">TAP AS FAST AS YOU CAN!</div>
+    <div class="sg-progress-bar-wrap" style="max-width:100%"><div class="sg-progress-bar" id="sg-swim-bar" style="width:100%;background:linear-gradient(90deg,#06b6d4,#3b82f6);transition:width .1s"></div></div>
+    <div id="sg-swim-info" style="font-family:'Bangers',cursive;font-size:36px;color:#fcd34d">${SWIM_SECS}s</div>
+    <button class="sg-big-btn" style="background:linear-gradient(135deg,#3b82f6,#06b6d4);font-size:28px;padding:30px 0" id="sg-swim-btn" ontouchstart="sgSwimTap();event.preventDefault()">💧 SWIM! 🏊</button>
   `;
-  let beat=0,taps=[];
-  const startT=Date.now()+500;
-  const beatTick=setInterval(()=>{
-    beat++;beatPhase=(beat%2===0)?1:0;
+  let timeLeft=SWIM_SECS;
+  const tick=setInterval(()=>{
+    timeLeft-=0.1;
+    const bar=document.getElementById('sg-swim-bar');
     const info=document.getElementById('sg-swim-info');
-    const bar=document.getElementById('sg-swim-beat');
-    if(info)info.textContent=beat<=totalBeats?(beat%2===0?'💧 Stroke!':'↔ Recover'):'Done!';
-    if(bar)bar.style.width=(beat/totalBeats*100)+'%';
-    sfx.bounce();
-    if(beat>=totalBeats){
-      clearInterval(beatTick);
-      // Score based on taps in rhythm
-      const score=Math.min(100,Math.round(correctTaps*(100/totalBeats)));
+    if(bar)bar.style.width=(timeLeft/SWIM_SECS*100)+'%';
+    if(info)info.textContent=Math.ceil(timeLeft)+'s';
+    if(timeLeft<=0){
+      clearInterval(tick);
+      const score=Math.min(100,Math.round(sgSwimTaps*5));
       sgEventScores.push({name:'Swimming',score,emoji:'🏊'});
       sgTotalScore+=score;
+      sfx.whistle();
       setTimeout(()=>sgNextEvent('Taps: '+sgSwimTaps+' — Score: '+score),600);
     }
-  },BEAT_INT);
-  // Track tap timing
-  let lastBeatTime=Date.now();
-  const origBeat=()=>{lastBeatTime=Date.now();};
-  window._sgSwimTapFn=()=>{
+  },100);
+  window.sgSwimTap=function(){
     sgSwimTaps++;
-    const timeSinceBeat=(Date.now()-lastBeatTime)%BEAT_INT;
-    const inSync=timeSinceBeat<BEAT_INT*0.35||timeSinceBeat>BEAT_INT*0.65;
-    if(inSync)correctTaps++;
-    sfx.pop();
+    sfx.splash();
+    const em=document.getElementById('sg-swim-emoji');
+    if(em){em.style.transform='scale(1.3) rotate(-10deg)';setTimeout(()=>em.style.transform='',120);}
     const b=document.getElementById('sg-swim-btn');
-    if(b){b.style.transform='scale(.9)';setTimeout(()=>b.style.transform='',100);}
+    if(b){b.style.transform='scale(.88)';setTimeout(()=>b.style.transform='',120);}
   };
-  // Update lastBeatTime per beat
-  let b2=0;
-  const syncTick=setInterval(()=>{b2++;lastBeatTime=startT+b2*BEAT_INT;if(b2>=totalBeats)clearInterval(syncTick);},BEAT_INT);
-  window.sgSwimTap=window._sgSwimTapFn;
 }
 
 function sgNextEvent(resultMsg){
