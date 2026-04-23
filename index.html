@@ -483,9 +483,6 @@ button{touch-action:manipulation}
       <div class="gcnew" style="background:#16a34a">⚡ vs AI</div>
       <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Beat the AI — first to 7 wins! Can you beat all levels?</div><div class="gcbadge" style="color:#86efac" id="hs-pong">🏆 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
     </div>
-    <div class="gc boss" id="gc-boss" onclick="startBoss()">
-      <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
-    </div>
     <div class="gc" style="background:linear-gradient(135deg,#4a1942,#831843);border:2px solid rgba(236,72,153,.5)" id="gc-paint" onclick="startPaint()">
       <div class="gcin"><div class="gcicon">🎨</div><div class="gcbody"><div class="gcname" style="color:#f9a8d4">Art Studio!</div><div class="gcdesc">Paint with your fingers — create something beautiful!</div><div class="gcbadge" style="color:#f9a8d4">🎨 +3 R$ first painting</div></div><div class="gcarrow">▶</div></div>
     </div>
@@ -527,6 +524,9 @@ button{touch-action:manipulation}
     </div>
     <div class="gc" style="background:linear-gradient(135deg,#001a0a,#000f05);border:2px solid rgba(34,197,94,.6);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-summergames" onclick="startSummerGames()">
       <div class="gcin"><div class="gcicon">🏅</div><div class="gcbody"><div class="gcname" style="color:#86efac">Summer Games!</div><div class="gcdesc">Sprint, lift, throw & swim — win the Gold Medal! 🥇</div><div class="gcbadge" style="color:#86efac" id="hs-summergames">💰 +3 R$ first play</div></div><div class="gcarrow">▶</div></div>
+    </div>
+    <div class="gc boss" id="gc-boss" onclick="startBoss()">
+      <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
     </div>
   </div>
   <div class="bnav">
@@ -3430,6 +3430,7 @@ let ftScore=0,ftLives=3,ftSpeed=2;
 let ftTruckX=0,ftW=0,ftH=0;
 let ftObstacles=[],ftFires=[],ftDistAccum=0;
 let ftLastTime=0,ftTouchLeft=false,ftTouchRight=false;
+let ftNextObstacle=80,ftNextFire=60;
 
 function startFiretruck(){
   showScreen('s-firetruck');
@@ -3441,7 +3442,7 @@ function startFiretruck(){
     ftW=canvas.width=canvas.offsetWidth||window.innerWidth;
     ftH=canvas.height=canvas.offsetHeight||(window.innerHeight-80);
     ftScore=0;ftLives=3;ftSpeed=2.5;ftDistAccum=0;ftLastTime=0;
-    ftObstacles=[];ftFires=[];
+    ftObstacles=[];ftFires=[];ftNextObstacle=80;ftNextFire=60;
     ftTruckX=ftW/2;
     document.getElementById('ft-score').textContent='0';
     document.getElementById('ft-lives').textContent='❤️❤️❤️';
@@ -3482,14 +3483,17 @@ function ftLoop(ts){
   ftDistAccum+=spd;
   ftScore=Math.floor(ftDistAccum/10);
   document.getElementById('ft-score').textContent=ftScore;
-  // Spawn objects
-  if(Math.random()<0.012){
+  // Spawn objects — distance-based (guaranteed, no gaps)
+  if(ftDistAccum>=ftNextObstacle){
     const lane=Math.random()<0.5?ftW*0.3:ftW*0.7;
-    ftObstacles.push({x:lane+(Math.random()-0.5)*ftW*0.1,y:-40,emoji:Math.random()<0.5?'🚗':'🚶',w:36,h:40});
+    ftObstacles.push({x:lane+(Math.random()-0.5)*ftW*0.12,y:-40,emoji:Math.random()<0.5?'🚗':'🚶',w:36,h:40});
+    ftNextObstacle=ftDistAccum+60+Math.random()*60;
+    ftSpeed=Math.min(8,ftSpeed+0.05);
   }
-  if(Math.random()<0.018){
-    const side=Math.random()<0.5?ftW*0.08:ftW*0.88;
+  if(ftDistAccum>=ftNextFire){
+    const side=Math.random()<0.5?ftW*0.1:ftW*0.86;
     ftFires.push({x:side,y:-30,active:true,w:30,h:36});
+    ftNextFire=ftDistAccum+45+Math.random()*45;
   }
   // Move + check
   ftObstacles.forEach(o=>o.y+=spd*4);
@@ -4975,10 +4979,11 @@ function launchPong(mode){
     document.getElementById('pong-bot-name').textContent='LORENA 👩‍🎤';
     document.getElementById('pong-bot-name').style.color='#f9a8d4';
   }
-  // Set canvas resolution to match display size
+  // Set canvas resolution to match display size — use getBoundingClientRect for accuracy on slow tablets
   setTimeout(()=>{
-    const W=canvas.offsetWidth||window.innerWidth;
-    const H=canvas.offsetHeight||Math.round(window.innerHeight*0.65);
+    const rect=canvas.getBoundingClientRect();
+    const W=Math.round(rect.width)||canvas.offsetWidth||window.innerWidth;
+    const H=Math.round(rect.height)||canvas.offsetHeight||Math.round(window.innerHeight*0.72);
     canvas.width=W;canvas.height=H;
     pongScore={lorena:0,savio:0};
     document.getElementById('pong-s-lorena').textContent='0';
@@ -5006,7 +5011,7 @@ function launchPong(mode){
     }
     canvas.ontouchstart=onTouch;canvas.ontouchmove=onTouch;
     pongLoop(canvas,W,H);
-  },50);
+  },250);
 }
 
 function pongResetBall(W,H,dir){
