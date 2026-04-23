@@ -354,6 +354,16 @@ button{touch-action:manipulation}
       <span class="ct" id="dash-curr">≈ $0.00</span>
     </div>
   </div>
+  <div id="rank-prog" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:7px 11px;margin-bottom:8px;display:flex;align-items:center;gap:8px">
+    <span id="rank-prog-emoji" style="font-size:20px">🌱</span>
+    <div style="flex:1">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span id="rank-prog-name" style="font-size:11px;font-weight:800;color:#c4b5fd">Apprentice</span>
+        <span id="rank-prog-next" style="font-size:10px;color:#64748b;font-weight:700">next: Warrior ⚔️</span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden"><div id="rank-prog-bar" style="height:100%;background:linear-gradient(90deg,#a855f7,#ec4899);border-radius:3px;transition:width .8s;width:0%"></div></div>
+    </div>
+  </div>
   <div id="word-of-day" style="display:none;background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(168,85,247,.1));border:2px solid rgba(236,72,153,.3);border-radius:14px;padding:10px 14px;margin-bottom:10px;text-align:center">
     <div style="font-size:10px;color:#f9a8d4;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">📖 Word of the Day</div>
     <div id="wod-emoji" style="font-size:36px;line-height:1.2">🍎</div>
@@ -420,8 +430,8 @@ button{touch-action:manipulation}
       <div class="gcin"><div class="gcicon">🧠</div><div class="gcbody"><div class="gcname">Memory Quest</div><div class="gcdesc">Flip magical cards and find all the matching pairs!</div><div class="gcbadge" id="hs-memory">💰 +5 R$</div></div><div class="gcarrow">▶</div></div>
     </div>
     <div class="gc" style="background:linear-gradient(135deg,#1a3a1a,#0a1f0a);border:2px solid rgba(34,197,94,.5);box-shadow:0 4px 18px rgba(34,197,94,.2)" id="gc-pong" onclick="startPong()">
-      <div class="gcnew" style="background:#16a34a">👤👥 Solo+2P</div>
-      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Solo vs AI or Lorena vs Savio — first to 7 wins!</div><div class="gcbadge" style="color:#86efac" id="hs-pong">🏆 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
+      <div class="gcnew" style="background:#16a34a">⚡ vs AI</div>
+      <div class="gcin"><div class="gcicon">🏓</div><div class="gcbody"><div class="gcname" style="color:#86efac">PONG!</div><div class="gcdesc">Beat the AI — first to 7 wins! Can you beat all levels?</div><div class="gcbadge" style="color:#86efac" id="hs-pong">🏆 Winner +8 R$</div></div><div class="gcarrow">▶</div></div>
     </div>
     <div class="gc boss" id="gc-boss" onclick="startBoss()">
       <div class="gcin"><div class="gcicon">👹</div><div class="gcbody"><div class="gcname">Boss Battle!</div><div class="gcdesc" id="boss-desc">Every Sunday, ZORDAK appears for the ultimate battle!</div><div class="gcbadge">💰 +50 R$ if you WIN!</div></div><div class="gcarrow" id="boss-arrow">🔒</div></div>
@@ -603,7 +613,7 @@ button{touch-action:manipulation}
     </div>
     <div id="mypin-err" style="font-size:12px;color:#f87171;font-weight:700;min-height:18px;margin-bottom:8px"></div>
     <button onclick="saveMyPin()" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:13px;padding:12px 0;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;width:100%;margin-bottom:8px">🔐 Save My PIN!</button>
-    <button onclick="closeMypinModal()" style="background:none;border:none;color:#475569;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
+    <button onclick="cancelMypinModal()" style="background:none;border:none;color:#475569;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Cancel</button>
   </div>
 </div>
 
@@ -627,11 +637,9 @@ button{touch-action:manipulation}
 <div id="s-pong" class="screen">
   <div id="pong-ready" class="pong-ready">
     <div style="font-family:'Bangers',cursive;font-size:52px;color:#f59e0b;letter-spacing:4px;text-shadow:0 0 30px rgba(245,158,11,.5)">🏓 PONG!</div>
-    <div style="font-size:12px;color:#475569;font-weight:700;text-align:center;margin-bottom:4px">Choose Mode:</div>
-    <div style="display:flex;gap:12px;width:100%;max-width:300px">
-      <button onclick="launchPong('solo')" style="flex:1;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:14px;padding:14px 8px;color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;cursor:pointer">👤 Solo<br><span style="font-size:11px;font-weight:700;opacity:.8">vs AI</span></button>
-      <button onclick="launchPong('duo')" style="flex:1;background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:14px;padding:14px 8px;color:#000;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;cursor:pointer">👥 2 Players<br><span style="font-size:11px;font-weight:700;opacity:.7">vs Sibling</span></button>
-    </div>
+    <div id="pong-ai-preview" style="font-size:44px;margin:4px 0">🤖</div>
+    <div style="font-size:13px;color:#94a3b8;font-weight:700;margin-bottom:10px">vs the AI — beat it to earn R$!</div>
+    <button onclick="launchPong('solo')" style="background:linear-gradient(135deg,#f59e0b,#d97706);border:none;border-radius:16px;padding:16px 0;color:#000;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;cursor:pointer;width:100%;max-width:300px">🏓 Play vs AI!</button>
     <div id="pong-mode-cards" style="width:100%;max-width:300px">
       <div class="pong-player-card sav">
         <div style="font-size:40px">🥷</div>
@@ -1012,6 +1020,24 @@ function updateDash(){
   document.getElementById('streak-sub').textContent=str>=7?'🏆 Weekly bonus reached!':(7-str)+' days to weekly bonus!';
   const hasPapa=S.papaCode&&S.papaCode.expires>Date.now();
   document.getElementById('papa-row').style.display=hasPapa?'flex':'none';
+  // Rank progress bar
+  const te=p.totalEarned||0;
+  const lv=getLevel(p);
+  const lvIdx=LEVELS.indexOf(lv);
+  const nextLv=LEVELS[lvIdx+1];
+  const rankBar=document.getElementById('rank-prog-bar');
+  if(rankBar){
+    document.getElementById('rank-prog-emoji').textContent=lv.emoji;
+    document.getElementById('rank-prog-name').textContent=lv.name;
+    if(nextLv){
+      const pctR=Math.round((te-lv.min)/(nextLv.min-lv.min)*100);
+      rankBar.style.width=Math.min(100,pctR)+'%';
+      document.getElementById('rank-prog-next').textContent='next: '+nextLv.name+' '+nextLv.emoji+' at '+nextLv.min+' R$ earned';
+    }else{
+      rankBar.style.width='100%';
+      document.getElementById('rank-prog-next').textContent='🏆 MAX RANK!';
+    }
+  }
 }
 function renderMood(){
   const p=getP(),t=today(),picked=p.moodLog[t];
@@ -1119,7 +1145,23 @@ function selectHero(id){
       ()=>enterHero(id),
       p.pin
     );
-  }else{enterHero(id);}
+  }else{
+    // No PIN set yet — force them to create one
+    forceSetPin(id);
+  }
+}
+function forceSetPin(id){
+  const emoji=id==='lorena'?'👩‍🎤':'🥷';
+  const name=id==='lorena'?'Lorena':'Savio';
+  document.getElementById('mypin-emoji').textContent=emoji;
+  document.getElementById('mypin-title').textContent=name+' — Set Your PIN!';
+  document.getElementById('mypin-sub').textContent='Choose 4 numbers — only YOU know it! 🔐';
+  ['mpi0','mpi1','mpi2','mpi3'].forEach(i=>{const el=document.getElementById(i);if(el)el.value='';});
+  document.getElementById('mypin-err').textContent='';
+  const modal=document.getElementById('mypin-modal');
+  modal.style.display='flex';
+  // Override save to also enter hero after saving
+  modal._forceHero=id;
 }
 function enterHero(id){
   S.currentHero=id;save();checkNewDay();
@@ -1269,9 +1311,17 @@ function saveMyPin(){
       clearMpi();return;
     }
     p.pin=val;save();
-    document.getElementById('pin-lock-icon').textContent='🔒';
+    const lockEl=document.getElementById('pin-lock-icon');if(lockEl)lockEl.textContent='🔒';
+    const modal=document.getElementById('mypin-modal');
+    const forceHero=modal._forceHero;
+    modal._forceHero=null;
     closeMypinModal();
-    showCelebrate('🔐','PIN saved!','Your secret code is set! Only YOU know it! 🤫');
+    if(forceHero){
+      // Came from forced PIN setup — now enter the hero
+      enterHero(forceHero);
+    }else{
+      showCelebrate('🔐','PIN saved!','Your secret code is set! Only YOU know it! 🤫');
+    }
   }else if(mypinStep===2){
     // Verify old PIN
     if(val!==p.pin){
@@ -1286,6 +1336,15 @@ function saveMyPin(){
   }
 }
 function closeMypinModal(){document.getElementById('mypin-modal').style.display='none';}
+function cancelMypinModal(){
+  const modal=document.getElementById('mypin-modal');
+  if(modal._forceHero){
+    // Can't cancel forced PIN setup — must set a PIN!
+    document.getElementById('mypin-err').textContent='You must set a PIN to protect your account!';
+    return;
+  }
+  closeMypinModal();
+}
 
 // ===== KID PIN (parent sets) =====
 function setKidPin(heroId){
@@ -1739,8 +1798,17 @@ function startPong(){
   document.getElementById('pong-result').style.display='none';
 }
 
+function startPong(){
+  pongAiEmoji=PONG_AI_EMOJIS[Math.floor(Math.random()*PONG_AI_EMOJIS.length)];
+  const prev=document.getElementById('pong-ai-preview');
+  if(prev)prev.textContent=pongAiEmoji;
+  showScreen('s-pong');
+  document.getElementById('pong-ready').style.display='flex';
+  document.getElementById('pong-wrap').style.display='none';
+  document.getElementById('pong-result').style.display='none';
+}
 function launchPong(mode){
-  if(mode)pongMode=mode;
+  if(mode)pongMode='solo'; // always solo now
   pongAiEmoji=PONG_AI_EMOJIS[Math.floor(Math.random()*PONG_AI_EMOJIS.length)];
   if(pongRAF){cancelAnimationFrame(pongRAF);pongRAF=null;}
   pongRunning=false;
