@@ -1332,8 +1332,8 @@ function load(){
 }
 function save(){localStorage.setItem(SK,JSON.stringify(S));}
 function getP(){return S.profiles[S.currentHero];}
-function today(){return new Date().toISOString().split('T')[0];}
-function getDay(){return new Date().getDay();}
+function today(){return new Date(Date.now()+8*3600000).toISOString().split('T')[0];}
+function getDay(){return new Date(Date.now()+8*3600000).getUTCDay();}
 function getLevel(p){
   const te=p.totalEarned||0;let lv=LEVELS[0];
   for(const l of LEVELS){if(te>=l.min)lv=l;}
