@@ -734,23 +734,82 @@ button{touch-action:manipulation}
 const sfx={
   ctx:null,
   init(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();},
-  play(freq,dur,type='square',vol=0.3){
+  play(freq,dur,type='square',vol=0.3,slide=0){
     try{
       this.init();
       const o=this.ctx.createOscillator(),g=this.ctx.createGain();
       o.connect(g);g.connect(this.ctx.destination);
-      o.type=type;o.frequency.value=freq;
+      o.type=type;o.frequency.setValueAtTime(freq,this.ctx.currentTime);
+      if(slide)o.frequency.linearRampToValueAtTime(slide,this.ctx.currentTime+dur);
       g.gain.setValueAtTime(vol,this.ctx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001,this.ctx.currentTime+dur);
       o.start();o.stop(this.ctx.currentTime+dur);
     }catch(e){}
   },
-  bounce(){this.play(440,0.05,'square',0.2)},
-  score(){this.play(880,0.15,'sine',0.3);setTimeout(()=>this.play(1100,0.1,'sine',0.3),100)},
-  taskDone(){this.play(660,0.1,'sine',0.2);setTimeout(()=>this.play(880,0.15,'sine',0.3),120)},
-  coin(){this.play(1200,0.05,'sine',0.25);setTimeout(()=>this.play(1600,0.1,'sine',0.2),60)},
-  wrong(){this.play(150,0.3,'sawtooth',0.2)},
-  celebrate(){[0,100,200].forEach((d,i)=>setTimeout(()=>this.play(660+i*220,0.15,'sine',0.3),d))}
+  // Pong bounce — punchy thwack
+  bounce(){this.play(300,0.06,'square',0.35,180)},
+  // Point scored — ascending fanfare
+  score(){
+    [0,80,160,280].forEach((d,i)=>{
+      setTimeout(()=>this.play([523,659,784,1047][i],0.15,'sine',0.35),d);
+    });
+  },
+  // Task done — satisfying 2-tone ding
+  taskDone(){
+    this.play(523,0.12,'sine',0.3);
+    setTimeout(()=>this.play(784,0.2,'sine',0.35),130);
+  },
+  // Coin earned — sparkle up
+  coin(){
+    this.play(880,0.06,'sine',0.3);
+    setTimeout(()=>this.play(1108,0.06,'sine',0.28),70);
+    setTimeout(()=>this.play(1320,0.1,'sine',0.25),140);
+  },
+  // Wrong answer — sad trombone slide down
+  wrong(){this.play(350,0.4,'sawtooth',0.25,120)},
+  // Correct answer — happy ping
+  correct(){
+    this.play(660,0.08,'sine',0.3);
+    setTimeout(()=>this.play(990,0.15,'sine',0.3),90);
+  },
+  // Power up / level up — rising arpeggio
+  levelUp(){
+    [0,100,200,320,460].forEach((d,i)=>{
+      setTimeout(()=>this.play([392,523,659,784,1047][i],0.18,'sine',0.32),d);
+    });
+  },
+  // Celebrate — joyful melody burst
+  celebrate(){
+    const notes=[523,659,784,659,880,1047];
+    const times=[0,90,180,270,380,500];
+    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.18,'sine',0.35),times[i]));
+  },
+  // Perfect Day — extra big fanfare
+  perfectDay(){
+    const notes=[523,659,784,1047,1319,1047,784,1319];
+    const times=[0,80,160,260,380,500,600,720];
+    notes.forEach((n,i)=>setTimeout(()=>this.play(n,0.2,'sine',0.4),times[i]));
+    setTimeout(()=>this.play(1047,0.6,'sine',0.3),820);
+  },
+  // ZORDAK hit — monster grunt
+  zordakHit(){this.play(120,0.25,'sawtooth',0.4,60)},
+  // Friendly whack — cheerful boing
+  friendlyHit(){this.play(660,0.1,'sine',0.2);setTimeout(()=>this.play(880,0.15,'sine',0.15),80)},
+  // Card flip
+  flip(){this.play(800,0.06,'sine',0.15)},
+  // Match found
+  match(){
+    this.play(523,0.1,'sine',0.25);
+    setTimeout(()=>this.play(784,0.12,'sine',0.3),100);
+    setTimeout(()=>this.play(1047,0.18,'sine',0.28),220);
+  },
+  // Bubble pop
+  pop(){this.play(400,0.08,'sine',0.3,700)},
+  // Streak — drumroll-like
+  streak(){
+    for(let i=0;i<8;i++)setTimeout(()=>this.play(200+i*15,0.04,'square',0.2),i*40);
+    setTimeout(()=>this.levelUp(),360);
+  }
 };
 
 // FUTURE GAMES IDEAS:
@@ -987,7 +1046,7 @@ function checkPerfect(){
   const allDone=tasks.length>0&&tasks.every(tk=>done[tk.id]===true||done[tk.id]==='family_skip');
   if(allDone){
     p.perfectDays[t]=true;save();
-    setTimeout(()=>{showCelebrate('⭐','Perfect Day!','+30 R$ bonus! 🎉<br>You completed ALL quests!<br>ZORDAK is DEFEATED! 💥');addRobux(30);},300);
+    setTimeout(()=>{sfx.perfectDay();showCelebrate('⭐','Perfect Day!','+30 R$ bonus! 🎉<br>You completed ALL quests!<br>ZORDAK is DEFEATED! 💥');addRobux(30);},300);
   }
 }
 
@@ -1159,7 +1218,7 @@ function forceSetPin(id){
 function enterHero(id){
   S.currentHero=id;save();checkNewDay();
   const p=getP();
-  if(p.pendingBonus>0){const b=p.pendingBonus;p.pendingBonus=0;save();setTimeout(()=>{showCelebrate('🔥','7-Day Streak!','+'+b+' R$ bonus for 7 perfect days in a row! 🏆');addRobux(b);},600);}
+  if(p.pendingBonus>0){const b=p.pendingBonus;p.pendingBonus=0;save();setTimeout(()=>{sfx.streak();showCelebrate('🔥','7-Day Streak!','+'+b+' R$ bonus for 7 perfect days in a row! 🏆');addRobux(b);},600);}
   if(p.piggyInterestToday){const i=p.piggyInterestToday;delete p.piggyInterestToday;save();setTimeout(()=>showCelebrate('🐷','Piggy Bank grew!','+'+i+' R$ interest added this Sunday! 📈'),1000);}
   const lv=getLevel(p);
   const av=document.getElementById('dash-av');
@@ -1527,6 +1586,7 @@ function whack(idx){
   const isFriend=wActiveType[idx]==='friend';
   delete wActiveType[idx];
   if(isFriend){
+    sfx.friendlyHit();
     wScore=Math.max(0,wScore-2);
     const star=document.createElement('div');star.className='bstar';star.textContent='😱';star.style.color='#f87171';
     hole.appendChild(star);setTimeout(()=>star.remove(),600);
@@ -1534,7 +1594,7 @@ function whack(idx){
     setTimeout(()=>{hole.style.borderColor='';},500);
   }else{
     wScore++;
-    sfx.bounce();
+    sfx.zordakHit();
     const star=document.createElement('div');star.className='bstar';star.textContent='💥';
     hole.appendChild(star);setTimeout(()=>star.remove(),500);
   }
@@ -1649,7 +1709,7 @@ function popBub(el,correct,arena){
   const pop=document.createElement('div');pop.className='popfx';
   pop.style.cssText='left:'+(el.offsetLeft+12)+'px;top:'+el.offsetTop+'px';
   pop.textContent=correct?'✨':'💔';arena.appendChild(pop);setTimeout(()=>pop.remove(),500);
-  if(correct){bCorrect++;sfx.coin();}else{sfx.wrong();}
+  if(correct){bCorrect++;sfx.pop();sfx.correct();}else{sfx.wrong();}
   document.getElementById('bscore').textContent=bCorrect;
   el.style.transform='scale(2)';el.style.opacity='0';el.style.transition='all .3s';
   bQ++;setTimeout(nextBubQ,600);
@@ -1670,10 +1730,12 @@ function startMem(){
 }
 function flipMem(i){
   if(mLocked||mFlipped.includes(i)||mMatched.includes(i))return;
+  sfx.flip();
   mFlipped.push(i);document.getElementById('mc'+i).classList.add('flipped');
   if(mFlipped.length===2){
     mLocked=true;const[a,b]=mFlipped;
     if(mCards[a]===mCards[b]){
+      sfx.match();
       mMatched.push(a,b);mFlipped=[];mLocked=false;
       document.getElementById('mc'+a).classList.add('matched');
       document.getElementById('mc'+b).classList.add('matched');
@@ -1798,13 +1860,6 @@ window.addEventListener('resize',checkPongOrientation);
 window.addEventListener('orientationchange',()=>setTimeout(checkPongOrientation,200));
 
 function startPong(){
-  showScreen('s-pong');
-  document.getElementById('pong-ready').style.display='flex';
-  document.getElementById('pong-wrap').style.display='none';
-  document.getElementById('pong-result').style.display='none';
-}
-
-function startPong(){
   pongAiEmoji=PONG_AI_EMOJIS[Math.floor(Math.random()*PONG_AI_EMOJIS.length)];
   const prev=document.getElementById('pong-ai-preview');
   if(prev)prev.textContent=pongAiEmoji;
@@ -1856,8 +1911,8 @@ function launchPong(mode){
         const ty=(t.clientY-rect.top)*scaleY;
         const px=Math.max(0,Math.min(W-PW,tx-PW/2));
         if(pongMode==='solo'){
-          // Solo: player always controls bottom paddle
-          if(ty>H/2)pongPaddles.lorena=px;
+          // Solo: ganze Fläche steuert den Spieler-Schläger (unten)
+          pongPaddles.lorena=px;
         }else{
           if(ty<H/2)pongPaddles.savio=px;
           else pongPaddles.lorena=px;
@@ -1912,8 +1967,8 @@ function pongLoop(canvas,W,H){
     pongPaddles.savio=Math.max(0,Math.min(W-PW,pongPaddles.savio));
   }
   // Score
-  if(pongBall.y<0){pongScore.lorena++;pongUpdateScore();if(pongScore.lorena>=7){pongEnd('lorena');return;}pongResetBall(W,H,1);}
-  if(pongBall.y>H){pongScore.savio++;pongUpdateScore();if(pongScore.savio>=7){pongEnd('savio');return;}pongResetBall(W,H,-1);}
+  if(pongBall.y<0){sfx.score();pongScore.lorena++;pongUpdateScore();if(pongScore.lorena>=7){pongEnd('lorena');return;}pongResetBall(W,H,1);}
+  if(pongBall.y>H){sfx.score();pongScore.savio++;pongUpdateScore();if(pongScore.savio>=7){pongEnd('savio');return;}pongResetBall(W,H,-1);}
   // Draw
   ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
   // Center line
