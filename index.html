@@ -812,15 +812,8 @@ const PAPA_QUESTS={
   cook:{emoji:'🍳',name:'Help Cook',reward:15},
   letter:{emoji:'💌',name:'Write a Letter',reward:10}
 };
-const BOSS_QS=[
-  {q:'12 × 7',a:'84',opts:['72','81','84','88']},
-  {q:'100 − 37',a:'63',opts:['53','63','73','67']},
-  {q:'9 × 9',a:'81',opts:['72','81','84','78']},
-  {q:'8 × 8',a:'64',opts:['56','62','64','68']},
-  {q:'144 ÷ 12',a:'12',opts:['11','12','13','14']},
-  {q:'7 × 11',a:'77',opts:['67','77','70','78']},
-  {q:'15 × 4',a:'60',opts:['54','60','64','56']}
-];
+// Boss questions are now generated dynamically per hero (see genBossQ)
+const BOSS_QS=[];
 
 // ===== STATE =====
 let S;
@@ -934,8 +927,8 @@ function updateWalletFiat(){
 function closeWalletModal(){document.getElementById('wallet-modal').style.display='none';}
 function updateBaliClock(){
   const el=document.getElementById('bali-clock');if(!el)return;
-  const utcMs=Date.now()+(new Date().getTimezoneOffset()*60000);
-  const bali=new Date(utcMs+8*3600000);
+  // Date.now() = UTC ms. Bali = UTC+8
+  const bali=new Date(Date.now()+8*3600000);
   const h=bali.getUTCHours(),m=bali.getUTCMinutes();
   const ampm=h>=12?'PM':'AM';const hh=h%12||12;
   el.textContent='🌴 '+(hh<10?'0':'')+hh+':'+(m<10?'0':'')+m+' '+ampm+' Bali';
@@ -1588,12 +1581,20 @@ function genBubQ(heroId){
     const ans=op==='+'?n1+n2:n1-n2;
     return{q:n1+' '+op+' '+n2+' = ?',a:ans,wrong:genWrongs(ans,3,0,20)};
   }else{
-    if(Math.random()>.4){
-      const a=2+Math.floor(Math.random()*11),b2=2+Math.floor(Math.random()*11);
-      return{q:a+' × '+b2+' = ?',a:a*b2,wrong:genWrongs(a*b2,3,4,144)};
+    // Savio: +/- up to 100 (60%), ×/÷ up to 10×10 (30%), ÷ answer≤20 (10%)
+    const r=Math.random();
+    if(r<0.6){
+      const op=Math.random()>.5?'+':'-';
+      const a=10+Math.floor(Math.random()*71),b2=5+Math.floor(Math.random()*46);
+      const[n1,n2]=op==='-'?[Math.max(a,b2),Math.min(a,b2)]:[a,b2];
+      const ans=op==='+'?n1+n2:n1-n2;
+      return{q:n1+' '+op+' '+n2+' = ?',a:ans,wrong:genWrongs(ans,3,0,200)};
+    }else if(r<0.9){
+      const a=2+Math.floor(Math.random()*9),b2=2+Math.floor(Math.random()*9);// 2-10 × 2-10
+      return{q:a+' × '+b2+' = ?',a:a*b2,wrong:genWrongs(a*b2,3,4,100)};
     }else{
-      const b2=2+Math.floor(Math.random()*11),ans=2+Math.floor(Math.random()*11);
-      return{q:(b2*ans)+' ÷ '+b2+' = ?',a:ans,wrong:genWrongs(ans,3,2,12)};
+      const b2=2+Math.floor(Math.random()*9),ans=2+Math.floor(Math.random()*19);// ÷ answer 2-20
+      return{q:(b2*ans)+' ÷ '+b2+' = ?',a:ans,wrong:genWrongs(ans,3,2,20)};
     }
   }
 }
@@ -1701,12 +1702,17 @@ function flipMem(i){
 
 // ===== BOSS BATTLE =====
 let bossQs=[],bossIdx=0,bossCorrect=0;
+function genBossQ(){
+  const q=genBubQ(S.currentHero||'savio');
+  const opts=[String(q.a),...q.wrong.slice(0,3).map(String)].sort(()=>Math.random()-.5);
+  return{q:q.q.replace(' = ?',''),a:String(q.a),opts};
+}
 function startBoss(){
   if(getDay()!==0){showCelebrate('👹','Not yet!','Boss Battle is only available on Sundays! Come back then! 📅');return;}
   const p=getP(),gp=p.gamesPlayed[today()]||{};
   if(gp.boss){showCelebrate('⏰','Already fought!','You already beat ZORDAK today! Come back next Sunday!');return;}
   showScreen('s-boss');
-  bossQs=[...BOSS_QS].sort(()=>Math.random()-.5).slice(0,3);
+  bossQs=[genBossQ(),genBossQ(),genBossQ()];
   bossIdx=0;bossCorrect=0;
   document.getElementById('bosshpf').style.width='100%';
   document.getElementById('boss-score').textContent='0/3';
