@@ -323,16 +323,18 @@ button{touch-action:manipulation}
   <div class="choose-txt">Choose Your Hero</div>
   <div class="heroes">
     <div class="hero-btn lorena" onclick="selectHero('lorena')">
-      <span class="hero-char">👩‍🎤</span>
+      <span class="hero-char" id="char-lorena">👩‍🎤</span>
       <div class="hero-hname">Lorena</div>
       <div class="hero-rank" id="rank-lorena">🌱 Apprentice</div>
       <div class="hero-coins" id="coins-lorena">💰 0 R$</div>
+      <div onclick="event.stopPropagation();openCharPicker('lorena')" style="font-size:10px;color:rgba(249,168,212,.6);margin-top:4px;font-weight:700">✏️ change</div>
     </div>
     <div class="hero-btn savio" onclick="selectHero('savio')">
-      <span class="hero-char">🥷</span>
+      <span class="hero-char" id="char-savio">🥷</span>
       <div class="hero-hname">Savio</div>
       <div class="hero-rank" id="rank-savio">🌱 Apprentice</div>
       <div class="hero-coins" id="coins-savio">💰 0 R$</div>
+      <div onclick="event.stopPropagation();openCharPicker('savio')" style="font-size:10px;color:rgba(147,197,253,.6);margin-top:4px;font-weight:700">✏️ change</div>
     </div>
   </div>
   <div class="tap-hint">Tap your hero to start!</div>
@@ -712,6 +714,16 @@ button{touch-action:manipulation}
   </div>
 </div>
 
+<!-- CHARACTER PICKER MODAL -->
+<div id="char-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="closeCharPicker()">
+  <div style="background:linear-gradient(135deg,#1e1040,#2d1b6e);border-radius:24px 24px 0 0;border:2px solid rgba(168,85,247,.4);border-bottom:none;padding:22px 18px 36px;width:100%;max-width:420px" onclick="event.stopPropagation()">
+    <div id="char-modal-title" style="font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;color:#c4b5fd;text-align:center;margin-bottom:4px">CHOOSE YOUR CHARACTER</div>
+    <div style="font-size:11px;color:#64748b;font-weight:700;text-align:center;margin-bottom:16px">Tap to pick! 👇</div>
+    <div id="char-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
+    <button onclick="closeCharPicker()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:11px 0;color:#64748b;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;width:100%">Cancel</button>
+  </div>
+</div>
+
 <!-- LANDSCAPE WARNING -->
 <div id="landscape-warn">
   <div style="font-size:64px">📱</div>
@@ -876,7 +888,34 @@ const BOSS_QS=[];
 
 // ===== STATE =====
 let S;
-function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:''};}
+const CHARS={
+  lorena:['👩‍🎤','🧜‍♀️','🦄','🧚‍♀️','👸','🦸‍♀️','🌺','🐱','🧝‍♀️','💃','🦋','🌙'],
+  savio: ['🥷','🐉','🦸‍♂️','⚔️','🧙‍♂️','🤖','🦊','👾','🐺','🏹','🗡️','🧊']
+};
+let charPickerHero=null;
+function openCharPicker(heroId){
+  charPickerHero=heroId;
+  const isLor=heroId==='lorena';
+  document.getElementById('char-modal-title').textContent=(isLor?'LORENA':'SAVIO')+' — CHOOSE!';
+  document.getElementById('char-modal-title').style.color=isLor?'#f9a8d4':'#93c5fd';
+  const current=S.profiles[heroId].heroEmoji||(isLor?'👩‍🎤':'🥷');
+  document.getElementById('char-grid').innerHTML=CHARS[heroId].map(e=>
+    '<div onclick="pickChar(\''+e+'\')" style="aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;transition:transform .1s;background:'+(e===current?'rgba(168,85,247,.3)':'rgba(255,255,255,.05)')+';border:2px solid '+(e===current?'rgba(168,85,247,.7)':'rgba(255,255,255,.08)')+'">'+e+'</div>'
+  ).join('');
+  document.getElementById('char-modal').style.display='flex';
+}
+function pickChar(emoji){
+  if(!charPickerHero)return;
+  S.profiles[charPickerHero].heroEmoji=emoji;save();
+  document.getElementById('char-'+charPickerHero).textContent=emoji;
+  // Update dashboard avatar if currently logged in as this hero
+  if(S.currentHero===charPickerHero){
+    const av=document.getElementById('dash-av');if(av)av.textContent=emoji;
+  }
+  sfx.celebrate();closeCharPicker();
+}
+function closeCharPicker(){document.getElementById('char-modal').style.display='none';charPickerHero=null;}
+function defP(id){return{heroId:id,robux:0,totalEarned:0,streak:0,dailyTasks:{},perfectDays:{},moodLog:{},piggyBank:{amount:0,lastCompound:null},gamesPlayed:{},highScores:{whack:0,bubble:0,memory:0,pong:0},lastActiveDay:null,pendingBonus:0,papaQuests:{},pin:'',heroEmoji:''};}
 function defS(){return{profiles:{lorena:defP('lorena'),savio:defP('savio')},parentPin:'1234',currency:'usd',currentHero:null,papaCode:null,skipCost:60};}
 function load(){
   try{S=JSON.parse(localStorage.getItem(SK))||defS();}catch(e){S=defS();}
@@ -1222,7 +1261,8 @@ function enterHero(id){
   if(p.piggyInterestToday){const i=p.piggyInterestToday;delete p.piggyInterestToday;save();setTimeout(()=>showCelebrate('🐷','Piggy Bank grew!','+'+i+' R$ interest added this Sunday! 📈'),1000);}
   const lv=getLevel(p);
   const av=document.getElementById('dash-av');
-  av.textContent=id==='lorena'?'👩‍🎤':'🥷';av.className='hero-av'+(id==='savio'?' sav':'');
+  const he=p.heroEmoji||(id==='lorena'?'👩‍🎤':'🥷');
+  av.textContent=he;av.className='hero-av'+(id==='savio'?' sav':'');
   const dn=document.getElementById('dash-name');
   dn.textContent=id==='lorena'?'Lorena':'Savio';dn.className='dash-name '+(id==='lorena'?'lor':'sav');
   document.getElementById('dash-rank').textContent=lv.emoji+' '+lv.name+' Hero';
@@ -1243,6 +1283,8 @@ function updateHeroSelect(){
     const p=S.profiles[h],lv=getLevel(p);
     document.getElementById('rank-'+h).textContent=lv.emoji+' '+lv.name;
     document.getElementById('coins-'+h).textContent='💰 '+p.robux+' R$';
+    const charEl=document.getElementById('char-'+h);
+    if(charEl&&p.heroEmoji)charEl.textContent=p.heroEmoji;
   });
 }
 
@@ -1697,11 +1739,11 @@ function nextBubQ(){
     const b=document.createElement('div');
     b.className='bub bw';
     const size=62+Math.random()*22;
-    b.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(5+Math.random()*72)+'%;animation-duration:'+(5+Math.random()*3)+'s;animation-delay:'+(i*.35)+'s';
+    b.style.cssText='width:'+size+'px;height:'+size+'px;left:'+(5+Math.random()*72)+'%;animation-duration:'+(8+Math.random()*4)+'s;animation-delay:'+(i*.35)+'s';
     b.textContent=ans;
     b.onclick=()=>popBub(b,ans===q.a,arena);
     arena.appendChild(b);
-    bTimers.push(setTimeout(()=>{if(document.getElementById('s-bubble').classList.contains('active')){bQ++;nextBubQ();}},8200+(i*300)));
+    bTimers.push(setTimeout(()=>{if(document.getElementById('s-bubble').classList.contains('active')){bQ++;nextBubQ();}},12000+(i*300)));
   });
 }
 function popBub(el,correct,arena){
@@ -1879,7 +1921,7 @@ function launchPong(mode){
   const canvas=document.getElementById('pong-canvas');
   // Update HUD labels for mode
   if(pongMode==='solo'){
-    const heroEmoji=S.currentHero==='lorena'?'👩‍🎤':'🥷';
+    const heroEmoji=S.profiles[S.currentHero].heroEmoji||(S.currentHero==='lorena'?'👩‍🎤':'🥷');
     const heroName=(S.currentHero==='lorena'?'LORENA':'SAVIO').toUpperCase();
     document.getElementById('pong-top-name').textContent=pongAiEmoji+' AI';
     document.getElementById('pong-top-name').style.color='#f97316';
@@ -2016,7 +2058,7 @@ function pongEnd(winner){
       save();
     }
     if(S.currentHero)updateDash();
-    const heroEmoji=ph==='lorena'?'👩‍🎤':'🥷';
+    const heroEmoji=S.profiles[ph].heroEmoji||(ph==='lorena'?'👩‍🎤':'🥷');
     const heroName=ph==='lorena'?'LORENA':'SAVIO';
     const heroColor=ph==='lorena'?'#f9a8d4':'#93c5fd';
     const scoreStr=pongScore.lorena+' — '+pongScore.savio;
